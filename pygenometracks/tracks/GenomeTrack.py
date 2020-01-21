@@ -3,6 +3,7 @@
 from .. utilities import to_string, to_bytes
 import logging
 import numpy as np
+from pygenometracks._chromMapping import __chromMapping__
 
 
 class GenomeTrack(object):
@@ -147,20 +148,12 @@ height = 2
             self.plot_type = default_plot_type
 
     @staticmethod
-    def change_chrom_names(chrom):
+    def get_alternative_chrom_names(chrom):
         """
-        Changes UCSC chromosome names to ensembl chromosome names
-        and vice versa.
+        Gives alternative chrom names from ensembl/UCSC/gencode/NCBI/RefSeq using
+        https://github.com/dpryan79/ChromosomeMappings.git
         """
-        # TODO: mapping from chromosome names like mithocondria is missing
-        if chrom.startswith('chr'):
-            # remove the chr part from chromosome name
-            chrom = chrom[3:]
-        else:
-            # prefix with 'chr' the chromosome name
-            chrom = 'chr' + chrom
-
-        return chrom
+        return __chromMapping__.get(chrom, [])
 
     @staticmethod
     def check_chrom_str_bytes(iteratable_obj, p_obj):
