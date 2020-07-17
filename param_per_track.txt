@@ -1,0 +1,56 @@
+parameter & x\_axis & epilogos & links & domains & bed & gtf & narrow\_peak & bigwig & bedgraph & bedgraph\_matrix & hlines & hic\_matrix & scalebar \\
+overlay\_previous & X & X & X & X & X & X & X & X & X & X & X & X & X \\
+where & X &  &  &  &  &  &  &  &  &  &  &  & X \\
+fontsize & X &  &  &  & X & X &  &  &  &  &  &  & X \\
+categories\_file &  & X &  &  &  &  &  &  &  &  &  &  &  \\
+orientation &  & X & X & X & X & X & X & X & X & X & X & X &  \\
+links\_type &  &  & X &  &  &  &  &  &  &  &  &  &  \\
+line\_width &  &  & X & X & X & X & X &  &  &  & X &  & X \\
+line\_style &  &  & X &  &  &  &  &  &  &  & X &  &  \\
+color &  &  & X & X & X & X & X & X & X &  & X &  & X \\
+alpha &  &  & X &  &  &  &  & X & X &  & X &  & X \\
+max\_value &  &  & X & X & X &  & X & X & X & X & X & X &  \\
+min\_value &  &  & X & X & X &  &  & X & X & X & X & X &  \\
+ylim &  &  & X &  &  &  &  &  &  &  &  &  &  \\
+compact\_arcs\_level &  &  & X &  &  &  &  &  &  &  &  &  &  \\
+use\_middle &  &  & X &  &  &  &  &  & X &  &  &  &  \\
+border\_color &  &  &  & X & X & X &  &  &  &  &  &  &  \\
+prefered\_name &  &  &  & X & X & X &  &  &  &  &  &  &  \\
+merge\_transcripts &  &  &  & X & X & X &  &  &  &  &  &  &  \\
+labels &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+style &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+display &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+max\_labels &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+global\_max\_row &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+gene\_rows &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+arrow\_interval &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+arrowhead\_included &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+color\_utr &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+height\_utr &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+arrow\_length &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+all\_labels\_inside &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+labels\_in\_margin &  &  &  &  & X & X &  &  &  &  &  &  &  \\
+show\_data\_range &  &  &  &  &  &  & X & X & X & X & X &  &  \\
+show\_labels &  &  &  &  &  &  & X &  &  &  &  &  &  \\
+use\_summit &  &  &  &  &  &  & X &  &  &  &  &  &  \\
+width\_adjust &  &  &  &  &  &  & X &  &  &  &  &  &  \\
+type &  &  &  &  &  &  & X & X & X & X &  &  &  \\
+negative\_color &  &  &  &  &  &  &  & X & X &  &  &  &  \\
+nans\_to\_zeros &  &  &  &  &  &  &  & X & X &  &  &  &  \\
+summary\_method &  &  &  &  &  &  &  & X & X &  &  &  &  \\
+number\_of\_bins &  &  &  &  &  &  &  & X & X &  &  &  &  \\
+transform &  &  &  &  &  &  &  & X & X &  &  & X &  \\
+log\_pseudocount &  &  &  &  &  &  &  & X & X &  &  &  &  \\
+y\_axis\_values &  &  &  &  &  &  &  & X & X &  &  &  &  \\
+second\_file &  &  &  &  &  &  &  & X & X &  &  &  &  \\
+operation &  &  &  &  &  &  &  & X & X &  &  &  &  \\
+grid &  &  &  &  &  &  &  & X & X &  &  &  &  \\
+rasterize &  &  &  &  &  &  &  &  & X & X &  & X &  \\
+pos\_score\_in\_bin &  &  &  &  &  &  &  &  &  & X &  &  &  \\
+plot\_horizontal\_lines &  &  &  &  &  &  &  &  &  & X &  &  &  \\
+colormap &  &  &  &  &  &  &  &  &  & X &  & X &  \\
+depth &  &  &  &  &  &  &  &  &  &  &  & X &  \\
+show\_masked\_bins &  &  &  &  &  &  &  &  &  &  &  & X &  \\
+scale\_factor &  &  &  &  &  &  &  &  &  &  &  & X &  \\
+x\_center &  &  &  &  &  &  &  &  &  &  &  &  & X \\
+size &  &  &  &  &  &  &  &  &  &  &  &  & X \\
