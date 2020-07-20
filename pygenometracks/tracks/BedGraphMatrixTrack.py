@@ -115,7 +115,8 @@ file_type = {TRACK_TYPE}
                 # convert [(0, 10), (10, 20), (20, 30)] into [0, 10, 10, 20, 20, 30]
                 x_values = sum(start_pos, tuple())
             else:
-                x_values = [x[0] + (x[1] - x[0]) / 2 for x in start_pos]
+                # Do the mean:
+                x_values = [(x[0] + x[1]) / 2 for x in start_pos]
 
             for row in matrix:
                 if self.properties['pos_score_in_bin'] == 'block':
@@ -139,9 +140,9 @@ file_type = {TRACK_TYPE}
                 ax.tick_params(axis='y', which='minor', left='on')
 
         else:
-            start_pos = [(x[0] + x[1]) / 2 for x in start_pos]
-
-            x, y = np.meshgrid(start_pos, np.arange(matrix.shape[0]))
+            # Do the mean:
+            x_values = [(x[0] + x[1]) / 2 for x in start_pos]
+            x, y = np.meshgrid(x_values, np.arange(matrix.shape[0]))
             shading = 'gouraud'
             vmax = self.properties['max_value']
             vmin = self.properties['min_value']
