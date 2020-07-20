@@ -139,7 +139,7 @@ file_type = {TRACK_TYPE}
                 ax.tick_params(axis='y', which='minor', left='on')
 
         else:
-            start_pos = [x[0] for x in start_pos]
+            start_pos = [(x[0] + x[1]) / 2 for x in start_pos]
 
             x, y = np.meshgrid(start_pos, np.arange(matrix.shape[0]))
             shading = 'gouraud'
