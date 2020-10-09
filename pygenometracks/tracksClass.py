@@ -11,6 +11,7 @@ import matplotlib.textpath
 import matplotlib.colors
 import matplotlib.gridspec
 import matplotlib.cm
+from matplotlib.patches import Rectangle
 import mpl_toolkits.axisartist as axisartist
 from . utilities import file_to_intervaltree, change_chrom_names
 from collections import OrderedDict
@@ -263,10 +264,31 @@ class PlotTracks(object):
             else:
                 plot_axis.set_xlim(start, end)
             track.plot(plot_axis, chrom, start, end)
+            if not overlay:
+                plot_axis.add_patch(Rectangle((plot_axis.get_xlim()[0],
+                                               plot_axis.get_ylim()[0]),
+                                              end - start,
+                                              plot_axis.get_ylim()[1] - plot_axis.get_ylim()[0],
+                                              color="red",alpha=0.2,fill=True))
             track.plot_y_axis(y_axis, plot_axis)
+
+            if not overlay:
+                y_axis.add_patch(Rectangle((y_axis.get_xlim()[0],
+                                            y_axis.get_ylim()[0]),
+                                           y_axis.get_xlim()[1] - y_axis.get_xlim()[0],
+                                           y_axis.get_ylim()[1] - y_axis.get_ylim()[0],
+                                           color="blue",alpha=0.2,fill=True))
+        
             track.plot_label(label_axis, width_dpi=width_dpi,
                              h_align=h_align_titles)
 
+            if not overlay:
+                label_axis.add_patch(Rectangle((label_axis.get_xlim()[0],
+                                                label_axis.get_ylim()[0]),
+                                               label_axis.get_xlim()[1] - label_axis.get_xlim()[0],
+                                               label_axis.get_ylim()[1] - label_axis.get_ylim()[0],
+                                               color="yellow",alpha=0.2,fill=True))
+        
             if track.properties['overlay_previous'] == 'share-y':
                 plot_axis.set_ylim(ylim)
 
