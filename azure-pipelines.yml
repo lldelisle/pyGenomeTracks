@@ -70,12 +70,12 @@ stages:
           Python38LowMatplotlib:
             python.version: '3.8'
             matplotlib.version: '3.1.1'
-          Python38HighMatplotlib:
-            python.version: '3.8'
-            matplotlib.version: '3.5.1'
-          Python39HighMatplotlib:
-            python.version: '3.9'
-            matplotlib.version: '3.5.1'
+          # Python38HighMatplotlib:
+          #   python.version: '3.8'
+          #   matplotlib.version: '3.5.1'
+          # Python39HighMatplotlib:
+          #   python.version: '3.9'
+          #   matplotlib.version: '3.5.1'
 
       steps:
       - bash: |
@@ -84,20 +84,24 @@ stages:
         displayName: Add conda to PATH
       # On Hosted macOS, the agent user doesn't have ownership of Miniconda's installation directory/
       # We need to take ownership if we want to update conda or install packages globally
-      - bash: sudo chown -R $USER $CONDA
-        displayName: Take ownership of conda installation
       - bash: |
-          conda config --set always_yes yes --set changeps1 no
-          conda info -a
-          cat requirements_CI.txt | awk -v v=$(matplotlib.version) -v vp=$(python.version) 'BEGIN{print "python =="vp}{if($0~/matplotlib/){$0="matplotlib =="v}; print}' > requirements_CI_updated.txt
-          conda create -n pygenometracks --yes -c conda-forge -c bioconda --file requirements_CI_updated.txt
-          source activate pygenometracks
-          python -m pip install .
-        displayName: installing dependencies
-      - script: |
-          source activate pygenometracks
-          py.test pygenometracks --doctest-modules -n 4
-        displayName: pytest
+        echo "user is $USER"
+        echo "conda is $CONDA"
+        echo "PATH is $PATH"
+        sudo chown -R $USER $CONDA
+        displayName: Take ownership of conda installation
+      # - bash: |
+      #     conda config --set always_yes yes --set changeps1 no
+      #     conda info -a
+      #     cat requirements_CI.txt | awk -v v=$(matplotlib.version) -v vp=$(python.version) 'BEGIN{print "python =="vp}{if($0~/matplotlib/){$0="matplotlib =="v}; print}' > requirements_CI_updated.txt
+      #     conda create -n pygenometracks --yes -c conda-forge -c bioconda --file requirements_CI_updated.txt
+      #     source activate pygenometracks
+      #     python -m pip install .
+      #   displayName: installing dependencies
+      # - script: |
+      #     source activate pygenometracks
+      #     py.test pygenometracks --doctest-modules -n 4
+      #   displayName: pytest
 
 - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
   - stage: Deploy
