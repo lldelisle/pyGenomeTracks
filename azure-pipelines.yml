@@ -13,10 +13,10 @@ stages:
           brew install micromamba
         displayName: Install micromamba
       - bash: |
-          conda config --set always_yes yes --set changeps1 no
-          conda info -a
+          micromamba config --set always_yes yes --set changeps1 no
+          micromamba info -a
           cat requirements_CI.txt | awk -v vp=3.7 'BEGIN{print "python =="vp}{print}' > requirements_CI_updated.txt
-          conda create -n pygenometracks --yes -c conda-forge -c bioconda --file requirements_CI_updated.txt
-          source activate pygenometracks
+          micromamba create -n pygenometracks --yes -c conda-forge -c bioconda --file requirements_CI_updated.txt
+          micromamba activate pygenometracks
           python -m pip install .
         displayName: installing dependencies
