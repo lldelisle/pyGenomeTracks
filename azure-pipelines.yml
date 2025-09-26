@@ -65,11 +65,13 @@ stages:
       timeoutInMinutes: 0
       pool:
         vmImage: 'macOS-latest'
-      strategy:
-        matrix:
-          Python38LowMatplotlib:
-            python.version: '3.8'
-            matplotlib.version: '3.1.1'
+      container: python:3.8
+
+      # strategy:
+      #   matrix:
+      #     Python38LowMatplotlib:
+      #       python.version: '3.8'
+      #       matplotlib.version: '3.1.1'
           # Python38HighMatplotlib:
           #   python.version: '3.8'
           #   matplotlib.version: '3.5.1'
@@ -90,14 +92,14 @@ stages:
         echo "PATH is $PATH"
         sudo chown -R $USER $CONDA
         displayName: Take ownership of conda installation
-      # - bash: |
-      #     conda config --set always_yes yes --set changeps1 no
-      #     conda info -a
+      - bash: |
+          conda config --set always_yes yes --set changeps1 no
+          conda info -a
       #     cat requirements_CI.txt | awk -v v=$(matplotlib.version) -v vp=$(python.version) 'BEGIN{print "python =="vp}{if($0~/matplotlib/){$0="matplotlib =="v}; print}' > requirements_CI_updated.txt
-      #     conda create -n pygenometracks --yes -c conda-forge -c bioconda --file requirements_CI_updated.txt
-      #     source activate pygenometracks
-      #     python -m pip install .
-      #   displayName: installing dependencies
+          conda create -n pygenometracks --yes -c conda-forge -c bioconda --file requirements_CI.txt
+          source activate pygenometracks
+          python -m pip install .
+        displayName: installing dependencies
       # - script: |
       #     source activate pygenometracks
       #     py.test pygenometracks --doctest-modules -n 4
