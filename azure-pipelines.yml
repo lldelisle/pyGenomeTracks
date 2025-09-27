@@ -32,6 +32,7 @@ stages:
           python -m pip install .
         displayName: installing dependencies
       - script: |
+          eval "$(micromamba shell hook --shell bash)"
           micromamba activate pygenometracks
           py.test pygenometracks --doctest-modules -n 4
         displayName: pytest
