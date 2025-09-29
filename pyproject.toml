@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "pyGenomeTracks"
 version = "3.9"
 authors = [
-  { name = "Lucille Lopez-Delisle, Leily Rabbani, Joachim Wolf, Björn Grüning", email = "lucille.delisle@epfl.ch" },
+  { name = "Lucille Lopez-Delisle, Leily Rabbani, Joachim Wolf, Björn Grüning", email = "lucille.delisle@unige.ch" },
 ]
 description = "Command-line tool to make beautiful and reproducible genome browser snapshots"
 readme = "README.md"
