@@ -302,7 +302,8 @@ file_type = {TRACK_TYPE}
                          2 * half_height, angle=0, theta1=0, theta2=180,
                          color=rgb,
                          linewidth=self.current_line_width,
-                         ls=self.properties['line_style']))
+                         ls=self.properties['line_style'],
+                         alpha=self.properties['alpha']))
 
     def plot_triangles(self, ax, interval):
         x1 = interval.begin
@@ -327,7 +328,8 @@ file_type = {TRACK_TYPE}
                            closed=False,
                            facecolor='none', edgecolor=rgb,
                            linewidth=self.current_line_width,
-                           ls=self.properties['line_style'])
+                           ls=self.properties['line_style'],
+                           alpha=self.properties['alpha'])
         ax.add_artist(triangle)
         if y2 > self.max_height:
             self.max_height = y2
@@ -362,13 +364,15 @@ file_type = {TRACK_TYPE}
         rectangle = Polygon(np.array([[x0, y0], [x1, y1], [x2, y2], [x3, y3]]),
                             facecolor='none', edgecolor=rgb,
                             linewidth=self.current_line_width,
-                            ls=self.properties['line_style'])
+                            ls=self.properties['line_style'],
+                            alpha=self.properties['alpha'])
         ax.add_artist(rectangle)
         if min(y0, y1, y2, y3) < 0:
             rectangle_flip = Polygon(np.array([[x0, -y0], [x1, -y1], [x2, -y2], [x3, -y3]]),
                                      facecolor='none', edgecolor=rgb,
                                      linewidth=self.current_line_width,
-                                     ls=self.properties['line_style'])
+                                     ls=self.properties['line_style'],
+                                     alpha=self.properties['alpha'])
             ax.add_artist(rectangle_flip)
         if y2 > self.max_height:
             self.max_height = y2
@@ -407,7 +411,8 @@ file_type = {TRACK_TYPE}
         rectangle = Polygon(np.array([[x0, y0], [x1, y1], [x2, y2], [x3, y3]]),
                             facecolor='none', edgecolor=rgb,
                             linewidth=self.current_line_width,
-                            ls=self.properties['line_style'])
+                            ls=self.properties['line_style'],
+                            alpha=self.properties['alpha'])
         ax.add_artist(rectangle)
 
     def process_link_file(self, plot_regions):

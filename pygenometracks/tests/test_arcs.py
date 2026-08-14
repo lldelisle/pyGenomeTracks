@@ -5,6 +5,12 @@ from tempfile import NamedTemporaryFile
 import os.path
 import pygenometracks.plotTracks
 from pygenometracks.utilities import InputError
+
+from matplotlib.figure import Figure
+from matplotlib.patches import Arc
+from intervaltree import Interval
+from pygenometracks.tracks.LinksTrack import LinksTrack
+
 mpl.use('agg')
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -523,3 +529,36 @@ def test_arcs_overlay():
     assert res is None, res
 
     os.remove(outfile.name)
+
+
+def test_arcs_alpha_is_applied():
+    track = LinksTrack.__new__(LinksTrack)
+
+    track.properties = {
+        'compact_arcs_level': 0,
+        'color': 'red',
+        'line_style': 'solid',
+        'alpha': 0.25
+    }
+
+    track.max_height = 0
+    track.colormap = None
+    track.current_line_width = 1.0
+
+    fig = Figure()
+    ax = fig.subplots()
+
+    interval = Interval(
+        100,
+        200,
+        (100, 110, 190, 200, 1)
+    )
+
+    track.plot_arcs(ax, interval)
+
+    assert len(ax.patches) == 1
+    artist = ax.patches[0]
+
+    assert isinstance(artist, Arc)
+    assert artist.get_alpha() == 0.25
+
