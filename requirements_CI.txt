@@ -22,3 +22,4 @@ flake8
 # For local test and coverage
 coverage
 coverage-badge
+setuptools<=80.10.2
