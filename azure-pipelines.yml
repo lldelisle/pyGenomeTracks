@@ -30,15 +30,12 @@ stages:
         vmImage: 'ubuntu-latest'
       strategy:
         matrix:
-          Python38LowMatplotlib:
-            python.version: '3.8'
-            matplotlib.version: '3.1.1'
-          Python310HighMatplotlib:
+          Python310LowMatplotlib:
             python.version: '3.10'
             matplotlib.version: '3.8.4'
-          Python312HighMatplotlib:
-            python.version: '3.12'
-            matplotlib.version: '3.8.4'
+          Python313HighMatplotlib:
+            python.version: '3.13'
+            matplotlib.version: '3.11.1'
 
       steps:
       - bash: |
@@ -62,15 +59,13 @@ stages:
         vmImage: 'macOS-latest'
       strategy:
         matrix:
-          Python38LowMatplotlib:
-            python.version: '3.8'
-            matplotlib.version: '3.1.1'
-          Python310HighMatplotlib:
+          Python310LowMatplotlib:
             python.version: '3.10'
             matplotlib.version: '3.8.4'
-          Python312HighMatplotlib:
-            python.version: '3.12'
-            matplotlib.version: '3.8.4'
+          Python313HighMatplotlib:
+            python.version: '3.13'
+            matplotlib.version: '3.11.1'
+
       steps:
       - bash: |
           brew install micromamba
