@@ -54,6 +54,32 @@ stages:
           micromamba activate pygenometracks
           py.test pygenometracks --doctest-modules -n 4
         displayName: pytest
+    - job: higher python (not bioconda compatible) linux
+      timeoutInMinutes: 0
+      pool:
+        vmImage: 'ubuntu-latest'
+      strategy:
+        matrix:
+          Python313:
+            python.version: '3.13'
+          Python314:
+            python.version: '3.14'
+      steps:
+      - bash: |
+          "${SHELL}" <(curl -L micro.mamba.pm/install.sh)
+        displayName: Install micromamba
+      - bash: |
+          micromamba create -n pygenometracks --yes -c conda-forge -c bioconda python=$(python.version) bedtools
+          eval "$(micromamba shell hook --shell bash)"
+          micromamba activate pygenometracks
+          python -m pip install -r requirements_CI.txt
+          python -m pip install .
+        displayName: installing dependencies
+      - script: |
+          eval "$(micromamba shell hook --shell bash)"
+          micromamba activate pygenometracks
+          py.test pygenometracks --doctest-modules -n 4
+        displayName: pytest
     - job: OSX
       timeoutInMinutes: 0
       pool:
