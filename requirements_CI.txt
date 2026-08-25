@@ -16,7 +16,7 @@ pytest-xdist
 pytest-forked
 nose
 configparser
-ghostscript
+ghostscript <10
 # For linting
 flake8
 # For local test and coverage
