@@ -373,8 +373,6 @@ def test_plot_bedgraph_use_mid_op():
     else:
         my_tolerance = tolerance
 
-    extension = '.png'
-
     outfile = NamedTemporaryFile(suffix='.png', prefix='bdg_NA_', delete=False)
     ini_file = os.path.join(ROOT, "bedgraph_useMid_op.ini")
     region = "chr2:74000000-74800000"
@@ -424,8 +422,6 @@ def test_op_bdg():
     else:
         my_tolerance = tolerance
 
-    extension = '.png'
-
     outfile = NamedTemporaryFile(suffix='.png', prefix='bdg_op_test_',
                                  delete=False)
     for pref in ['', 'incorrect_']:
@@ -451,8 +447,6 @@ def test_bdg_withNA():
         my_tolerance = 26
     else:
         my_tolerance = tolerance
-
-    extension = '.png'
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='bdg_NA_', delete=False)
     ini_file = os.path.join(ROOT, "bedgraph_withNA.ini")
@@ -492,8 +486,6 @@ def test_bdg_unsorted():
     else:
         my_tolerance = tolerance
 
-    extension = '.png'
-
     outfile = NamedTemporaryFile(suffix='.png', prefix='pgt_test_', delete=False)
     ini_file = os.path.join(ROOT, "unsorted_bedgraph.ini")
     region = "X:2700000-3100000"
@@ -515,8 +507,6 @@ def test_negative():
         my_tolerance = 19
     else:
         my_tolerance = tolerance
-
-    extension = '.png'
 
     region = "X:2700000-3100000"
     outfile = NamedTemporaryFile(suffix='.png', prefix='bedgraph_negative_test_', delete=False)
@@ -630,8 +620,6 @@ def test_bedgraph_end_not_covered():
         my_tolerance = 20
     else:
         my_tolerance = tolerance
-
-    extension = '.png'
 
     region = "chr7:100-400"
     outfile = NamedTemporaryFile(suffix='.png', prefix='bedgraph_end_not_covered_', delete=False)

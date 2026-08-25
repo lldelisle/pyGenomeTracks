@@ -5,7 +5,6 @@ from tempfile import NamedTemporaryFile
 import os.path
 import shutil
 import pygenometracks.plotTracks
-import sys
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                     "test_data")
@@ -716,7 +715,6 @@ def test_plot_hic_depth_smaller_binsize():
         my_tolerance = 30
     else:
         my_tolerance = tolerance
-
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
