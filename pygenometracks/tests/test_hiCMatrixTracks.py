@@ -342,8 +342,8 @@ title = cool with few interactions transform = -log
 transform = -log
 depth = 200000
 file_type = hic_matrix
-min_value = 0
-max_value = -5
+min_value = -5
+max_value = 0
 
 [hic matrix]
 file = small_test3.cool
