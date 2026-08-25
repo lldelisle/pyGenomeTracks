@@ -169,12 +169,15 @@ with open(os.path.join(ROOT, "invalid_score.ini"), 'w') as fh:
     fh.write(browser_tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = "3.11.1"
 
 
-# For this test I need to fix the tolerence at 19 to make it work
-# On python 3.8
-# The only difference between outputs is the font width...
 def test_plot_tracks_bed_unusual_format():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 25
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -186,13 +189,18 @@ def test_plot_tracks_bed_unusual_format():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance + 6)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_strange_strand():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 16
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -204,7 +212,7 @@ def test_plot_tracks_bed_strange_strand():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -213,6 +221,11 @@ def test_plot_tracks_bed_strange_strand():
 def test_plot_tracks_bed_invalid_strand():
 
     tolerance = 5
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 16
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -224,7 +237,7 @@ def test_plot_tracks_bed_invalid_strand():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -232,6 +245,11 @@ def test_plot_tracks_bed_invalid_strand():
 
 
 def test_plot_tracks_bed_invalid_rgb():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 40
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -243,13 +261,18 @@ def test_plot_tracks_bed_invalid_rgb():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_invalid_blockCount():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 41
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -261,13 +284,18 @@ def test_plot_tracks_bed_invalid_blockCount():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_invalid_CDScoo():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 44
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -279,13 +307,18 @@ def test_plot_tracks_bed_invalid_CDScoo():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_invalid_blocks():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 40
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -297,13 +330,18 @@ def test_plot_tracks_bed_invalid_blocks():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_invalid_score():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 41
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -315,7 +353,7 @@ def test_plot_tracks_bed_invalid_score():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)

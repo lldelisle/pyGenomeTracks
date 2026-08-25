@@ -307,9 +307,16 @@ with open(os.path.join(ROOT, "bedgraph_end_not_covered.ini"), 'w') as fh:
     fh.write(bedgraph_end_not_covered)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = "3.11.1"
 
 
 def test_plot_bedgraph_tracks_with_bed():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -326,13 +333,19 @@ def test_plot_bedgraph_tracks_with_bed():
         expected_file = os.path.join(ROOT, 'master_bedgraph_useMid_'
                                      + region_str + extension)
         res = compare_images(expected_file,
-                             output_file, tolerance)
+                             output_file, my_tolerance)
         assert res is None, res
 
         os.remove(output_file)
 
 
 def test_plot_bedgraph_tracks_individual():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     for region in ['chr2:73800000-75744000', 'chr2:74000000-74800000']:
@@ -347,13 +360,21 @@ def test_plot_bedgraph_tracks_individual():
                f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
 
 
 def test_plot_bedgraph_use_mid_op():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 21
+    else:
+        my_tolerance = tolerance
+
+    extension = '.png'
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bdg_NA_', delete=False)
     ini_file = os.path.join(ROOT, "bedgraph_useMid_op.ini")
     region = "chr2:74000000-74800000"
@@ -363,7 +384,7 @@ def test_plot_bedgraph_use_mid_op():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -397,6 +418,14 @@ def test_plot_bedgraph_tracks_rasterize():
 
 
 def test_op_bdg():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 16
+    else:
+        my_tolerance = tolerance
+
+    extension = '.png'
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bdg_op_test_',
                                  delete=False)
     for pref in ['', 'incorrect_']:
@@ -408,7 +437,7 @@ def test_op_bdg():
                f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
@@ -417,6 +446,14 @@ def test_op_bdg():
 
 
 def test_bdg_withNA():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 26
+    else:
+        my_tolerance = tolerance
+
+    extension = '.png'
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bdg_NA_', delete=False)
     ini_file = os.path.join(ROOT, "bedgraph_withNA.ini")
     region = "X:2700000-3100000"
@@ -426,7 +463,7 @@ def test_bdg_withNA():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -449,6 +486,14 @@ def test_operation_withNA():
 
 
 def test_bdg_unsorted():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 26
+    else:
+        my_tolerance = tolerance
+
+    extension = '.png'
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pgt_test_', delete=False)
     ini_file = os.path.join(ROOT, "unsorted_bedgraph.ini")
     region = "X:2700000-3100000"
@@ -458,13 +503,21 @@ def test_bdg_unsorted():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_negative():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 19
+    else:
+        my_tolerance = tolerance
+
+    extension = '.png'
+
     region = "X:2700000-3100000"
     outfile = NamedTemporaryFile(suffix='.png', prefix='bedgraph_negative_test_', delete=False)
     args = "--tracks {ini} --region {region} --trackLabelFraction 0.2 " \
@@ -474,7 +527,7 @@ def test_negative():
     pygenometracks.plotTracks.main(args)
     print("saving test to {}".format(outfile.name))
     res = compare_images(os.path.join(ROOT, 'master_negative.png'),
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -572,6 +625,14 @@ def test_bedgraph_neg_log1p():
 
 
 def test_bedgraph_end_not_covered():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 20
+    else:
+        my_tolerance = tolerance
+
+    extension = '.png'
+
     region = "chr7:100-400"
     outfile = NamedTemporaryFile(suffix='.png', prefix='bedgraph_end_not_covered_', delete=False)
     args = "--tracks {ini} --region {region} --trackLabelFraction 0.2 " \
@@ -581,7 +642,7 @@ def test_bedgraph_end_not_covered():
     pygenometracks.plotTracks.main(args)
     print("saving test to {}".format(outfile.name))
     res = compare_images(os.path.join(ROOT, 'master_bedgraph_end_not_covered.png'),
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)

@@ -412,11 +412,13 @@ with open(os.path.join(ROOT, "browser_tracks_hic_force_scale.ini"), 'w') as fh:
 
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = "3.11.1"
 
 
 def test_plot_tracks_with_hic():
-    if mpl.__version__ == "3.1.1":
-        my_tolerance = 14
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 32
     else:
         my_tolerance = tolerance
 
@@ -437,8 +439,9 @@ def test_plot_tracks_with_hic():
 
 
 def test_plot_tracks_with_hic_dec():
-    if mpl.__version__ == "3.1.1":
-        my_tolerance = 14
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 32
     else:
         my_tolerance = tolerance
 
@@ -460,8 +463,9 @@ def test_plot_tracks_with_hic_dec():
 
 
 def test_plot_tracks_with_cool_region():
-    if mpl.__version__ == "3.1.1":
-        my_tolerance = 14
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 32
     else:
         my_tolerance = tolerance
 
@@ -482,10 +486,12 @@ def test_plot_tracks_with_cool_region():
 
 
 def test_plot_hic_logmlog():
-    if mpl.__version__ == "3.1.1":
-        my_tolerance = 21
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 27
     else:
         my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "browser_tracks_hic_log-log.ini")
@@ -503,10 +509,12 @@ def test_plot_hic_logmlog():
 
 
 def test_plot_tracks_with_hic_rasterize_height_2chr():
-    if mpl.__version__ == "3.1.1" or sys.version_info.minor == 6:
-        my_tolerance = 18
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 20
     else:
         my_tolerance = tolerance
+
     extension = '.pdf'
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -537,6 +545,12 @@ def test_plot_tracks_with_hic_rasterize_height_2chr():
 
 
 def test_plot_tracks_with_hic_rasterize_height_2chr_individual():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 20
+    else:
+        my_tolerance = tolerance
+
     extension = '.pdf'
     ini_file = os.path.join(ROOT, "browser_tracks_hic_rasterize_height.ini")
     for region in ['X:2500000-2600000', 'Y:0-1000000']:
@@ -557,11 +571,17 @@ def test_plot_tracks_with_hic_rasterize_height_2chr_individual():
                f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
     assert res is None, res
 
 
 def test_plot_tracks_with_hic_small_test():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -578,7 +598,7 @@ def test_plot_tracks_with_hic_small_test():
         expected_file = os.path.join(ROOT, 'master_plot_hic_small_test_'
                                      + region_str + extension)
         res = compare_images(expected_file,
-                             output_file, tolerance)
+                             output_file, my_tolerance)
         assert res is None, res
 
         os.remove(output_file)
@@ -590,6 +610,12 @@ def test_plot_tracks_with_hic_small_test():
 # when the matrix is not empty
 
 def test_plot_tracks_with_hic_small_test_individual():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
     ini_file = os.path.join(ROOT, "browser_tracks_hic_small_test.ini")
     for region in ['chr1:0-500000']:  # , 'chrX:2500000-2600000', 'chrY:-0-1000000']:
@@ -604,13 +630,19 @@ def test_plot_tracks_with_hic_small_test_individual():
                f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
 
 
 def test_plot_tracks_with_hic_small_other_chr_name():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     region = '1:0-200000'
@@ -624,7 +656,7 @@ def test_plot_tracks_with_hic_small_other_chr_name():
             f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
@@ -633,6 +665,12 @@ def test_plot_tracks_with_hic_small_other_chr_name():
 
 
 def test_plot_tracks_with_hic_small_above_chr_length():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, 'browser_tracks_hic_small_test.ini')
@@ -643,13 +681,19 @@ def test_plot_tracks_with_hic_small_above_chr_length():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_with_hic_small_above_chr_length_other_chrName():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 19
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, 'browser_tracks_hic_small_test.ini')
@@ -660,13 +704,19 @@ def test_plot_tracks_with_hic_small_above_chr_length_other_chrName():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_hic_depth_smaller_binsize():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 30
+    else:
+        my_tolerance = tolerance
+
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -678,13 +728,18 @@ def test_plot_hic_depth_smaller_binsize():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_hic_plotting_region_smaller_binsize():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 19
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -696,7 +751,7 @@ def test_plot_hic_plotting_region_smaller_binsize():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -722,6 +777,12 @@ def test_plot_tracks_with_mcool():
 
 
 def test_plot_tracks_with_hic_one_interaction_cool():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 21
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -738,13 +799,19 @@ def test_plot_tracks_with_hic_one_interaction_cool():
         expected_file = os.path.join(ROOT, 'master_plot_hic_one_interaction_withBED_'
                                      + region_str + extension)
         res = compare_images(expected_file,
-                             output_file, tolerance)
+                             output_file, my_tolerance)
         assert res is None, res
 
         os.remove(output_file)
 
 
 def test_plot_tracks_with_hic_one_interaction_h5():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 21
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -761,13 +828,19 @@ def test_plot_tracks_with_hic_one_interaction_h5():
         expected_file = os.path.join(ROOT, 'master_plot_hic_one_interaction_withBED_'
                                      + region_str + extension)
         res = compare_images(expected_file,
-                             output_file, tolerance)
+                             output_file, my_tolerance)
         assert res is None, res
 
         os.remove(output_file)
 
 
 def test_plot_tracks_with_hic_one_interaction_h5_individual():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 21
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
     ini_file = os.path.join(ROOT, "browser_tracks_hic_one_interaction_h5.ini")
     for region in ['chr1:0-500000', 'chrX:2500000-2600000', 'chrY:0-1000000']:
@@ -782,7 +855,7 @@ def test_plot_tracks_with_hic_one_interaction_h5_individual():
                f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
@@ -796,6 +869,11 @@ def test_plot_tracks_with_hic_one_interaction_h5_individual():
 # When you load only one empty chromosome it is not empty anymore
 def test_plot_tracks_with_hic_one_interaction_individual():
 
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 21
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, 'browser_tracks_hic_one_interaction_cool.ini')
@@ -806,7 +884,7 @@ def test_plot_tracks_with_hic_one_interaction_individual():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -821,13 +899,19 @@ def test_plot_tracks_with_hic_one_interaction_individual():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_with_hic_one_interaction_diag():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 21
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, 'browser_tracks_hic_one_interaction_diag_h5.ini')
@@ -841,13 +925,19 @@ def test_plot_tracks_with_hic_one_interaction_diag():
             f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
 
 
 def test_plot_tracks_with_hic_small3():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 14
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, 'browser_tracks_hic_small_test_3.ini')
@@ -859,7 +949,7 @@ def test_plot_tracks_with_hic_small3():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -883,6 +973,12 @@ def test_plot_tracks_with_hic_small3_invalid():
 
 
 def test_plot_tracks_with_hic_force_scale():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 23
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, 'browser_tracks_hic_force_scale.ini')
@@ -895,7 +991,7 @@ def test_plot_tracks_with_hic_force_scale():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)

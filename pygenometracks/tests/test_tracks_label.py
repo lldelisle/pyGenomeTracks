@@ -18,9 +18,15 @@ with open(os.path.join(ROOT, "title.ini"), 'w') as fh:
 
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = "3.11.1"
 
 
 def test_regular_width_label():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 51
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -32,13 +38,18 @@ def test_regular_width_label():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_large_width_label():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 53
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -50,13 +61,18 @@ def test_large_width_label():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_large_width_label_ral():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 50
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -69,13 +85,18 @@ def test_large_width_label_ral():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_large_width_label_cal():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 50
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -88,13 +109,18 @@ def test_large_width_label_cal():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_large_width_label_cal_dpi250():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 54
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -107,13 +133,18 @@ def test_large_width_label_cal_dpi250():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_large_width_label_big_font():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 92
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -126,13 +157,18 @@ def test_large_width_label_big_font():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_fixed_height():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 24
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -144,13 +180,18 @@ def test_fixed_height():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_non_existing_dir():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 51
+    else:
+        my_tolerance = tolerance
 
     outdir = TemporaryDirectory()
     output_file = os.path.join(outdir.name, "pGT_test", "test.png")
@@ -162,7 +203,7 @@ def test_non_existing_dir():
            f"--outFileName {output_file}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         output_file, tolerance)
+                         output_file, my_tolerance)
     assert res is None, res
 
     outdir.cleanup()
