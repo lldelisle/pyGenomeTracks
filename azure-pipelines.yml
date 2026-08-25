@@ -54,7 +54,7 @@ stages:
           micromamba activate pygenometracks
           py.test pygenometracks --doctest-modules -n 4
         displayName: pytest
-    - job: higher python (not bioconda compatible) linux
+    - job: HighPythonLinux
       timeoutInMinutes: 0
       pool:
         vmImage: 'ubuntu-latest'
