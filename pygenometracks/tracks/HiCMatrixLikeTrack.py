@@ -1,7 +1,7 @@
 from hicmatrix import HiCMatrix
 import hicmatrix.utilities
 import scipy.sparse
-from matplotlib import cm
+import matplotlib
 import numpy as np
 from . GenomeTrack import GenomeTrack
 from .. utilities import change_chrom_names
@@ -196,7 +196,10 @@ show_masked_bins = false
         self.process_color('colormap', colormap_possible=True,
                            colormap_only=True, default_value_is_colormap=True)
 
-        self.cmap = copy.copy(cm.get_cmap(self.properties['colormap']))
+        try:
+            self.cmap = copy.copy(matplotlib.cm.get_cmap(self.properties['colormap']))
+        except AttributeError:
+            self.cmap = copy.copy(matplotlib.pyplot.get_cmap(self.properties['colormap']))
         self.cmap.set_bad('black')
 
     def reduce_matrix(self, max_depth_in_bins):

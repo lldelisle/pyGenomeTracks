@@ -164,7 +164,10 @@ file_type = {TRACK_TYPE}
             norm = matplotlib.colors.Normalize(vmin=min_score,
                                                vmax=max_score)
 
-            cmap = matplotlib.cm.get_cmap(self.properties['color'])
+            try:
+                cmap = matplotlib.cm.get_cmap(self.properties['color'])
+            except AttributeError:
+                cmap = matplotlib.pyplot.get_cmap(self.properties['color'])
             self.colormap = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
 
         if self.properties['compact_arcs_level'] == '2' and \
