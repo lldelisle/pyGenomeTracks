@@ -81,7 +81,7 @@ file_type = {TRACK_TYPE}
             # We first replace 0 values by minimum values after 0
             mask = matrix == 0
             try:
-                matrix[mask] = matrix[not mask].min()
+                matrix[mask] = matrix[np.logical_not(mask)].min()
                 matrix = np.log(matrix)
             except ValueError:
                 self.log.info('All values are 0, no log applied.')
