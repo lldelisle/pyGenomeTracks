@@ -211,7 +211,10 @@ file_type = {TRACK_TYPE}
             norm = matplotlib.colors.Normalize(vmin=min_score,
                                                vmax=max_score)
 
-            cmap = matplotlib.cm.get_cmap(self.colormap)
+            try:
+                cmap = matplotlib.cm.get_cmap(self.colormap)
+            except AttributeError:
+                cmap = matplotlib.pyplot.get_cmap(self.colormap)
             self.colormap = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
 
     def set_properties_defaults(self):
