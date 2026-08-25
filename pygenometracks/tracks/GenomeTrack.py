@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from .. utilities import InputError, transform
 import logging
+import math
+import re
+
+import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import colors as mc
-import matplotlib.pyplot as plt
 from matplotlib.ticker import LogFormatter
-import re
-import math
+
+from ..utilities import InputError, transform
 
 # This is a regex for float which would work for 11, 102.25, but also .2
 float_regex = r'(?:\d+)?(?:\.\d+)?'

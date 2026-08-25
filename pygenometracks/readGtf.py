@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import collections
+import logging
+import warnings
 
 import gffutils
-import warnings
-from .utilities import InputError
-import logging
 
+from .utilities import InputError
 
 FORMAT = "[%(levelname)s:%(filename)s:%(lineno)s - %(funcName)20s()] %(message)s"
 logging.basicConfig(format=FORMAT)

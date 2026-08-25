@@ -1,8 +1,10 @@
-from matplotlib import colors
-import numpy as np
-from . HiCMatrixLikeTrack import HiCMatrixLikeTrack
-from .. utilities import get_region
 import logging
+
+import numpy as np
+from matplotlib import colors
+
+from ..utilities import get_region
+from .HiCMatrixLikeTrack import HiCMatrixLikeTrack
 
 DEFAULT_MATRIX_COLORMAP = 'RdYlBu_r'
 logging.basicConfig(level=logging.DEBUG)
@@ -102,7 +104,7 @@ file_type = {TRACK_TYPE}
             # We first replace 0 values by minimum values after 0
             mask = matrix == 0
             try:
-                matrix[mask] = matrix[mask == False].min()
+                matrix[mask] = matrix[not mask].min()
                 matrix = np.log(matrix)
             except ValueError:
                 self.log.info('All values are 0, no log applied.')

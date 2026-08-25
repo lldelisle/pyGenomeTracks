@@ -1,10 +1,13 @@
-import matplotlib as mpl
-mpl.use('agg')
-from matplotlib.testing.compare import compare_images
-from tempfile import NamedTemporaryFile
 import os.path
 import shutil
+from tempfile import NamedTemporaryFile
+
+import matplotlib as mpl
+from matplotlib.testing.compare import compare_images
+
 import pygenometracks.plotTracks
+
+mpl.use('agg')
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                     "test_data")

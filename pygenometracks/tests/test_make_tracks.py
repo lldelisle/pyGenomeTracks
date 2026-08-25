@@ -1,6 +1,7 @@
-from tempfile import NamedTemporaryFile
-import os.path
 import filecmp
+import os.path
+from tempfile import NamedTemporaryFile
+
 import pygenometracks.makeTracksFile
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),

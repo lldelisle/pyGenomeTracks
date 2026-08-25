@@ -1,8 +1,10 @@
-from . GenomeTrack import GenomeTrack
-from .. utilities import get_optimal_fontsize, change_chrom_names
+import os
+
 import numpy as np
 import pyfaidx
-import os
+
+from ..utilities import change_chrom_names, get_optimal_fontsize
+from .GenomeTrack import GenomeTrack
 
 # Color code for seqs
 seq_color = {'A': 'red',
