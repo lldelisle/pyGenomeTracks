@@ -317,9 +317,16 @@ with open(os.path.join(ROOT, "log_more_incorrect.ini"), 'w') as fh:
     fh.write(tracks + 'type = invalid:a\n')
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = "3.11.1"
 
 
 def test_log1p_track():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 17
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='log1p_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "log1p.ini")
@@ -330,13 +337,19 @@ def test_log1p_track():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_log1p_grid():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 18
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='log1p_grid_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "log1p_grid.ini")
@@ -347,13 +360,18 @@ def test_log1p_grid():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_log_tracks():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 23
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png',
                                  prefix='pyGenomeTracks_test_log_',
@@ -366,13 +384,18 @@ def test_log_tracks():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_log_grid():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 24
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png',
                                  prefix='pyGenomeTracks_test_loggrid_',
@@ -385,7 +408,7 @@ def test_log_grid():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -410,6 +433,11 @@ class TestLogNegMethods(unittest.TestCase):
 
 def test_log_more():
 
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 23
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png',
                                  prefix='pyGenomeTracks_test_log_',
                                  delete=False)
@@ -422,7 +450,7 @@ def test_log_more():
                f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)

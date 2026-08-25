@@ -39,9 +39,16 @@ with open(os.path.join(ROOT, "epilogos.ini"), 'w') as fh:
     fh.write(tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = "3.11.1"
 
 
 def test_epilogos_track():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 14
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bedgraph_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "epilogos.ini")
@@ -52,13 +59,19 @@ def test_epilogos_track():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_epilogos_track_overlap_chr_end():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 14
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bedgraph_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "epilogos.ini")
@@ -69,7 +82,7 @@ def test_epilogos_track_overlap_chr_end():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)

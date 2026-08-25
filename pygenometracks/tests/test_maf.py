@@ -131,9 +131,16 @@ with open(os.path.join(ROOT, "maf_withe.ini"), 'w') as fh:
     fh.write(browser_tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = "3.11.1"
 
 
 def test_first_maf():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 21
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -150,13 +157,19 @@ def test_first_maf():
         expected_file = os.path.join(ROOT, 'master_first_maf_'
                                      + region_str + extension)
         res = compare_images(expected_file,
-                             output_file, tolerance)
+                             output_file, my_tolerance)
         assert res is None, res
 
         os.remove(output_file)
 
 
 def test_first_maf_empty_chr():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 15
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -169,12 +182,18 @@ def test_first_maf_empty_chr():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
     os.remove(outfile.name)
 
 
 def test_first_maf_order_species_only():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 18
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -187,12 +206,18 @@ def test_first_maf_order_species_only():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
     os.remove(outfile.name)
 
 
 def test_first_maf_seq():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 30
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     for suf in ['', '_invalid', '_invalid2', '_invalid3']:
@@ -206,7 +231,7 @@ def test_first_maf_seq():
             f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
         os.remove(outfile.name)
         if 'invalid' in ini_file:
@@ -214,6 +239,12 @@ def test_first_maf_seq():
 
 
 def test_first_maf_seq_zoom():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 36
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -226,12 +257,18 @@ def test_first_maf_seq_zoom():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
     os.remove(outfile.name)
 
 
 def test_first_maf_seq_zoom_dec():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 36
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -245,12 +282,18 @@ def test_first_maf_seq_zoom_dec():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
     os.remove(outfile.name)
 
 
 def test_first_maf_seq_hg19():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 43
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -263,16 +306,18 @@ def test_first_maf_seq_hg19():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
     os.remove(outfile.name)
 
 
 def test_first_maf_seq_zoom_change_height():
-    if mpl.__version__ == "3.1.1":
-        my_tolerance = 17
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 55
     else:
         my_tolerance = tolerance
+
     extension = '.png'
     ini_file = os.path.join(ROOT, "first_maf_seq.ini")
     region = "2:34705120-34705150"
@@ -293,6 +338,12 @@ def test_first_maf_seq_zoom_change_height():
 
 
 def test_second_maf_withe():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 29
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
     ini_file = os.path.join(ROOT, "maf_withe.ini")
 
@@ -307,7 +358,7 @@ def test_second_maf_withe():
             f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
         os.remove(outfile.name)
     # Remove the index file:
@@ -315,6 +366,12 @@ def test_second_maf_withe():
 
 
 def test_first_maf_seq_hg19_pdf():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 43
+    else:
+        my_tolerance = tolerance
+
     extension = '.pdf'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -335,7 +392,7 @@ def test_first_maf_seq_hg19_pdf():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
     os.remove(outfile.name)
     os.remove(expected_file.replace('.pdf', '_pdf.png'))

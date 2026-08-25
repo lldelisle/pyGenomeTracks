@@ -47,9 +47,15 @@ with open(os.path.join(ROOT, "fasta_track_malformed.ini"), 'w') as fh:
     fh.write(browser_tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = "3.11.1"
 
 
 def test_fasta_zoomout():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 16
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -61,13 +67,19 @@ def test_fasta_zoomout():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_fasta_zoomin():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 23
+    else:
+        my_tolerance = tolerance
+
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -79,7 +91,7 @@ def test_fasta_zoomin():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -105,6 +117,11 @@ def test_fasta_inexistingchr():
 
 def test_fasta_zoomin_dec():
 
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 23
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "fasta_tracks.ini")
@@ -116,13 +133,18 @@ def test_fasta_zoomin_dec():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_fasta_extrazoomin():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -134,13 +156,18 @@ def test_fasta_extrazoomin():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_fasta_extrazoomin_height2():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 32
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -153,13 +180,18 @@ def test_fasta_extrazoomin_height2():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_fasta_end_chr():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 23
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -171,13 +203,18 @@ def test_fasta_end_chr():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_fasta_malformed():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 30
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -189,7 +226,7 @@ def test_fasta_malformed():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)

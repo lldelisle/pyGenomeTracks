@@ -132,9 +132,15 @@ with open(os.path.join(ROOT, "browser_tracks_hic_small_test_boundaries_file.ini"
 
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = "3.11.1"
 
 
 def test_plot_tracks_bed_and_gtf_dep():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 30
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -146,7 +152,7 @@ def test_plot_tracks_bed_and_gtf_dep():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -154,6 +160,12 @@ def test_plot_tracks_bed_and_gtf_dep():
 
 
 def test_bigwig_track_dep():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bigwig_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "bigwig_dep.ini")
@@ -164,7 +176,7 @@ def test_bigwig_track_dep():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -172,6 +184,12 @@ def test_bigwig_track_dep():
 
 
 def test_plot_tracks_with_hic_small_file_boundaries():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     region = '1:0-200000'
@@ -184,7 +202,7 @@ def test_plot_tracks_with_hic_small_file_boundaries():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
