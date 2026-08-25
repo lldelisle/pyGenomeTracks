@@ -80,7 +80,6 @@ def test_fasta_zoomin():
     else:
         my_tolerance = tolerance
 
-
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "fasta_tracks.ini")
