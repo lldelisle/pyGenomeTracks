@@ -2,7 +2,7 @@ from . GenomeTrack import GenomeTrack
 from .. utilities import change_chrom_names, InputError, get_optimal_fontsize
 import bx.align.maf
 import bx.interval_index_file
-import bx.seq
+import bx.seq.core
 import matplotlib as mpl
 from matplotlib.patches import Rectangle
 import numpy as np
@@ -206,7 +206,7 @@ file_type = {TRACK_TYPE}
                 xleft, xright = ax.get_xlim()
                 if xleft > xright:
                     # I need to complement (not reversed because I keep the coordinates)
-                    ref_seq_no_gap_correct = ref_seq_no_gap.translate(bx.seq.DNA_COMP)
+                    ref_seq_no_gap_correct = ref_seq_no_gap.translate(bx.seq.core.DNA_COMP)
                 else:
                     ref_seq_no_gap_correct = ref_seq_no_gap
                 for i, lr in enumerate(ref_seq_no_gap_correct,
