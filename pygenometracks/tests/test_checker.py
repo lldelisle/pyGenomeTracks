@@ -4,11 +4,11 @@ This test file will check each part of the
 configuration file checker
 which can raise an InputError
 """
-import unittest
-import pygenometracks.plotTracks
 import os
-from pygenometracks.utilities import InputError
+import unittest
 
+import pygenometracks.plotTracks
+from pygenometracks.utilities import InputError
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                     "test_data")

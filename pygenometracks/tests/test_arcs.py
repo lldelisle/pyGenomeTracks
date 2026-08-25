@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+import os.path
+from tempfile import NamedTemporaryFile
+
 import matplotlib as mpl
 from matplotlib.testing.compare import compare_images
-from tempfile import NamedTemporaryFile
-import os.path
+
 import pygenometracks.plotTracks
 from pygenometracks.utilities import InputError
+
 mpl.use('agg')
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),

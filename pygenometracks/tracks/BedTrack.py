@@ -1,16 +1,18 @@
-from . GenomeTrack import GenomeTrack
-from .. readBed import ReadBed
-# To remove next 1.0
-from .. readGtf import ReadGtf
-# End to remove
-from .. utilities import opener, get_length_w, count_lines, temp_file_from_intersect, change_chrom_names, InputError
 import matplotlib
-from matplotlib import font_manager
-from matplotlib.patches import Rectangle, Polygon, FancyArrowPatch
-from matplotlib.lines import Line2D
-from intervaltree import IntervalTree, Interval
 import numpy as np
+from intervaltree import Interval, IntervalTree
+from matplotlib import font_manager
+from matplotlib.lines import Line2D
+from matplotlib.patches import FancyArrowPatch, Polygon, Rectangle
 from tqdm import tqdm
+
+from ..readBed import ReadBed
+# To remove next 1.0
+from ..readGtf import ReadGtf
+# End to remove
+from ..utilities import (InputError, change_chrom_names, count_lines,
+                         get_length_w, opener, temp_file_from_intersect)
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_BED_COLOR = '#1f78b4'
 DISPLAY_BED_VALID = ['collapsed', 'triangles', 'interleaved', 'stacked', 'squares', 'deletions', 'inversions']

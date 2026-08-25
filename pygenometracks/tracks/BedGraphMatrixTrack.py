@@ -1,7 +1,8 @@
-from . BedGraphTrack import BedGraphTrack
-from . GenomeTrack import GenomeTrack
-import numpy as np
 import matplotlib
+import numpy as np
+
+from .BedGraphTrack import BedGraphTrack
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_BEDGRAPHMATRIX_COLORMAP = 'viridis'
 DEFAULT_BEDGRAPHMATRIX_INDIVIDUAL = 'grey'

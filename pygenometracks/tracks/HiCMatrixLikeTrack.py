@@ -1,12 +1,14 @@
-from hicmatrix import HiCMatrix
+import copy
+import logging
+
 import hicmatrix.utilities
-import scipy.sparse
 import matplotlib
 import numpy as np
-from . GenomeTrack import GenomeTrack
-from .. utilities import change_chrom_names
-import logging
-import copy
+import scipy.sparse
+from hicmatrix import HiCMatrix
+
+from ..utilities import change_chrom_names
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_MATRIX_COLORMAP = 'RdYlBu_r'
 logging.basicConfig(level=logging.DEBUG)

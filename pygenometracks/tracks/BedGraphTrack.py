@@ -1,10 +1,13 @@
-from . GenomeTrack import GenomeTrack
-from .. utilities import file_to_intervaltree, plot_coverage, InputError, transform, change_chrom_names
+import os
+import tempfile
+
 import numpy as np
 import pyBigWig
-import tempfile
-import os
 import pysam
+
+from ..utilities import (InputError, change_chrom_names, file_to_intervaltree,
+                         plot_coverage, transform)
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_BEDGRAPH_COLOR = '#a6cee3'
 

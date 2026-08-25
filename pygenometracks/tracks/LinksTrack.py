@@ -1,11 +1,14 @@
-from . GenomeTrack import GenomeTrack
-from pygenometracks.utilities import InputError
-from intervaltree import IntervalTree, Interval
 import matplotlib
 import numpy as np
+from intervaltree import Interval, IntervalTree
 from matplotlib.patches import Arc, Polygon
-from .. utilities import opener, to_string, change_chrom_names, temp_file_from_intersect, get_region
 from tqdm import tqdm
+
+from pygenometracks.utilities import InputError
+
+from ..utilities import (change_chrom_names, get_region, opener,
+                         temp_file_from_intersect, to_string)
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_LINKS_COLOR = 'blue'
 HUGE_NUMBER = int(1e9)  # Which should be above any chromosome size
