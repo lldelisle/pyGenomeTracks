@@ -1,0 +1,13 @@
+3.10
+====
+
+Changes in dependencies:
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+- This version is compatible with matplotlib 3.11.1 and stop pinning last versions of matplotlib (risking future breaks, please report bugs if you find them).
+
+
+Bugfix:
+^^^^^^^
+
+- Works with ``python-bx >= 0.13``
