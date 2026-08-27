@@ -7,4 +7,4 @@ def get_CI_mpl_version():
                     line = line.split('#')[0]
                 # Remove potential spaces
                 line = line.strip()
-                return(line.replace('matplotlib ==', ''))
+                return line.replace('matplotlib ==', '')
