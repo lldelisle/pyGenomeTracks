@@ -245,6 +245,9 @@ file_type = {TRACK_TYPE}
         self.adjust_ylim(ax)
 
         plot_ymin, plot_ymax = ax.get_ylim()
+
+        self.min_value = plot_ymin
+        self.max_value = plot_ymax
         self.pos_height = plot_ymax
         self.neg_height = plot_ymin
 
@@ -384,179 +387,25 @@ file_type = {TRACK_TYPE}
         Returns:
 
         """
-        if not self.properties.get('show_data_range', True):
-            return
 
-        def value_to_str(value):
-            # given a numeric value, returns a
-            # string that removes unneeded decimal places
-            if value % 1 == 0:
-                str_value = str(int(value))
-            else:
-                str_value = f"{value:.1f}"
-            return str_value
-
-        def untransform(value, transform, log_pseudocount):
-            # given a numeric value, transform and log_pseudocount
-            # return the value before the transformation
-            if transform == 'log':
-                return np.exp(value) - log_pseudocount
-            elif transform == 'log2':
-                return np.exp2(value) - log_pseudocount
-            elif transform == 'log10':
-                return np.power(10, value) - log_pseudocount
-            elif transform == 'log1p':
-                return np.expm1(value)
-            elif transform == '-log':
-                return np.exp(-value) - log_pseudocount
-
-        ymin, ymax = plot_axis.get_ylim()
-
-        if not self.properties['grid']:
-            if self.properties['min_value'] is None:
-                min_value = 0
-            else:
-                min_value = self.properties['min_value']
-            min_value_transformed = transform(np.array([min_value]),
-                                            self.properties['transform'],
-                                            self.properties['log_pseudocount'],
-                                            self.properties['file'])[0]
-            if self.properties['orientation'] is None:
-                ymin = min_value_transformed
-            else:
-                ymax = min_value_transformed
-        # If the ticks are closer than epsilon from the top or bottom
-        # The vertical alignment of label is adjusted
-        epsilon = (ymax - ymin) / 100
-        # When the ymax and ymin are plotted (when there is no grid)
-        # The tick is shifted inside of epsilon_pretty
-        # To avoid to have only half of the width of the line plotted
-        epsilon_pretty = epsilon
-        y_axis = self.properties['y_axis_values']
-        log_pseudocount = self.properties['log_pseudocount']
-        transform_prop = self.properties['transform']
-
-        if self.properties['grid']:
-            # plot something that looks like this:
-            # tick3 ┐
-            #       │
-            # tick2-|
-            #       │
-            # tick1 ┘
-            if ymin < ymax:
-                ticks_values = [
-                    t for t in plot_axis.get_yticks()
-                    if t <= ymax and t >= ymin
-                ]
-            else:
-                ticks_values = [
-                    t for t in plot_axis.get_yticks()
-                    if t >= ymax and t <= ymin
-                ]
-                ticks_values.sort(reverse=True)
-            labels_pos = ticks_values
-            if transform_prop == 'no' or y_axis == 'transformed':
-                ticks_labels = [value_to_str(t) for t in ticks_values]
-            else:
-                # There is a transformation and we want to display original values
-                ticks_labels = [
-                    value_to_str(untransform(t, transform_prop, log_pseudocount))
-                    for t in ticks_values
-                ]
-        elif transform_prop == 'no' or y_axis == 'transformed':
-            # This is a linear scale
-            # plot something that looks like this:
-            # ymax ┐
-            #      │
-            #      │
-            # ymin ┘
-            # adjust the positions such that the lines are plotted complete
-            # and not only half of the width of the line.
-            ticks_values = [ymin + epsilon_pretty, ymax - epsilon_pretty]
-            labels_pos = [ymin, ymax]
-            ticks_labels = [value_to_str(v) for v in [ymin, ymax]]
-            if y_axis == 'transformed' and transform_prop != 'no':
-                if transform_prop == 'log1p':
-                    ymid_str = "log(1 + x)"
-                else:
-                    if log_pseudocount == 0:
-                        ymid_str = f"{transform_prop}(x)"
-                    else:
-                        ymid_str = f"{transform_prop}({log_pseudocount} + x)"
-
-                ax.text(0, (ymax + ymin) / 2,
-                        ymid_str,
-                        verticalalignment='center',
-                        horizontalalignment='right',
-                        wrap=True)
+        if self.properties['orientation'] is None:
+            ymin = self.min_value
+            ymax = self.max_value
         else:
-            # There is a transformation and we want to display original values
-            if ymin * ymax < 0:
-                ymid = 0
-            else:
-                ymid = (ymin + ymax) / 2
-            # plot something that looks like this:
-            # ymax ┐
-            #      │
-            # ymid-|
-            #      │
-            # ymin ┘
-            ticks_values = [ymin + epsilon_pretty, ymid, ymax - epsilon_pretty]
-            labels_pos = [ymin, ymid, ymax]
-            ticks_labels = [
-                value_to_str(untransform(v, transform_prop, log_pseudocount))
-                for v in [ymin, ymid, ymax]
-            ]
-
-        # The lower label should be verticalalignment='bottom'
-        # if it corresponds to ymin
-        i = 0
-        if (ymin < ymax and ticks_values[i] <= ymin + epsilon) \
-           or (ymin > ymax and ticks_values[i] >= ymin + epsilon):
-            v_al = 'bottom'
-            adjusted_value = labels_pos[i] - epsilon
-        else:
-            v_al = 'center'
-            adjusted_value = labels_pos[i]
-        ax.text(-0.2,
-                adjusted_value,
-                ticks_labels[i],
-                verticalalignment=v_al,
-                horizontalalignment='right')
-        x_pos = [0, 0.5]
-        y_pos = [ticks_values[i]] * 2
-        for i in range(1, len(ticks_values) - 1):
-            ax.text(-0.2,
-                    labels_pos[i],
-                    ticks_labels[i],
-                    verticalalignment='center',
-                    horizontalalignment='right')
-            x_pos += [0.5, 0, 0.5]
-            y_pos += [ticks_values[i]] * 3
-
-        # The upper label should be verticalalignment='top'
-        # if it corresponds to ymax
-        i = len(ticks_values) - 1
-        if (ymin < ymax and ticks_values[i] >= ymax - epsilon) \
-           or (ymin > ymax and ticks_values[i] <= ymax - epsilon):
-            v_al = 'top'
-        else:
-            v_al = 'center'
-        ax.text(-0.2,
-                labels_pos[i],
-                ticks_labels[i],
-                verticalalignment=v_al,
-                horizontalalignment='right')
-        x_pos += [0.5, 0]
-        y_pos += [ticks_values[i]] * 2
-
-        # Finally plot the line:
-        ax.plot(x_pos, y_pos, color='black', linewidth=1)
-
-        # Set the lims:
-        ax.set_ylim(plot_axis.get_ylim())
-        ax.set_xlim(0, 1)
-        ax.patch.set_visible(False)
+            ymax = self.min_value
+            ymin = self.max_value
+        
+        GenomeTrack.plot_y_axis(
+            self,
+            ax,
+            plot_axis,
+            transform=self.properties['transform'],
+            log_pseudocount=self.properties['log_pseudocount'],
+            y_axis = self.properties['y_axis_values'],
+            only_at_ticks=self.properties['grid'],
+            forced_ymin=ymin,
+            forced_ymax=ymax
+        )
 
     def __del__(self):
         try:

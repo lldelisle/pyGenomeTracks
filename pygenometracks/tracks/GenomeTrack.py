@@ -93,7 +93,8 @@ height = 2
                 self.properties[prop] = default_value
 
     def plot_y_axis(self, ax, plot_axis, transform='no', log_pseudocount=0,
-                    y_axis='transformed', only_at_ticks=False):
+                    y_axis='transformed', only_at_ticks=False,
+                    forced_ymin=None, forced_ymax=None):
         """
         Plot the scale of the y axis with respect to the plot_axis
         Args:
@@ -223,6 +224,10 @@ height = 2
                 return np.exp(- value) - log_pseudocount
 
         ymin, ymax = plot_axis.get_ylim()
+        if forced_ymin is not None:
+            ymin = forced_ymin
+        if forced_ymax is not None:
+            ymax = forced_ymax
         # If the ticks are closer than epsilon from the top or bottom
         # The vertical alignment of label is adjusted
         epsilon = (ymax - ymin) / 100
@@ -249,6 +254,7 @@ height = 2
             else:
                 # There is a transformation and we want to display original values
                 original_values = [untransform(t, transform, log_pseudocount) for t in ticks_values]
+            print(original_values)
             max_abs_value = np.max(np.abs(original_values))
             try:
                 ticks_labels = [value_to_str(t, max_signs=DEFAULT_MAX_SIGNS,
