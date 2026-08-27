@@ -7,6 +7,7 @@ pgt --tracks ./examples/hic_track.ini -o hic_track.png --region chrX:2500000-350
 pgt --tracks ./examples/epilogos_track.ini --region X:3100000-3150000 -o ./examples/epilogos_track.png
 pgt --tracks ./examples/epilogos_track2.ini --region X:3100000-3150000 -o ./examples/epilogos_track2.png
 pgt --tracks ./examples/bedgraph_matrix_lines.ini --region X:2000000-3500000 -o ./examples/bedgraph_matrix_lines.png
+pgt --tracks ./examples/chr2-231091223_231109786_231113600.ini --region chr2:231107879-231115507 -t 'chr2:231109786-231113600 (sQTL = 2:231091223, ALT=G)' --width 9 --trackLabelFraction 0.01 -out ./examples/sashimi_example.pdf --fontSize 4
 
 # The following examples require a modification of pygenometracks (adding a new track class)
 # pgt --tracks ./examples/new_track.ini --region X:3000000-3200000 -o ./examples/new_track.png
