@@ -246,6 +246,11 @@ file_type = {TRACK_TYPE}
 
         plot_ymin, plot_ymax = ax.get_ylim()
 
+        # If there is no transformation and only positive values and not min_value we put min_value to 0
+        if self.properties['transform'] == 'no' and np.min(transformed_scores) > 0 \
+            and self.properties['min_value'] is None:
+            plot_ymin = 0
+
         self.min_value = plot_ymin
         self.max_value = plot_ymax
         self.pos_height = plot_ymax
