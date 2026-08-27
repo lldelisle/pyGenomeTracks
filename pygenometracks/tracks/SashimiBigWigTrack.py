@@ -79,8 +79,8 @@ show_data_range = true
 # In this case, the the link_min_value and link_max_value for the score can be provided, otherwise
 # the maximum score and minimum score found are used.
 #link_color = RdYlBu
-#min_value=0
-#max_value=100
+#link_min_value=0
+#link_max_value=100
 # If the link_color is simply a color name, then this link_color is used and the score is not considered for the color.
 link_color = darkblue
 # To use transparency, you can use link_alpha
@@ -214,10 +214,10 @@ file_type = {TRACK_TYPE}
         self.colormap = None
         self.parametersUsingColormap = []
         if is_colormap:
-            if self.properties['min_value'] is not None:
-                min_score = self.properties['min_value']
-            if self.properties['max_value'] is not None:
-                max_score = self.properties['max_value']
+            if self.properties['link_min_value'] is not None:
+                min_score = self.properties['link_min_value']
+            if self.properties['link_max_value'] is not None:
+                max_score = self.properties['link_max_value']
 
             norm = matplotlib.colors.Normalize(vmin=min_score,
                                                vmax=max_score)
@@ -358,7 +358,7 @@ file_type = {TRACK_TYPE}
             pp1 = mpatches.PathPatch(Path(
                 pts, [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4]),
                                      fc="none",
-                                     ec=self.properties['link_color'],
+                                     ec=rgb,
                                      lw=self.line_width,
                                      ls=self.properties['link_line_style'],
                                      alpha=self.properties['link_alpha'])

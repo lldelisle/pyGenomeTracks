@@ -105,14 +105,15 @@ file_type = sashimiBigWig
 [min_value grid]
 file = avg_chr2-231091223_231109786_231113600_0.bw
 link_file = chr2-231091223_231109786_231113600_0.sashimi
-title = min_value = 10; grid = true
+title = min_value = 10; grid = true; link_color = viridis; link_line_width = 2
 height = 3
 bw_color = cyan
 min_value = 10
 max_value = 110
 nans_to_zeros = true
 show_data_range = true
-link_color = cyan
+link_line_width = 2
+link_color = viridis
 grid = true
 file_type = sashimiBigWig
 """
