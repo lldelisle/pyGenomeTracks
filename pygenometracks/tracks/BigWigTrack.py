@@ -144,20 +144,19 @@ file_type = {TRACK_TYPE}
                                  " It will be set as 'transformed'.\n")
                 self.properties['y_axis_values'] = 'transformed'
 
-    def plot(self, ax, chrom_region, start_region, end_region):
+    def get_transformed_values(self, chrom_region, start_region, end_region):
 
         temp_end_region, temp_nbins, scores_per_bin = self.get_scores('self.bw', self.properties['file'],
                                                                       chrom_region, start_region, end_region)
         if scores_per_bin is None:
-            self.log.warning("Scores could not be computed. This will generate an empty track\n")
-            return
+            return [None, None]
 
         if self.properties['nans_to_zeros'] and np.any(np.isnan(scores_per_bin)):
             scores_per_bin[np.isnan(scores_per_bin)] = 0
 
         x_values = np.linspace(start_region, temp_end_region, temp_nbins)
         # compute the operation
-        operation = self.properties['operation']
+        operation = self.properties.get('operation', 'file')
         # Substitute log by np.log to make it evaluable:
         operation = operation.replace('log', 'np.log')
         if operation == 'file':
@@ -204,6 +203,13 @@ file_type = {TRACK_TYPE}
                                        self.properties['transform'],
                                        self.properties['log_pseudocount'],
                                        self.properties['file'])
+        return x_values, transformed_scores
+
+    def plot(self, ax, chrom_region, start_region, end_region):
+        x_values, transformed_scores = self.get_transformed_values(chrom_region, start_region, end_region)
+        if x_values is None:
+            self.log.warning("Scores could not be computed. This will generate an empty track\n")
+            return
 
         plot_coverage(ax, x_values, transformed_scores, self.plot_type,
                       self.size,

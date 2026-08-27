@@ -1,26 +1,25 @@
-## Authors: Zepeng Mu (zmu@broadinstitute.org) and Yang I. Li (yangili1@uchicago.edu)
-## Modified from pygenometracks/tracks/BigWigTrack.py
+# Authors: Zepeng Mu (zmu@broadinstitute.org) and Yang I. Li (yangili1@uchicago.edu)
+# Edits: Lucille Lopez-Delisle (lucille.delisle@unige.ch)
 
-from .GenomeTrack import GenomeTrack
+from .GenomeTrack import GenomeTrack, HUGE_NUMBER
 import numpy as np
-from ..utilities import plot_coverage, InputError, transform, change_chrom_names, opener, to_string, change_chrom_names, temp_file_from_intersect
+from ..utilities import plot_coverage, InputError, transform, change_chrom_names, opener, to_string, temp_file_from_intersect
 import pyBigWig
 from intervaltree import IntervalTree, Interval
 import matplotlib
 import matplotlib.path as mpath
 import matplotlib.patches as mpatches
 from tqdm import tqdm
+from . BigWigTrack import BigWigTrack
 
 Path = mpath.Path
 
 DEFAULT_LINKS_COLOR = 'blue'
-HUGE_NUMBER = int(1e9)  # Which should be above any chromosome size
-
 DEFAULT_BIGWIG_COLOR = '#33a02c'
 
 
-class SashimiBigWigTrack(GenomeTrack):
-    SUPPORTED_ENDINGS = ['.bw', '.bigwig', '.bam', '.sashimi']
+class SashimiBigWigTrack(BigWigTrack):
+    SUPPORTED_ENDINGS = []
     TRACK_TYPE = 'sashimiBigWig'
     OPTIONS_TXT = GenomeTrack.OPTIONS_TXT + f"""
 color = #666666
@@ -28,7 +27,7 @@ color = #666666
 #negative_color = red
 # To use transparency, you can use alpha
 # default is 1
-# alpha = 0.5
+#alpha = 0.5
 # the default for min_value and max_value is 'auto' which means that the scale will go
 # roughly from the minimum value found in the region plotted to the maximum value found.
 min_value = 0
@@ -48,21 +47,10 @@ summary_method = mean
 # to add the preferred line width or point size use:
 # type = line:lw where lw (linewidth) is float
 # similarly points:ms sets the point size (markersize (ms) to the given float
-# type = line:0.5
-# type = points:0.5
+#type = line:0.5
+#type = points:0.5
 # set show_data_range to false to hide the text on the left showing the data range
 show_data_range = true
-# to compute operations on the fly on the file
-# or between 2 bigwig files
-# operation will be evaluated, it should contains file or
-# file and second_file,
-# we advice to use nans_to_zeros = true to avoid unexpected nan values
-#operation = 0.89 * file
-#operation = - file
-#operation = file - second_file
-#operation = log2((1 + file) / (1 + second_file))
-#operation = max(file, second_file)
-#second_file = path for the second file
 # To log transform your data you can also use transform and log_pseudocount:
 # For the transform values:
 # 'log1p': transformed_values = log(1 + initial_values)
@@ -79,31 +67,54 @@ show_data_range = true
 #y_axis_values = original
 # If you want to have a grid on the y-axis
 #grid = true
+## Links customization
+# The link file should be a BED file where the score
+# is in the 5th column
+#link_file =
+# If the bed file contains a column for color (column 9), then this color can be used by
+# setting:
+#link_color = bed_rgb
+# if link_color is a valid colormap name (like RbBlGn), then the score (column 5) is mapped
+# to the colormap.
+# In this case, the the link_min_value and link_max_value for the score can be provided, otherwise
+# the maximum score and minimum score found are used.
+#link_color = RdYlBu
+#min_value=0
+#max_value=100
+# If the link_color is simply a color name, then this link_color is used and the score is not considered for the color.
+link_color = darkblue
+# To use transparency, you can use link_alpha
+# default is 1
+#link_alpha = 0.5
+# options for link_line_style are 'solid', 'dashed', 'dotted', and 'dashdot'
+link_line_style = solid
 # The link in Sashimi plot is a Bezier curve.
 # The height of the curve is calculated from the length of the intron.
 # When the y-axis in bigwig track is different, the height of curve needs to be scaled.
-scale_link_height = 1
-# The line width for links is proportion to the numbers at the last column in links file (PSI).
+link_scale_height = 1
+# The line width for links is proportion to the numbers in the fifth column of the BED file (PSI).
 # But the absolute width is calculated from the supplied numbers, which can look too thin or too wide sometimes.
-# Use scale_line_width to scale the absolute line widths.
+# Use link_scale_line_width to scale the absolute line widths.
 # You may need to try several values to get a satisfying result.
 # Use this to scale Sashimi line width if the links are too thin or too wide.
-scale_line_width = 3
-# Set line_width if you do not want with of links to scale with PSI.
-# This overwrites scale_line_width.
-line_width = 2
-# Set this to true to label PSI on links
-show_number = false
+#link_scale_line_width = 3
+# Set link_line_width if you do not want width of links to scale with score (PSI).
+# This overwrites link_scale_line_width.
+#link_line_width = 2
+# Set this to true to label scores (PSI) on links
+link_labels = true
+# optional: font size can be given to override the default size
+#link_fontsize = 10
 file_type = {TRACK_TYPE}
     """
 
     DEFAULTS_PROPERTIES = {
+        # Bigwig related
         'max_value': None,
         'min_value': None,
         'show_data_range': True,
         'orientation': None,
         'bw_color': DEFAULT_BIGWIG_COLOR,
-        'link_color': DEFAULT_LINKS_COLOR,
         'negative_color': None,
         'alpha': 1,
         'nans_to_zeros': False,
@@ -113,19 +124,20 @@ file_type = {TRACK_TYPE}
         'transform': 'no',
         'log_pseudocount': 0,
         'y_axis_values': 'transformed',
-        'second_file': None,
-        'operation': 'file',
         'grid': False,
-        'line_width': None,
-        'line_style': 'solid',
-        'max_value': None,
-        'min_value': None,
-        'show_number': False,
+        # Links related
+        'link_color': DEFAULT_LINKS_COLOR,
+        'link_alpha': 1,
+        'link_line_width': None,
+        'link_line_style': 'solid',
+        'link_max_value': None,
+        'link_min_value': None,
+        'link_scale_height': 1,
+        'link_scale_line_width': 2,
+        'link_labels': True,
+        'link_fontsize': None,
+        # General
         'region': None,  # Cannot be set manually but is set by tracksClass
-        'ylim': None,
-        'use_middle': False,
-        'scale_link_height': 1,
-        'scale_line_width': 1,
     }
     NECESSARY_PROPERTIES = ['file', 'link_file']
     SYNONYMOUS_PROPERTIES = {
@@ -133,6 +145,12 @@ file_type = {TRACK_TYPE}
             'auto': None
         },
         'min_value': {
+            'auto': None
+        },
+        'link_max_value': {
+            'auto': None
+        },
+        'link_min_value': {
             'auto': None
         },
     }
@@ -143,16 +161,19 @@ file_type = {TRACK_TYPE}
             'sum'
         ],
         'transform': ['no', 'log', 'log1p', '-log', 'log2', 'log10'],
-        'y_axis_values': ['original', 'transformed']
+        'y_axis_values': ['original', 'transformed'],
+        'link_line_style': ['solid', 'dashed',
+                            'dotted', 'dashdot'],
     }
     BOOLEAN_PROPERTIES = [
-        'nans_to_zeros', 'show_data_range', 'grid', 'use_middle', 'show_number'
+        'nans_to_zeros', 'show_data_range', 'grid', 'link_labels'
     ]
     STRING_PROPERTIES = [
         'file', 'file_type', 'overlay_previous', 'orientation',
-        'summary_method', 'title', 'color', 'negative_color', 'transform',
-        'y_axis_values', 'type', 'second_file', 'operation', 'link_file',
-        'line_style', 'title', 'bw_color', 'link_color'
+        'summary_method', 'title', 'bw_color', 'negative_color', 'transform',
+        'y_axis_values', 'type',
+        'link_file', 'link_color',
+        'link_line_style'
     ]
     FLOAT_PROPERTIES = {
         'max_value': [-np.inf, np.inf],
@@ -161,9 +182,12 @@ file_type = {TRACK_TYPE}
         'alpha': [0, 1],
         'height': [0, np.inf],
         'fontsize': [0, np.inf],
-        'line_width': [0, np.inf],
-        'scale_link_height': [0, np.inf],
-        'scale_line_width': [0, np.inf]
+        'link_alpha': [0, 1],
+        'link_max_value': [-np.inf, np.inf],
+        'link_min_value': [-np.inf, np.inf],
+        'link_line_width': [0, np.inf],
+        'link_scale_height': [0, np.inf],
+        'link_scale_line_width': [0, np.inf]
     }
     INTEGER_PROPERTIES = {'number_of_bins': [1, np.inf]}
 
@@ -171,160 +195,46 @@ file_type = {TRACK_TYPE}
     # negative_color can only be a color or None
 
     def __init__(self, *args, **kwargs):
-        super(self.__class__, self).__init__(*args, **kwargs)
+        super(BigWigTrack, self).__init__(*args, **kwargs)
         self.bw = pyBigWig.open(self.properties['file'])
-        self.bw2 = None
-        if 'second_file' in self.properties['operation']:
-            if self.properties['second_file'] is None:
-                raise InputError(f"operation: {self.properties['operation']}"
-                                 " requires to set the parameter"
-                                 " second_file.")
-            else:
-                self.bw2 = pyBigWig.open(self.properties['second_file'])
 
     def set_properties_defaults(self):
         super(SashimiBigWigTrack, self).set_properties_defaults()
         super(SashimiBigWigTrack, self).process_type_for_coverage_track()
         self.process_color('bw_color')
-        self.process_color('link_color')
-        self.properties['scale_link_height'] = 1
-        self.properties['scale_line_width'] = 1
         if self.properties['negative_color'] is None:
             self.properties['negative_color'] = self.properties['bw_color']
         else:
             self.process_color('negative_color')
-        if self.properties['operation'] != 'file':
-            self.checkoperation()
-            if self.properties['transform'] != 'no':
-                raise InputError("'operation' and 'transform' cannot be set at"
-                                 " the same time.")
-            if self.properties['y_axis_values'] == 'original':
-                self.log.warning("*Warning* 'operation' is used and "
-                                 "'y_axis_values' was set to 'original'. "
-                                 "'y_axis_values' can only be set to "
-                                 "'original' when 'transform' is used.\n"
-                                 " It will be set as 'transformed'.\n")
-                self.properties['y_axis_values'] = 'transformed'
-
-        #FROM LINK
-        self.pos_height = None
-        self.neg_height = None
-        self.interval_tree, min_score, max_score, has_score = self.process_link_file(
-            self.properties['region'])
-        if self.properties['line_width'] is None and not has_score:
-            self.log.warning("*WARNING* for section "
-                             f"{self.properties['section_name']}"
-                             " no line_width has been set but some "
-                             "lines do not have scores."
-                             "line_width has been set to "
-                             "0.5.\n")
-            self.properties['line_width'] = 0.5
-
-        if self.properties['scale_line_width'] is None and has_score:
-            self.properties['scale_line_width'] = 2
-
+        # FOR LINK
+        is_colormap = self.process_color('link_color', colormap_possible=True, bed_rgb_possible=True, default_value_is_colormap=False)
+        self.interval_tree, min_score, max_score = self.process_bed(DEFAULT_LINKS_COLOR, file_key='link_file', color_key='link_color',
+                                                                    plot_regions=self.properties['region'])
+        # Initiate the colormap if needed
         self.colormap = None
-        # check if the color given is a color map
-        is_colormap = self.process_color('link_color',
-                                         colormap_possible=True,
-                                         default_value_is_colormap=False)
+        self.parametersUsingColormap = []
         if is_colormap:
-            if not has_score:
-                self.log.warning("*WARNING* for section "
-                                 f"{self.properties['section_name']}"
-                                 " a colormap was chosen but some "
-                                 "lines do not have scores."
-                                 "Color has been set to "
-                                 f"{DEFAULT_LINKS_COLOR}.\n")
-                self.properties['link_color'] = DEFAULT_LINKS_COLOR
-            else:
-                self.colormap = self.properties['link_color']
-
-        if self.colormap is not None:
             if self.properties['min_value'] is not None:
                 min_score = self.properties['min_value']
             if self.properties['max_value'] is not None:
                 max_score = self.properties['max_value']
 
-            norm = matplotlib.colors.Normalize(vmin=min_score, vmax=max_score)
+            norm = matplotlib.colors.Normalize(vmin=min_score,
+                                               vmax=max_score)
 
-            cmap = matplotlib.cm.get_cmap(self.properties['link_color'])
+            cmap = matplotlib.cm.get_cmap(self.colormap)
             self.colormap = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
+            self.parametersUsingColormap.append('link_color')
 
     def plot(self, ax, chrom_region, start_region, end_region):
+        x_values, transformed_scores = self.get_transformed_values(chrom_region, start_region, end_region)
+        if x_values is None:
+            self.log.warning("Scores could not be computed. This will generate an empty track\n")
+            return
+
         self.pos_height = 0
         self.neg_height = 0
         count = 0
-
-        temp_end_region, temp_nbins, scores_per_bin = self.get_scores(
-            'self.bw', self.properties['file'], chrom_region, start_region,
-            end_region)
-        if scores_per_bin is None:
-            self.log.warning(
-                "Scores could not be computed. This will generate an empty track\n"
-            )
-            return
-
-        if self.properties['nans_to_zeros'] and np.any(
-                np.isnan(scores_per_bin)):
-            scores_per_bin[np.isnan(scores_per_bin)] = 0
-
-        x_values = np.linspace(start_region, temp_end_region, temp_nbins)
-        # compute the operation
-        operation = self.properties['operation']
-        # Substitute log by np.log to make it evaluable:
-        operation = operation.replace('log', 'np.log')
-        if operation == 'file':
-            pass
-        elif 'second_file' not in operation:
-            try:
-                new_scores_per_bin = eval('[' + operation +
-                                          ' for file in scores_per_bin]')
-                new_scores_per_bin = np.array(new_scores_per_bin)
-            except Exception as e:
-                raise Exception("The operation in section "
-                                f"{self.properties['section_name']} could not "
-                                f"be computed: {e}")
-            else:
-                scores_per_bin = new_scores_per_bin
-        else:
-            temp_end_region2, temp_nbins2, scores_per_bin2 = self.get_scores(
-                'self.bw2', self.properties['second_file'], chrom_region,
-                start_region, end_region)
-            if scores_per_bin2 is None:
-                self.log.warning(
-                    "Scores for second_file could not be computed. This will generate an empty track\n"
-                )
-                return
-
-            if self.properties['nans_to_zeros'] and np.any(
-                    np.isnan(scores_per_bin2)):
-                scores_per_bin2[np.isnan(scores_per_bin2)] = 0
-
-            x_values2 = np.linspace(start_region, temp_end_region2,
-                                    temp_nbins2)
-            if not np.all(x_values == x_values2):
-                raise Exception(
-                    'The two bigwig files are not compatible on this region:'
-                    f'{chrom_region}:{start_region}-{end_region}')
-            # compute the operation
-            try:
-                new_scores_per_bin = eval('[' + operation +
-                                          ' for file, second_file in'
-                                          ' zip(scores_per_bin,'
-                                          ' scores_per_bin2)]')
-                new_scores_per_bin = np.array(new_scores_per_bin)
-            except Exception as e:
-                raise Exception("The operation in section "
-                                f"{self.properties['section_name']} could not "
-                                f"be computed: {e}")
-            else:
-                scores_per_bin = new_scores_per_bin
-
-        transformed_scores = transform(scores_per_bin,
-                                       self.properties['transform'],
-                                       self.properties['log_pseudocount'],
-                                       self.properties['file'])
 
         plot_coverage(ax, x_values, transformed_scores, self.plot_type,
                       self.size, self.properties['bw_color'],
@@ -332,9 +242,18 @@ file_type = {TRACK_TYPE}
                       self.properties['alpha'], self.properties['grid'])
 
         plot_ymin, plot_ymax = ax.get_ylim()
-        plot_ymax = eval(f'[{operation} for file in [plot_ymax]]')[0]
 
         # PLOT LINK
+        if chrom_region not in self.interval_tree.keys():
+            chrom_region_before = chrom_region
+            chrom_region = change_chrom_names(chrom_region)
+            if chrom_region not in self.interval_tree.keys():
+                self.log.warning("*Warning*\nNeither "
+                                 + chrom_region_before + " nor "
+                                 + chrom_region + " exists as a "
+                                 "chromosome name inside the link_file."
+                                 "No link will be plotted!!\n")
+                self.interval_tree[chrom_region] = IntervalTree()
         arcs_in_region = sorted(
             self.interval_tree[chrom_region][start_region:end_region])
         for idx, interval in enumerate(arcs_in_region):
@@ -347,21 +266,20 @@ file_type = {TRACK_TYPE}
             score_end = float(
                 self.bw.values(chrom_region, interval.end,
                                interval.end + 1)[0])
+            # Transform the scores
+            score_start, score_end = \
+                transform([score_start, score_end],
+                          self.properties['transform'],
+                          self.properties['log_pseudocount'],
+                          self.properties['file'])
 
-            if operation == "file":
-                pass
+            if self.properties['link_line_width'] is not None:
+                self.line_width = float(self.properties['link_line_width'])
             else:
-                score_start = eval(
-                    f'[{operation} for file in [score_start]]')[0]
-                score_end = eval(f'[{operation} for file in [score_end]]')[0]
+                self.line_width = self.properties['link_scale_line_width'] * np.log(
+                    interval.data.score + 1) * 1.5
 
-            if self.properties['line_width'] is not None:
-                self.line_width = float(self.properties['line_width'])
-            else:
-                self.line_width = self.properties['scale_line_width'] * np.log(
-                    interval.data[4] + 1) * 1.5
-
-            self.show_number = self.properties['show_number']
+            self.show_number = self.properties['link_labels']
             self.plot_bezier(ax, interval, idx, score_start, score_end,
                              plot_ymax)
             count += 1
@@ -371,13 +289,13 @@ file_type = {TRACK_TYPE}
         self.pos_height *= 1.05
         self.log.debug(f"{count} links plotted")
 
-        if self.properties['min_value'] == None:
+        if self.properties['min_value'] is None:
             ymin = min(plot_ymin, self.neg_height)
         else:
             ymin = min(plot_ymin, self.properties['min_value'],
                        self.neg_height)
 
-        if self.properties['max_value'] == None:
+        if self.properties['max_value'] is None:
             ymax = max(plot_ymax, self.pos_height)
         else:
             ymax = max(plot_ymax, self.properties['max_value'],
@@ -405,20 +323,21 @@ file_type = {TRACK_TYPE}
                 1] + 3 * t**2 * (1 - t) * pts[2][1] + t**3 * pts[3][1]
             return ((b_x, b_y))
 
-        width = (interval.end - interval.begin)
+        # width = (interval.end - interval.begin)
 
         height = ymax * 0.25 * self.properties['scale_link_height']
-        if self.colormap:
-            # translate score field
-            # into a color
-            rgb = self.colormap.to_rgba(interval.data[4])
-        else:
-            rgb = self.properties['link_color']
+        rgb = self.get_rgb(interval.data, param='link_color', default=DEFAULT_LINKS_COLOR)
+
+        # Get the low value
+        # For the moment this is 0
+        # But it needs to be improved
+        # Taking into account the min_value
+        low_value = 0
 
         # Plot below x-axis
         if idx % 2 != 0:
-            pts = [(interval.begin, 0), (interval.begin, -height),
-                   (interval.end, -height), (interval.end, 0)]
+            pts = [(interval.begin, low_value), (interval.begin, -height),
+                   (interval.end, -height), (interval.end, low_value)]
             midpt = cubic_bezier(pts, 0.5)
             minpt = min(
                 [cubic_bezier(pts, x)[1] for x in np.arange(0, 1, 0.05)])
@@ -428,15 +347,15 @@ file_type = {TRACK_TYPE}
             pp1 = mpatches.PathPatch(Path(
                 pts, [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4]),
                                      fc="none",
-                                     ec=self.properties['link_color'],
+                                     ec=rgb,
                                      lw=self.line_width,
-                                     ls=self.properties['line_style'])
+                                     ls=self.properties['link_line_style'])
             ax.add_patch(pp1)
             if self.show_number:
                 ax.text(midpt[0],
                         midpt[1],
-                        round(interval.data[4], 3),
-                        fontsize=self.properties['fontsize'],
+                        round(interval.data.score, 3),
+                        fontsize=self.properties['link_fontsize'],
                         horizontalalignment='center',
                         verticalalignment='center',
                         bbox=dict(facecolor='white', edgecolor='none', pad=0))
@@ -463,8 +382,8 @@ file_type = {TRACK_TYPE}
             if self.show_number:
                 ax.text(midpt[0],
                         midpt[1],
-                        round(interval.data[4], 3),
-                        fontsize=self.properties['fontsize'],
+                        round(interval.data.score, 3),
+                        fontsize=self.properties['link_fontsize'],
                         horizontalalignment='center',
                         verticalalignment='center',
                         bbox=dict(facecolor='white', edgecolor='none', pad=0))

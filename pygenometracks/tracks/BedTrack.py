@@ -1,22 +1,15 @@
-from . GenomeTrack import GenomeTrack
-from .. readBed import ReadBed
-# To remove next 1.0
-from .. readGtf import ReadGtf
-# End to remove
-from .. utilities import opener, get_length_w, count_lines, temp_file_from_intersect, change_chrom_names, InputError
+from . GenomeTrack import GenomeTrack, DEFAULT_BED_COLOR, AROUND_REGION
+from .. utilities import get_length_w, change_chrom_names, InputError
 import matplotlib
 from matplotlib import font_manager
 from matplotlib.patches import Rectangle, Polygon, FancyArrowPatch
 from matplotlib.lines import Line2D
-from intervaltree import IntervalTree, Interval
+from intervaltree import IntervalTree
 import numpy as np
-from tqdm import tqdm
 
-DEFAULT_BED_COLOR = '#1f78b4'
 DISPLAY_BED_VALID = ['collapsed', 'triangles', 'interleaved', 'stacked', 'squares', 'deletions', 'inversions']
 DISPLAY_BED_SYNONYMOUS = {'interlaced': 'interleaved', 'domain': 'interleaved'}
 DEFAULT_DISPLAY_BED = 'stacked'
-AROUND_REGION = 100000
 
 EPSILON = 0.08
 
@@ -201,7 +194,7 @@ file_type = {TRACK_TYPE}
         # this is bed3, bed4, bed5, bed6, bed8, bed9 or bed12
         self.current_len_w = None  # this is the length of the letter 'w' given the font size
         self.interval_tree = {}  # interval tree of the bed regions
-        self.interval_tree, min_score, max_score = self.process_bed(self.properties['region'])
+        self.interval_tree, min_score, max_score = self.process_bed(DEFAULT_BED_COLOR, plot_regions=self.properties['region'])
         if self.colormap is not None:
             if self.properties['min_value'] is not None:
                 min_score = self.properties['min_value']
@@ -259,76 +252,6 @@ file_type = {TRACK_TYPE}
 
         # to set the distance between rows
         self.row_scale = 2.3
-
-    def get_bed_handler(self, plot_regions=None):
-        if not self.properties['global_max_row']:
-            # I do the intersection:
-            file_to_open = temp_file_from_intersect(self.properties['file'],
-                                                    plot_regions, AROUND_REGION)
-        else:
-            file_to_open = self.properties['file']
-        # To remove in next 1.0
-        if self.properties['file'].endswith('gtf') or \
-           self.properties['file'].endswith('gtf.gz'):
-            self.log.warning("Deprecation Warning: "
-                             f"In section {self.properties['section_name']},"
-                             f" file_type was set to {self.TRACK_TYPE}"
-                             " whereas it is a gtf file. In the future"
-                             " only bed files will be accepted, please"
-                             " use file_type = gtf.\n")
-            bed_file_h = ReadGtf(file_to_open,
-                                 self.properties['prefered_name'],
-                                 self.properties['merge_transcripts'],
-                                 self.properties['merge_overlapping_exons'])
-            total_length = bed_file_h.length
-        else:
-            # end of remove
-            total_length = count_lines(opener(file_to_open),
-                                       asBed=True)
-            bed_file_h = ReadBed(opener(file_to_open))
-
-        return bed_file_h, total_length
-
-    def process_bed(self, plot_regions=None):
-
-        bed_file_h, total_length = self.get_bed_handler(plot_regions)
-        self.bed_type = bed_file_h.file_type
-
-        if self.properties['color'] == 'bed_rgb' and \
-           self.bed_type not in ['bed12', 'bed9']:
-            self.log.warning("*WARNING* Color set to 'bed_rgb', "
-                             "but bed file does not have the rgb field. "
-                             f"The color has been set to {DEFAULT_BED_COLOR}.\n")
-            self.properties['color'] = DEFAULT_BED_COLOR
-
-        valid_intervals = 0
-        interval_tree = {}
-
-        max_score = float('-inf')
-        min_score = float('inf')
-        for bed in tqdm(bed_file_h, total=total_length):
-            if bed.score < min_score:
-                min_score = bed.score
-            if bed.score > max_score:
-                max_score = bed.score
-
-            if bed.chromosome not in interval_tree:
-                interval_tree[bed.chromosome] = IntervalTree()
-
-            interval_tree[bed.chromosome].add(Interval(bed.start,
-                                                       bed.end, bed))
-            valid_intervals += 1
-
-        try:
-            bed_file_h.file_handle.close()
-        except AttributeError:
-            pass
-
-        if valid_intervals == 0:
-            self.log.warning("No valid intervals were found in file "
-                             f"{self.properties['file']}.\n")
-
-        return interval_tree, min_score, max_score
 
     def get_max_num_row(self, len_w, small_relative):
         ''' Process the whole bed regions at the given figure length
@@ -690,32 +613,6 @@ file_type = {TRACK_TYPE}
         if self.colormap is not None:
             self.colormap.set_array([])
             GenomeTrack.plot_custom_cobar(self, ax, fraction=1)
-
-    def get_rgb(self, bed, param='color', default=DEFAULT_BED_COLOR):
-        """
-        get the rgb value for the bed and the param given:
-        :param bed:
-        :param param:
-        :param default: the default value if it fails
-        :return: color
-        """
-        rgb = self.properties[param]
-
-        if self.colormap is not None and param in self.parametersUsingColormap:
-            # translate value field (in the example above is 0 or 0.2686...)
-            # into a color
-            rgb = self.colormap.to_rgba(bed.score)
-        elif self.properties[param] == 'bed_rgb':
-            # if rgb is set in the bed line, this overrides the previously
-            # defined colormap
-            if self.bed_type in ['bed9', 'bed12'] and len(bed.rgb) == 3:
-                try:
-                    rgb = [float(x) / 255 for x in bed.rgb]
-                except IndexError:
-                    rgb = default
-            else:
-                rgb = default
-        return rgb
 
     def draw_gene_simple(self, ax, bed, ypos, rgb, edgecolor, linewidth):
         """

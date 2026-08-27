@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .. utilities import InputError, transform
+from .. utilities import InputError, transform, temp_file_from_intersect, count_lines, opener
 import logging
 import numpy as np
 from matplotlib import colors as mc
@@ -8,6 +8,13 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import LogFormatter
 import re
 import math
+from tqdm import tqdm
+from intervaltree import IntervalTree, Interval
+
+from .. readBed import ReadBed
+# To remove next 1.0
+from .. readGtf import ReadGtf
+# End to remove
 
 # This is a regex for float which would work for 11, 102.25, but also .2
 float_regex = r'(?:\d+)?(?:\.\d+)?'
@@ -18,6 +25,10 @@ color_tuple = re.compile(r'^\(({0}),({0}),({0})\)$'.format(float_regex))
 block_no_comma_outside_parenthesis = re.compile(r'(?:[^,(]|\([^)]*\))+')
 
 DEFAULT_MAX_SIGNS = 4
+
+DEFAULT_BED_COLOR = '#1f78b4'
+AROUND_REGION = 100000
+HUGE_NUMBER = int(1e9)  # Which should be above any chromosome size
 
 
 class GenomeTrack(object):
@@ -622,3 +633,102 @@ height = 2
 
     def __del__(self):
         return
+
+    def get_bed_handler(self, file_key='file', plot_regions=None):
+        if not self.properties.get('global_max_row', False):
+            # I do the intersection:
+            file_to_open = temp_file_from_intersect(self.properties[file_key],
+                                                    plot_regions, AROUND_REGION)
+        else:
+            file_to_open = self.properties[file_key]
+        is_gtf = self.TRACK_TYPE == "gtf" or \
+           self.properties[file_key].endswith('gtf') or \
+           self.properties[file_key].endswith('gtf.gz')
+        if is_gtf:
+            if self.TRACK_TYPE != "gtf":
+                # To remove in next 1.0
+                self.log.warning("Deprecation Warning: "
+                                 f"In section {self.properties['section_name']},"
+                                 f" file_type was set to {self.TRACK_TYPE}"
+                                 " whereas it is a gtf file. In the future"
+                                 " only bed files will be accepted, please"
+                                 " use file_type = gtf.\n")
+            bed_file_h = ReadGtf(file_to_open,
+                                 self.properties['prefered_name'],
+                                 self.properties['merge_transcripts'],
+                                 self.properties['merge_overlapping_exons'])
+            total_length = bed_file_h.length
+        else:
+            # end of remove
+            total_length = count_lines(opener(file_to_open),
+                                       asBed=True)
+            bed_file_h = ReadBed(opener(file_to_open))
+
+        return bed_file_h, total_length
+
+    def process_bed(self, default_color, file_key='file', color_key='color', plot_regions=None):
+
+        bed_file_h, total_length = self.get_bed_handler(file_key, plot_regions)
+        self.bed_type = bed_file_h.file_type
+
+        if self.properties[color_key] == 'bed_rgb' and \
+           self.bed_type not in ['bed12', 'bed9']:
+            self.log.warning("*WARNING* Color set to 'bed_rgb', "
+                             "but bed file does not have the rgb field. "
+                             f"The color has been set to {default_color}.\n")
+            self.properties[color_key] = default_color
+
+        valid_intervals = 0
+        interval_tree = {}
+
+        max_score = float('-inf')
+        min_score = float('inf')
+        for bed in tqdm(bed_file_h, total=total_length):
+            if bed.score < min_score:
+                min_score = bed.score
+            if bed.score > max_score:
+                max_score = bed.score
+
+            if bed.chromosome not in interval_tree:
+                interval_tree[bed.chromosome] = IntervalTree()
+
+            interval_tree[bed.chromosome].add(Interval(bed.start,
+                                                       bed.end, bed))
+            valid_intervals += 1
+
+        try:
+            bed_file_h.file_handle.close()
+        except AttributeError:
+            pass
+
+        if valid_intervals == 0:
+            self.log.warning("No valid intervals were found in file "
+                             f"{self.properties[file_key]}.\n")
+
+        return interval_tree, min_score, max_score
+
+    def get_rgb(self, bed, param='color', default=DEFAULT_BED_COLOR):
+        """
+        get the rgb value for the bed and the param given:
+        :param bed:
+        :param param:
+        :param default: the default value if it fails
+        :return: color
+        """
+        rgb = self.properties[param]
+
+        if self.colormap is not None and param in self.parametersUsingColormap:
+            # translate value field (in the example above is 0 or 0.2686...)
+            # into a color
+            rgb = self.colormap.to_rgba(bed.score)
+        elif self.properties[param] == 'bed_rgb':
+            # if rgb is set in the bed line, this overrides the previously
+            # defined colormap
+            if self.bed_type in ['bed9', 'bed12'] and len(bed.rgb) == 3:
+                try:
+                    rgb = [float(x) / 255 for x in bed.rgb]
+                except IndexError:
+                    rgb = default
+            else:
+                rgb = default
+        return rgb
