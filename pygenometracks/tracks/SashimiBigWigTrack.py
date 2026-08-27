@@ -267,7 +267,7 @@ file_type = {TRACK_TYPE}
                                interval.end + 1)[0])
             # Transform the scores
             score_start, score_end = \
-                transform([score_start, score_end],
+                transform(np.array([score_start, score_end]),
                           self.properties['transform'],
                           self.properties['log_pseudocount'],
                           self.properties['file'])
