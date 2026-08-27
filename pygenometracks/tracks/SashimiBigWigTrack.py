@@ -1,15 +1,14 @@
 # Authors: Zepeng Mu (zmu@broadinstitute.org) and Yang I. Li (yangili1@uchicago.edu)
 # Edits: Lucille Lopez-Delisle (lucille.delisle@unige.ch)
 
-from .GenomeTrack import GenomeTrack, HUGE_NUMBER
+from .GenomeTrack import GenomeTrack
 import numpy as np
-from ..utilities import plot_coverage, InputError, transform, change_chrom_names, opener, to_string, temp_file_from_intersect
+from ..utilities import plot_coverage, transform, change_chrom_names
 import pyBigWig
-from intervaltree import IntervalTree, Interval
+from intervaltree import IntervalTree
 import matplotlib
 import matplotlib.path as mpath
 import matplotlib.patches as mpatches
-from tqdm import tqdm
 from . BigWigTrack import BigWigTrack
 
 Path = mpath.Path
@@ -247,8 +246,7 @@ file_type = {TRACK_TYPE}
         plot_ymin, plot_ymax = ax.get_ylim()
 
         # If there is no transformation and only positive values and not min_value we put min_value to 0
-        if self.properties['transform'] == 'no' and np.min(transformed_scores) > 0 \
-            and self.properties['min_value'] is None:
+        if self.properties['transform'] == 'no' and np.min(transformed_scores) > 0 and self.properties['min_value'] is None:
             plot_ymin = 0
 
         self.min_value = plot_ymin
@@ -325,21 +323,23 @@ file_type = {TRACK_TYPE}
 
         # Plot below x-axis
         if idx % 2 != 0:
-            pts = [(interval.begin, ymin), (interval.begin, ymin-height),
-                   (interval.end, ymin-height), (interval.end, ymin)]
+            pts = [(interval.begin, ymin), (interval.begin, ymin - height),
+                   (interval.end, ymin - height), (interval.end, ymin)]
             midpt = cubic_bezier(pts, 0.5)
             minpt = min(
                 [cubic_bezier(pts, x)[1] for x in np.arange(0, 1, 0.05)])
             if minpt < self.neg_height:
                 self.neg_height = minpt - epsilon
 
-            pp1 = mpatches.PathPatch(Path(
-                pts, [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4]),
-                                     fc="none",
-                                     ec=rgb,
-                                     lw=self.line_width,
-                                     ls=self.properties['link_line_style'],
-                                     alpha=self.properties['link_alpha'])
+            pp1 = mpatches.PathPatch(
+                Path(
+                    pts, [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4]
+                ),
+                fc="none",
+                ec=rgb,
+                lw=self.line_width,
+                ls=self.properties['link_line_style'],
+                alpha=self.properties['link_alpha'])
             ax.add_patch(pp1)
             if self.show_number:
                 ax.text(midpt[0],
@@ -362,13 +362,15 @@ file_type = {TRACK_TYPE}
             if maxpt > self.pos_height:
                 self.pos_height = maxpt + epsilon
 
-            pp1 = mpatches.PathPatch(Path(
-                pts, [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4]),
-                                     fc="none",
-                                     ec=rgb,
-                                     lw=self.line_width,
-                                     ls=self.properties['link_line_style'],
-                                     alpha=self.properties['link_alpha'])
+            pp1 = mpatches.PathPatch(
+                Path(
+                    pts, [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4]
+                ),
+                fc="none",
+                ec=rgb,
+                lw=self.line_width,
+                ls=self.properties['link_line_style'],
+                alpha=self.properties['link_alpha'])
             ax.add_patch(pp1)
             if self.show_number:
                 ax.text(midpt[0],
@@ -399,14 +401,14 @@ file_type = {TRACK_TYPE}
         else:
             ymax = self.min_value
             ymin = self.max_value
-        
+
         GenomeTrack.plot_y_axis(
             self,
             ax,
             plot_axis,
             transform=self.properties['transform'],
             log_pseudocount=self.properties['log_pseudocount'],
-            y_axis = self.properties['y_axis_values'],
+            y_axis=self.properties['y_axis_values'],
             only_at_ticks=self.properties['grid'],
             forced_ymin=ymin,
             forced_ymax=ymax

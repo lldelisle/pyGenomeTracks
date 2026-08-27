@@ -647,9 +647,7 @@ height = 2
                                                     plot_regions, AROUND_REGION)
         else:
             file_to_open = self.properties[file_key]
-        is_gtf = self.TRACK_TYPE == "gtf" or \
-           self.properties[file_key].endswith('gtf') or \
-           self.properties[file_key].endswith('gtf.gz')
+        is_gtf = self.TRACK_TYPE == "gtf" or self.properties[file_key].endswith('gtf') or self.properties[file_key].endswith('gtf.gz')
         if is_gtf:
             if self.TRACK_TYPE != "gtf":
                 # To remove in next 1.0

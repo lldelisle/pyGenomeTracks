@@ -123,6 +123,7 @@ with open(os.path.join(ROOT, "sashimi_tracks.ini"), 'w') as fh:
 
 tolerance = 13  # default matplotlib pixed difference tolerance
 
+
 def test_sashimi_main():
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',

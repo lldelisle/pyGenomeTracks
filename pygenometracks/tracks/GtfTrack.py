@@ -1,8 +1,6 @@
-from . GenomeTrack import GenomeTrack, DEFAULT_BED_COLOR, AROUND_REGION
+from . GenomeTrack import GenomeTrack, DEFAULT_BED_COLOR
 from . BedTrack import BedTrack
-from .. readGtf import ReadGtf
 from matplotlib import font_manager
-from .. utilities import temp_file_from_intersect
 import numpy as np
 
 DISPLAY_BED_VALID = ['collapsed', 'triangles', 'interleaved', 'stacked', 'squares', 'deletions', 'inversions']
