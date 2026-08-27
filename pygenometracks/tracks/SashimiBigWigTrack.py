@@ -284,7 +284,7 @@ file_type = {TRACK_TYPE}
             count += 1
 
         # this height might be removed
-        self.neg_height *= 1
+        self.neg_height *= 1.05
         self.pos_height *= 1.05
         self.log.debug(f"{count} links plotted")
 
