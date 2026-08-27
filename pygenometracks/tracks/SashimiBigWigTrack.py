@@ -348,7 +348,8 @@ file_type = {TRACK_TYPE}
                                      fc="none",
                                      ec=rgb,
                                      lw=self.line_width,
-                                     ls=self.properties['link_line_style'])
+                                     ls=self.properties['link_line_style'],
+                                     alpha=self.properties['link_alpha'])
             ax.add_patch(pp1)
             if self.show_number:
                 ax.text(midpt[0],
@@ -376,7 +377,8 @@ file_type = {TRACK_TYPE}
                                      fc="none",
                                      ec=self.properties['link_color'],
                                      lw=self.line_width,
-                                     ls=self.properties['link_line_style'])
+                                     ls=self.properties['link_line_style'],
+                                     alpha=self.properties['link_alpha'])
             ax.add_patch(pp1)
             if self.show_number:
                 ax.text(midpt[0],
