@@ -18,6 +18,7 @@ All available tracks and types
    tracks/links
    tracks/maf
    tracks/narrow_peak
+   tracks/sashimiBigWig
    tracks/scalebar
    tracks/spacer
    tracks/vhighlight

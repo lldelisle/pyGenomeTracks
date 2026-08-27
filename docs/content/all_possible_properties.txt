@@ -1,6 +1,6 @@
 - **overlay_previous**:
 
-  - for *x_axis, epilogos, links, domains, bed, gtf, narrow_peak, bigwig, bedgraph, bedgraph_matrix, hlines, hic_matrix, hic_matrix_square, maf, scalebar, spacer, fasta*: no, yes, share-y
+  - for *x_axis, epilogos, links, domains, bed, gtf, narrow_peak, bigwig, bedgraph, bedgraph_matrix, hlines, hic_matrix, hic_matrix_square, maf, scalebar, spacer, sashimiBigWig, fasta*: no, yes, share-y
 
 - **where**:
 
@@ -10,7 +10,7 @@
 
 - **orientation**:
 
-  - for *epilogos, links, domains, bed, gtf, narrow_peak, bigwig, bedgraph, bedgraph_matrix, hlines, hic_matrix, hic_matrix_square, maf*: inverted, not set
+  - for *epilogos, links, domains, bed, gtf, narrow_peak, bigwig, bedgraph, bedgraph_matrix, hlines, hic_matrix, hic_matrix_square, maf, sashimiBigWig*: inverted, not set
 
 - **links_type**:
 
@@ -76,7 +76,7 @@
 
 - **show_data_range**:
 
-  - for *narrow_peak, bigwig, bedgraph, bedgraph_matrix, hlines*: true, false
+  - for *narrow_peak, bigwig, bedgraph, bedgraph_matrix, hlines, sashimiBigWig*: true, false
 
 - **show_labels**:
 
@@ -88,27 +88,27 @@
 
 - **summary_method**:
 
-  - for *bigwig*: mean, average, max, min, stdev, dev, coverage, cov, sum
-
   - for *bedgraph*: mean, average, max, min, stdev, dev, coverage, cov, sum, not set
+
+  - for *bigwig, sashimiBigWig*: mean, average, max, min, stdev, dev, coverage, cov, sum
 
 - **transform**:
 
-  - for *bigwig, bedgraph*: no, log, log1p, -log, log2, log10
-
   - for *hic_matrix, hic_matrix_square*: no, log, log1p, -log
+
+  - for *bigwig, bedgraph, sashimiBigWig*: no, log, log1p, -log, log2, log10
 
 - **y_axis_values**:
 
-  - for *bigwig, bedgraph*: original, transformed
+  - for *bigwig, bedgraph, sashimiBigWig*: original, transformed
 
 - **nans_to_zeros**:
 
-  - for *bigwig, bedgraph*: true, false
+  - for *bigwig, bedgraph, sashimiBigWig*: true, false
 
 - **grid**:
 
-  - for *bigwig, bedgraph*: true, false
+  - for *bigwig, bedgraph, sashimiBigWig*: true, false
 
 - **rasterize**:
 
@@ -133,4 +133,12 @@
 - **display_ref_seq**:
 
   - for *maf*: true, false
+
+- **link_line_style**:
+
+  - for *sashimiBigWig*: solid, dashed, dotted, dashdot
+
+- **link_labels**:
+
+  - for *sashimiBigWig*: true, false
 
