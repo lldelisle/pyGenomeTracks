@@ -4,6 +4,7 @@ import shutil
 from tempfile import NamedTemporaryFile
 
 import matplotlib as mpl
+from get_matplotlib_CI_version import get_CI_mpl_version
 from matplotlib.testing.compare import compare_images
 
 import pygenometracks.plotTracks
@@ -133,7 +134,7 @@ with open(os.path.join(ROOT, "maf_withe.ini"), 'w') as fh:
     fh.write(browser_tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
-default_mpl_version = "3.11.1"
+default_mpl_version = get_CI_mpl_version()
 
 
 def test_first_maf():
