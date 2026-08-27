@@ -196,6 +196,7 @@ file_type = {TRACK_TYPE}
     def __init__(self, *args, **kwargs):
         super(BigWigTrack, self).__init__(*args, **kwargs)
         self.bw = pyBigWig.open(self.properties['file'])
+        self.show_number = self.properties['link_labels']
 
     def set_properties_defaults(self):
         super(BigWigTrack, self).set_properties_defaults()
@@ -231,8 +232,6 @@ file_type = {TRACK_TYPE}
             self.log.warning("Scores could not be computed. This will generate an empty track\n")
             return
 
-        self.pos_height = 0
-        self.neg_height = 0
         count = 0
 
         plot_coverage(ax, x_values, transformed_scores, self.plot_type,
@@ -240,7 +239,15 @@ file_type = {TRACK_TYPE}
                       self.properties['negative_color'],
                       self.properties['alpha'], self.properties['grid'])
 
+        # Adjust ylim except for the inversion
+        real_orientation = self.properties['orientation']
+        self.properties['orientation'] = None
+
+        self.adjust_ylim(ax)
+
         plot_ymin, plot_ymax = ax.get_ylim()
+        self.pos_height = plot_ymax
+        self.neg_height = plot_ymin
 
         # PLOT LINK
         if chrom_region not in self.interval_tree.keys():
@@ -278,42 +285,23 @@ file_type = {TRACK_TYPE}
                 self.line_width = self.properties['link_scale_line_width'] * np.log(
                     interval.data.score + 1) * 1.5
 
-            self.show_number = self.properties['link_labels']
             self.plot_bezier(ax, interval, idx, score_start, score_end,
-                             plot_ymax)
+                             plot_ymin, plot_ymax)
             count += 1
 
-        # this height might be removed
-        self.neg_height *= 1.05
-        self.pos_height *= 1.05
         self.log.debug(f"{count} links plotted")
 
-        if self.properties['min_value'] is None:
-            ymin = min(plot_ymin, self.neg_height)
+        # Adjust the ylim to include the potential links plotted
+        # and use orientation
+        if real_orientation == 'inverted':
+            self.properties['orientation'] = 'inverted'
+            ax.set_ylim(self.pos_height, self.neg_height)
         else:
-            ymin = min(plot_ymin, self.properties['min_value'],
-                       self.neg_height)
-
-        if self.properties['max_value'] is None:
-            ymax = max(plot_ymax, self.pos_height)
-        else:
-            ymax = max(plot_ymax, self.properties['max_value'],
-                       self.pos_height)
-
-        ymax = transform(np.array([ymax]), self.properties['transform'],
-                         self.properties['log_pseudocount'], 'ymax')[0]
-
-        ymin = transform(np.array([ymin]), self.properties['transform'],
-                         self.properties['log_pseudocount'], 'ymin')[0]
-
-        if self.properties['orientation'] == 'inverted':
-            ax.set_ylim(ymax, ymin)
-        else:
-            ax.set_ylim(ymin, ymax)
+            ax.set_ylim(self.neg_height, self.pos_height)
 
         return ax
 
-    def plot_bezier(self, ax, interval, idx, start_height, end_height, ymax):
+    def plot_bezier(self, ax, interval, idx, start_height, end_height, ymin, ymax):
 
         def cubic_bezier(pts, t):
             b_x = (1 - t)**3 * pts[0][0] + 3 * t * (1 - t)**2 * pts[1][
@@ -324,24 +312,19 @@ file_type = {TRACK_TYPE}
 
         # width = (interval.end - interval.begin)
 
-        height = ymax * 0.25 * self.properties['link_scale_height']
+        height = (ymax - ymin) * 0.25 * self.properties['link_scale_height']
+        epsilon = (ymax - ymin) * 0.05
         rgb = self.get_rgb(interval.data, param='link_color', default=DEFAULT_LINKS_COLOR)
-
-        # Get the low value
-        # For the moment this is 0
-        # But it needs to be improved
-        # Taking into account the min_value
-        low_value = 0
 
         # Plot below x-axis
         if idx % 2 != 0:
-            pts = [(interval.begin, low_value), (interval.begin, -height),
-                   (interval.end, -height), (interval.end, low_value)]
+            pts = [(interval.begin, ymin), (interval.begin, ymin-height),
+                   (interval.end, ymin-height), (interval.end, ymin)]
             midpt = cubic_bezier(pts, 0.5)
             minpt = min(
                 [cubic_bezier(pts, x)[1] for x in np.arange(0, 1, 0.05)])
             if minpt < self.neg_height:
-                self.neg_height = minpt
+                self.neg_height = minpt - epsilon
 
             pp1 = mpatches.PathPatch(Path(
                 pts, [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4]),
@@ -370,7 +353,7 @@ file_type = {TRACK_TYPE}
             maxpt = max(
                 [cubic_bezier(pts, x)[1] for x in np.arange(0, 1, 0.05)])
             if maxpt > self.pos_height:
-                self.pos_height = maxpt
+                self.pos_height = maxpt + epsilon
 
             pp1 = mpatches.PathPatch(Path(
                 pts, [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4]),
@@ -392,21 +375,12 @@ file_type = {TRACK_TYPE}
     # This y axis does not show the negative part, which is only Sashimi links
     def plot_y_axis(self,
                     ax,
-                    plot_axis,
-                    transform='no',
-                    log_pseudocount=0,
-                    y_axis='tranformed',
-                    only_at_ticks=False):
+                    plot_axis):
         """
         Plot the scale of the y axis with respect to the plot_axis
         Args:
             ax: axis to use to plot the scale
             plot_axis: the reference axis to get the max and min.
-            transform: what was the transformation of the data
-            log_pseudocount:
-            y_axis: 'tranformed' or 'original'
-            only_at_ticks: False: only min_max are diplayed
-                           True: only ticks values are displayed
 
         Returns:
 
@@ -438,7 +412,20 @@ file_type = {TRACK_TYPE}
                 return np.exp(-value) - log_pseudocount
 
         ymin, ymax = plot_axis.get_ylim()
-        ymin = 0
+
+        if not self.properties['grid']:
+            if self.properties['min_value'] is None:
+                min_value = 0
+            else:
+                min_value = self.properties['min_value']
+            min_value_transformed = transform(np.array([min_value]),
+                                            self.properties['transform'],
+                                            self.properties['log_pseudocount'],
+                                            self.properties['file'])[0]
+            if self.properties['orientation'] is None:
+                ymin = min_value_transformed
+            else:
+                ymax = min_value_transformed
         # If the ticks are closer than epsilon from the top or bottom
         # The vertical alignment of label is adjusted
         epsilon = (ymax - ymin) / 100
@@ -446,8 +433,11 @@ file_type = {TRACK_TYPE}
         # The tick is shifted inside of epsilon_pretty
         # To avoid to have only half of the width of the line plotted
         epsilon_pretty = epsilon
+        y_axis = self.properties['y_axis_values']
+        log_pseudocount = self.properties['log_pseudocount']
+        transform_prop = self.properties['transform']
 
-        if only_at_ticks:
+        if self.properties['grid']:
             # plot something that looks like this:
             # tick3 ┐
             #       │
@@ -466,15 +456,15 @@ file_type = {TRACK_TYPE}
                 ]
                 ticks_values.sort(reverse=True)
             labels_pos = ticks_values
-            if transform == 'no' or y_axis == 'transformed':
+            if transform_prop == 'no' or y_axis == 'transformed':
                 ticks_labels = [value_to_str(t) for t in ticks_values]
             else:
                 # There is a transformation and we want to display original values
                 ticks_labels = [
-                    value_to_str(untransform(t, transform, log_pseudocount))
+                    value_to_str(untransform(t, transform_prop, log_pseudocount))
                     for t in ticks_values
                 ]
-        elif transform == 'no' or y_axis == 'transformed':
+        elif transform_prop == 'no' or y_axis == 'transformed':
             # This is a linear scale
             # plot something that looks like this:
             # ymax ┐
@@ -486,14 +476,14 @@ file_type = {TRACK_TYPE}
             ticks_values = [ymin + epsilon_pretty, ymax - epsilon_pretty]
             labels_pos = [ymin, ymax]
             ticks_labels = [value_to_str(v) for v in [ymin, ymax]]
-            if y_axis == 'transformed' and transform != 'no':
-                if transform == 'log1p':
+            if y_axis == 'transformed' and transform_prop != 'no':
+                if transform_prop == 'log1p':
                     ymid_str = "log(1 + x)"
                 else:
                     if log_pseudocount == 0:
-                        ymid_str = f"{transform}(x)"
+                        ymid_str = f"{transform_prop}(x)"
                     else:
-                        ymid_str = f"{transform}({log_pseudocount} + x)"
+                        ymid_str = f"{transform_prop}({log_pseudocount} + x)"
 
                 ax.text(0, (ymax + ymin) / 2,
                         ymid_str,
@@ -515,7 +505,7 @@ file_type = {TRACK_TYPE}
             ticks_values = [ymin + epsilon_pretty, ymid, ymax - epsilon_pretty]
             labels_pos = [ymin, ymid, ymax]
             ticks_labels = [
-                value_to_str(untransform(v, transform, log_pseudocount))
+                value_to_str(untransform(v, transform_prop, log_pseudocount))
                 for v in [ymin, ymid, ymax]
             ]
 
@@ -603,7 +593,7 @@ file_type = {TRACK_TYPE}
                 print(chrom, start, end, name, score, strand)
             except Exception as detail:
                 raise InputError('File not valid. The format is chrom'
-                                 ' start, end, name, score, strand\nError: {detail}\n'
+                                 f' start, end, name, score, strand\nError: {detail}\n'
                                  f' in line\n {line}')
 
             try:
@@ -640,10 +630,9 @@ file_type = {TRACK_TYPE}
             if chrom not in interval_tree:
                 interval_tree[chrom] = IntervalTree()
 
-
             interval_tree[chrom].add(
                 Interval(start, end,
-                            [start, end, score]))
+                         [start, end, score]))
             valid_intervals += 1
 
         if valid_intervals == 0:
