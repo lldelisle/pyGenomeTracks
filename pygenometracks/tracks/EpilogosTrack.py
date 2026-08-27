@@ -74,8 +74,10 @@ file_type = {TRACK_TYPE}
         a single value per bin, it has several values.
         """
         try:
+            # Matplotlib < 3.11.0
             cmap = matplotlib.cm.get_cmap('tab20b')
         except AttributeError:
+            # Matplotlib >= 3.11.0
             cmap = matplotlib.pyplot.get_cmap('tab20b')
 
         values_list, pos_list = self.get_scores(chrom_region, start_region, end_region)

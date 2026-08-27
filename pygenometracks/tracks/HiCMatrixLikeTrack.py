@@ -199,8 +199,10 @@ show_masked_bins = false
                            colormap_only=True, default_value_is_colormap=True)
 
         try:
+            # Matplotlib < 3.11.0
             self.cmap = copy.copy(matplotlib.cm.get_cmap(self.properties['colormap']))
         except AttributeError:
+            # Matplotlib >= 3.11.0
             self.cmap = copy.copy(matplotlib.pyplot.get_cmap(self.properties['colormap']))
         self.cmap.set_bad('black')
 

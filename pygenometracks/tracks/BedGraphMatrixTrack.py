@@ -102,8 +102,10 @@ file_type = {TRACK_TYPE}
                                colormap_only=True,
                                default_value_is_colormap=True)
             try:
+                # Matplotlib < 3.11.0
                 self.cmap = matplotlib.cm.get_cmap(self.properties['colormap'])
             except AttributeError:
+                # Matplotlib >= 3.11.0
                 self.cmap = matplotlib.pyplot.get_cmap(self.properties['colormap'])
         else:
             for param in ['individual_color', 'summary_color']:

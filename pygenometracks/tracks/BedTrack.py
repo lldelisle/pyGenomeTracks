@@ -214,8 +214,10 @@ file_type = {TRACK_TYPE}
                                                vmax=max_score)
 
             try:
+                # Matplotlib < 3.11.0
                 cmap = matplotlib.cm.get_cmap(self.colormap)
             except AttributeError:
+                # Matplotlib >= 3.11.0
                 cmap = matplotlib.pyplot.get_cmap(self.colormap)
             self.colormap = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
 
