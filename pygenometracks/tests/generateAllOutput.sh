@@ -183,3 +183,6 @@ pgt --tracks ./pygenometracks/tests/test_data/mcool_hic_matrix_square.ini --regi
 # demo
 pgt --tracks ./pygenometracks/tests/test_data/demo2.ini --region chrX:3320000-3370000 -o ./pygenometracks/tests/test_data/demo2.png
 pgt --tracks ./pygenometracks/tests/test_data/demo.ini --region chrX:3000000-3500000 -o ./pygenometracks/tests/test_data/demo.png
+
+# sashimi
+pgt --tracks ./pygenometracks/tests/test_data/sashimi_tracks.ini --region chr2:231107879-231115507  --trackLabelFraction 0.23 --width 38 --dpi 130 -o ./pygenometracks/tests/test_data/master_sashimi.png
