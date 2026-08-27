@@ -89,12 +89,11 @@ link_color = darkblue
 # options for link_line_style are 'solid', 'dashed', 'dotted', and 'dashdot'
 link_line_style = solid
 # The link in Sashimi plot is a Bezier curve.
-# The height of the curve is calculated from the length of the intron.
-# When the y-axis in bigwig track is different, the height of curve needs to be scaled.
+# By default the height of the curve is 25% of the coverage height
+# To increase or decrease this proportion you can adjust link_scale_height
 link_scale_height = 1
-# The line width for links is proportion to the numbers in the fifth column of the BED file (PSI).
-# But the absolute width is calculated from the supplied numbers, which can look too thin or too wide sometimes.
-# Use link_scale_line_width to scale the absolute line widths.
+# The line width for links is proportional to the log(1 + PSI) where PSI is the fifth column of the BED file.
+# Use link_scale_line_width to scale the line widths.
 # You may need to try several values to get a satisfying result.
 # Use this to scale Sashimi line width if the links are too thin or too wide.
 #link_scale_line_width = 3
