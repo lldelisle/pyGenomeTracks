@@ -3,6 +3,7 @@ import os.path
 from tempfile import NamedTemporaryFile
 
 import matplotlib as mpl
+from get_matplotlib_CI_version import get_CI_mpl_version
 from matplotlib.testing.compare import compare_images
 
 import pygenometracks.plotTracks
@@ -141,9 +142,15 @@ with open(os.path.join(ROOT, "sashimi_tracks.ini"), 'w') as fh:
     fh.write(browser_tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = get_CI_mpl_version()
 
 
 def test_sashimi_main():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 29
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -155,13 +162,18 @@ def test_sashimi_main():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_sashimi_X():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 28
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -173,7 +185,7 @@ def test_sashimi_X():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
