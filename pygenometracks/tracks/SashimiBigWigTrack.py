@@ -1,15 +1,16 @@
 # Authors: Zepeng Mu (zmu@broadinstitute.org) and Yang I. Li (yangili1@uchicago.edu)
 # Edits: Lucille Lopez-Delisle (lucille.delisle@unige.ch)
 
-from .GenomeTrack import GenomeTrack
+import matplotlib
+import matplotlib.patches as mpatches
+import matplotlib.path as mpath
 import numpy as np
-from ..utilities import plot_coverage, transform, change_chrom_names
 import pyBigWig
 from intervaltree import IntervalTree
-import matplotlib
-import matplotlib.path as mpath
-import matplotlib.patches as mpatches
-from . BigWigTrack import BigWigTrack
+
+from ..utilities import change_chrom_names, plot_coverage, transform
+from .BigWigTrack import BigWigTrack
+from .GenomeTrack import GenomeTrack
 
 Path = mpath.Path
 
@@ -220,7 +221,12 @@ file_type = {TRACK_TYPE}
             norm = matplotlib.colors.Normalize(vmin=min_score,
                                                vmax=max_score)
 
-            cmap = matplotlib.cm.get_cmap(self.colormap)
+            try:
+                # Matplotlib < 3.11.0
+                cmap = matplotlib.cm.get_cmap(self.colormap)
+            except AttributeError:
+                # Matplotlib >= 3.11.0
+                cmap = matplotlib.pyplot.get_cmap(self.colormap)
             self.colormap = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
             self.parametersUsingColormap.append('link_color')
 
