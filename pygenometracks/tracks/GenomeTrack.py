@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 
-from .. utilities import InputError, transform, temp_file_from_intersect, count_lines, opener
 import logging
-import numpy as np
-from matplotlib import colors as mc
-import matplotlib.pyplot as plt
-from matplotlib.ticker import LogFormatter
-import re
 import math
-from tqdm import tqdm
-from intervaltree import IntervalTree, Interval
+import re
 
-from .. readBed import ReadBed
+import matplotlib.pyplot as plt
+import numpy as np
+from intervaltree import Interval, IntervalTree
+from matplotlib import colors as mc
+from matplotlib.ticker import LogFormatter
+from tqdm import tqdm
+
+from ..readBed import ReadBed
 # To remove next 1.0
-from .. readGtf import ReadGtf
+from ..readGtf import ReadGtf
 # End to remove
+from ..utilities import (InputError, count_lines, opener,
+                         temp_file_from_intersect, transform)
 
 # This is a regex for float which would work for 11, 102.25, but also .2
 float_regex = r'(?:\d+)?(?:\.\d+)?'

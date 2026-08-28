@@ -1,11 +1,12 @@
-from . GenomeTrack import GenomeTrack, DEFAULT_BED_COLOR, AROUND_REGION
-from .. utilities import get_length_w, change_chrom_names, InputError
 import matplotlib
-from matplotlib import font_manager
-from matplotlib.patches import Rectangle, Polygon, FancyArrowPatch
-from matplotlib.lines import Line2D
-from intervaltree import IntervalTree
 import numpy as np
+from intervaltree import IntervalTree
+from matplotlib import font_manager
+from matplotlib.lines import Line2D
+from matplotlib.patches import FancyArrowPatch, Polygon, Rectangle
+
+from ..utilities import InputError, change_chrom_names, get_length_w
+from .GenomeTrack import AROUND_REGION, DEFAULT_BED_COLOR, GenomeTrack
 
 DISPLAY_BED_VALID = ['collapsed', 'triangles', 'interleaved', 'stacked', 'squares', 'deletions', 'inversions']
 DISPLAY_BED_SYNONYMOUS = {'interlaced': 'interleaved', 'domain': 'interleaved'}
@@ -204,7 +205,12 @@ file_type = {TRACK_TYPE}
             norm = matplotlib.colors.Normalize(vmin=min_score,
                                                vmax=max_score)
 
-            cmap = matplotlib.cm.get_cmap(self.colormap)
+            try:
+                # Matplotlib < 3.11.0
+                cmap = matplotlib.cm.get_cmap(self.colormap)
+            except AttributeError:
+                # Matplotlib >= 3.11.0
+                cmap = matplotlib.pyplot.get_cmap(self.colormap)
             self.colormap = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
 
     def set_properties_defaults(self):

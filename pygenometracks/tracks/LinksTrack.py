@@ -1,11 +1,14 @@
-from . GenomeTrack import GenomeTrack, HUGE_NUMBER
-from pygenometracks.utilities import InputError
-from intervaltree import IntervalTree, Interval
 import matplotlib
 import numpy as np
+from intervaltree import Interval, IntervalTree
 from matplotlib.patches import Arc, Polygon
-from .. utilities import opener, to_string, change_chrom_names, temp_file_from_intersect, get_region
 from tqdm import tqdm
+
+from pygenometracks.utilities import InputError
+
+from ..utilities import (change_chrom_names, get_region, opener,
+                         temp_file_from_intersect, to_string)
+from .GenomeTrack import HUGE_NUMBER, GenomeTrack
 
 DEFAULT_LINKS_COLOR = 'blue'
 
@@ -163,7 +166,12 @@ file_type = {TRACK_TYPE}
             norm = matplotlib.colors.Normalize(vmin=min_score,
                                                vmax=max_score)
 
-            cmap = matplotlib.cm.get_cmap(self.properties['color'])
+            try:
+                # Matplotlib < 3.11.0
+                cmap = matplotlib.cm.get_cmap(self.properties['color'])
+            except AttributeError:
+                # Matplotlib >= 3.11.0
+                cmap = matplotlib.pyplot.get_cmap(self.properties['color'])
             self.colormap = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
 
         if self.properties['compact_arcs_level'] == '2' and \

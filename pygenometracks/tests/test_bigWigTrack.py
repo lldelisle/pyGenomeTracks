@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-import matplotlib as mpl
-mpl.use('agg')
-from matplotlib.testing.compare import compare_images
-from tempfile import NamedTemporaryFile
 import os.path
+from tempfile import NamedTemporaryFile
+
+import matplotlib as mpl
+from get_matplotlib_CI_version import get_CI_mpl_version
+from matplotlib.testing.compare import compare_images
+
 import pygenometracks.plotTracks
+
+mpl.use('agg')
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                     "test_data")
@@ -437,9 +441,16 @@ with open(os.path.join(ROOT, "example_op2.ini"), 'w') as fh:
     fh.write(tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = get_CI_mpl_version()
 
 
 def test_bigwig_track():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 21
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bigwig_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "bigwig.ini")
@@ -450,13 +461,19 @@ def test_bigwig_track():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_bigwig_track_chr_end():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 20
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bigwig_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "bigwig.ini")
@@ -467,13 +484,19 @@ def test_bigwig_track_chr_end():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_bigwig_track_above_chr_end():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 18
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bigwig_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "bigwig.ini")
@@ -484,13 +507,19 @@ def test_bigwig_track_above_chr_end():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_alpha():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 28
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bigwig_alpha_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "alpha.ini")
@@ -501,13 +530,19 @@ def test_alpha():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_hlines():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 26
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bigwig_hlines_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "hlines.ini")
@@ -518,13 +553,19 @@ def test_hlines():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_grid():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 17
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bigwig_grid_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "grid.ini")
@@ -535,13 +576,19 @@ def test_grid():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_op():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 16
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bigwig_op_test_',
                                  delete=False)
     for pref in ['', 'incorrect_']:
@@ -553,7 +600,7 @@ def test_op():
                f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
@@ -562,6 +609,12 @@ def test_op():
 
 
 def test_op_fakeChr():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 16
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bigwig_op_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "operation.ini")
@@ -572,7 +625,7 @@ def test_op_fakeChr():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -633,6 +686,12 @@ def test_width():
 
 
 def test_op_chr_in_only_one_bw():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 14
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bigwig_op_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "example_op.ini")
@@ -642,7 +701,7 @@ def test_op_chr_in_only_one_bw():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)

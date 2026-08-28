@@ -1,7 +1,8 @@
-from . GenomeTrack import GenomeTrack, DEFAULT_BED_COLOR
-from . BedTrack import BedTrack
-from matplotlib import font_manager
 import numpy as np
+from matplotlib import font_manager
+
+from .BedTrack import BedTrack
+from .GenomeTrack import DEFAULT_BED_COLOR, GenomeTrack
 
 DISPLAY_BED_VALID = ['collapsed', 'triangles', 'interleaved', 'stacked', 'squares', 'deletions', 'inversions']
 DISPLAY_BED_SYNONYMOUS = {'interlaced': 'interleaved', 'domain': 'interleaved'}

@@ -1,16 +1,16 @@
-import sys
-import os
 import gzip
-import numpy as np
-from tqdm import tqdm
-from intervaltree import IntervalTree, Interval
-import pybedtools
+import logging
+import math
+import os
+import sys
 import tempfile
 import warnings
-import logging
-from matplotlib.ticker import Formatter
-import math
 
+import numpy as np
+import pybedtools
+from intervaltree import Interval, IntervalTree
+from matplotlib.ticker import Formatter
+from tqdm import tqdm
 
 FORMAT = "[%(levelname)s:%(filename)s:%(lineno)s - %(funcName)20s()] %(message)s"
 logging.basicConfig(format=FORMAT)

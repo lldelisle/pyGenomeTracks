@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+from tempfile import NamedTemporaryFile
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from pygenometracks.utilities import MyBasePairFormatter
-from tempfile import NamedTemporaryFile
 import pytest
+
+from pygenometracks.utilities import MyBasePairFormatter
+
 mpl.use('agg')
 
 outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',

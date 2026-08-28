@@ -10,5 +10,11 @@ pgt --tracks ./examples/bedgraph_matrix_lines.ini --region X:2000000-3500000 -o 
 pgt --tracks ./examples/chr2-231091223_231109786_231113600.ini --region chr2:231107879-231115507 -t 'chr2:231109786-231113600 (sQTL = 2:231091223, ALT=G)' --width 9 --trackLabelFraction 0.01 -out ./examples/sashimi_example.pdf --fontSize 4
 
 # The following examples require a modification of pygenometracks (adding a new track class)
+# cp examples/helloWorldTrack.py pygenometracks/tracks/
+# python -m pip install .
 # pgt --tracks ./examples/new_track.ini --region X:3000000-3200000 -o ./examples/new_track.png
+# rm pygenometracks/tracks/helloWorldTrack.py
+# cp examples/BedMatrixExampleTrack.py pygenometracks/tracks/
+# python -m pip install .
 # pgt --tracks ./examples/bedgraph_matrix.ini --region X:2000000-3500000 -o ./examples/bedgraph_matrix.png
+# rm pygenometracks/tracks/BedMatrixExampleTrack.py

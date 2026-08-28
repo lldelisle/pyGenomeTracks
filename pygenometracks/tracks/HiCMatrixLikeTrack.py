@@ -1,12 +1,14 @@
-from hicmatrix import HiCMatrix
-import hicmatrix.utilities
-import scipy.sparse
-from matplotlib import cm
-import numpy as np
-from . GenomeTrack import GenomeTrack
-from .. utilities import change_chrom_names
-import logging
 import copy
+import logging
+
+import hicmatrix.utilities
+import matplotlib
+import numpy as np
+import scipy.sparse
+from hicmatrix import HiCMatrix
+
+from ..utilities import change_chrom_names
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_MATRIX_COLORMAP = 'RdYlBu_r'
 logging.basicConfig(level=logging.DEBUG)
@@ -196,7 +198,12 @@ show_masked_bins = false
         self.process_color('colormap', colormap_possible=True,
                            colormap_only=True, default_value_is_colormap=True)
 
-        self.cmap = copy.copy(cm.get_cmap(self.properties['colormap']))
+        try:
+            # Matplotlib < 3.11.0
+            self.cmap = copy.copy(matplotlib.cm.get_cmap(self.properties['colormap']))
+        except AttributeError:
+            # Matplotlib >= 3.11.0
+            self.cmap = copy.copy(matplotlib.pyplot.get_cmap(self.properties['colormap']))
         self.cmap.set_bad('black')
 
     def reduce_matrix(self, max_depth_in_bins):

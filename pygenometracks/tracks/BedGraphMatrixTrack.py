@@ -1,7 +1,8 @@
-from . BedGraphTrack import BedGraphTrack
-from . GenomeTrack import GenomeTrack
+import matplotlib
 import numpy as np
-from matplotlib import cm
+
+from .BedGraphTrack import BedGraphTrack
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_BEDGRAPHMATRIX_COLORMAP = 'viridis'
 DEFAULT_BEDGRAPHMATRIX_INDIVIDUAL = 'grey'
@@ -100,7 +101,12 @@ file_type = {TRACK_TYPE}
             self.process_color('colormap', colormap_possible=True,
                                colormap_only=True,
                                default_value_is_colormap=True)
-            self.cmap = cm.get_cmap(self.properties['colormap'])
+            try:
+                # Matplotlib < 3.11.0
+                self.cmap = matplotlib.cm.get_cmap(self.properties['colormap'])
+            except AttributeError:
+                # Matplotlib >= 3.11.0
+                self.cmap = matplotlib.pyplot.get_cmap(self.properties['colormap'])
         else:
             for param in ['individual_color', 'summary_color']:
                 self.process_color(param, colormap_possible=False)

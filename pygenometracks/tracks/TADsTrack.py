@@ -1,6 +1,7 @@
-from . BedTrack import BedTrack
-from . GenomeTrack import GenomeTrack, DEFAULT_BED_COLOR
 import numpy as np
+
+from .BedTrack import BedTrack
+from .GenomeTrack import DEFAULT_BED_COLOR, GenomeTrack
 
 
 class TADsTrack(BedTrack):
