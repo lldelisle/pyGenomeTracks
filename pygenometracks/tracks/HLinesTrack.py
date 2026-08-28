@@ -1,6 +1,7 @@
-from . GenomeTrack import GenomeTrack
 import numpy as np
-from .. utilities import InputError
+
+from ..utilities import InputError
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_HLINES_COLOR = 'black'
 

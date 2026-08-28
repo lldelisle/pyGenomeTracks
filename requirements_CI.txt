@@ -1,5 +1,5 @@
 numpy >=1.20
-matplotlib ==3.8.4 # For the tests locally
+matplotlib ==3.11.1  # For the image generation + local tests + used in all the test modules
 intervaltree >=2.1.0
 pybigwig >=0.3.16
 future >=0.17.0
@@ -8,7 +8,7 @@ pysam >=0.14
 gffutils >=0.9
 pybedtools >=0.8.1
 tqdm >=4.20
-bx-python >=0.8.13, <0.13.0
+bx-python >=0.8.13
 pyfaidx >=0.1.3
 # Below are dependencies for tests
 pytest
@@ -22,3 +22,4 @@ flake8
 # For local test and coverage
 coverage
 coverage-badge
+setuptools<=80.10.2

@@ -18,7 +18,7 @@ stages:
           python -m pip install --user --upgrade flake8
         displayName: install flake8
       - script:
-          flake8 . --exclude=.venv,.build,build --ignore=E501,F403,E402,F999,F405,E712,W503
+          flake8 . --exclude=.venv,.build,build --ignore=E501,W503
         displayName: linting
 - stage: test
   dependsOn: [lint]
@@ -30,15 +30,13 @@ stages:
         vmImage: 'ubuntu-latest'
       strategy:
         matrix:
-          Python38LowMatplotlib:
-            python.version: '3.8'
-            matplotlib.version: '3.1.1'
-          Python310HighMatplotlib:
+          Python310LowMatplotlib:
             python.version: '3.10'
             matplotlib.version: '3.8.4'
+          # I cannot use 3.13 because pairix has no 3.13 on bioconda
           Python312HighMatplotlib:
             python.version: '3.12'
-            matplotlib.version: '3.8.4'
+            matplotlib.version: '3.11.1'
 
       steps:
       - bash: |
@@ -56,21 +54,45 @@ stages:
           micromamba activate pygenometracks
           py.test pygenometracks --doctest-modules -n 4
         displayName: pytest
+    - job: HighPythonLinux
+      timeoutInMinutes: 0
+      pool:
+        vmImage: 'ubuntu-latest'
+      strategy:
+        matrix:
+          Python313:
+            python.version: '3.13'
+          Python314:
+            python.version: '3.14'
+      steps:
+      - bash: |
+          "${SHELL}" <(curl -L micro.mamba.pm/install.sh)
+        displayName: Install micromamba
+      - bash: |
+          micromamba create -n pygenometracks --yes -c conda-forge -c bioconda python=$(python.version) bedtools
+          eval "$(micromamba shell hook --shell bash)"
+          micromamba activate pygenometracks
+          python -m pip install -r requirements_CI.txt
+          python -m pip install .
+        displayName: installing dependencies
+      - script: |
+          eval "$(micromamba shell hook --shell bash)"
+          micromamba activate pygenometracks
+          py.test pygenometracks --doctest-modules -n 4
+        displayName: pytest
     - job: OSX
       timeoutInMinutes: 0
       pool:
         vmImage: 'macOS-latest'
       strategy:
         matrix:
-          Python38LowMatplotlib:
-            python.version: '3.8'
-            matplotlib.version: '3.1.1'
-          Python310HighMatplotlib:
+          Python310LowMatplotlib:
             python.version: '3.10'
             matplotlib.version: '3.8.4'
           Python312HighMatplotlib:
             python.version: '3.12'
-            matplotlib.version: '3.8.4'
+            matplotlib.version: '3.11.1'
+
       steps:
       - bash: |
           brew install micromamba

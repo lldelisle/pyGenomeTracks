@@ -2,23 +2,26 @@
 
 import logging
 import os
-from configparser import ConfigParser
 import time
-import numpy as np
+import warnings
+from collections import OrderedDict
+from configparser import ConfigParser
+
 import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib.patches import ConnectionPatch
-import matplotlib.textpath
+import matplotlib.cm
 import matplotlib.colors
 import matplotlib.gridspec
-import matplotlib.cm
+import matplotlib.pyplot as plt
+import matplotlib.textpath
 import mpl_toolkits.axisartist as axisartist
-from . utilities import file_to_intervaltree, change_chrom_names, MyBasePairFormatter, get_region
-from collections import OrderedDict
+import numpy as np
+from matplotlib.patches import ConnectionPatch
+
 from pygenometracks.tracks.GenomeTrack import GenomeTrack
 from pygenometracks.utilities import InputError
 
-import warnings
+from .utilities import (MyBasePairFormatter, change_chrom_names,
+                        file_to_intervaltree, get_region)
 
 matplotlib.use('Agg')
 # To be able to use pdf and ps in illustrator
