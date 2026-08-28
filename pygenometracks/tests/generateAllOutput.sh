@@ -187,3 +187,4 @@ pgt --tracks ./pygenometracks/tests/test_data/demo.ini --region chrX:3000000-350
 
 # sashimi
 pgt --tracks ./pygenometracks/tests/test_data/sashimi_tracks.ini --region chr2:231107879-231115507  --trackLabelFraction 0.23 --width 38 --dpi 130 -o ./pygenometracks/tests/test_data/master_sashimi.png
+pgt --tracks ./pygenometracks/tests/test_data/sashimi_tracks.ini --region X:3000000-3500000  --trackLabelFraction 0.23 --width 38 --dpi 130 -o ./pygenometracks/tests/test_data/master_sashimi_X.png

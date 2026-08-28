@@ -119,6 +119,22 @@ link_line_width = 2
 link_color = viridis
 grid = true
 file_type = sashimiBigWig
+
+[colormap min_value max_value]
+file = avg_chr2-231091223_231109786_231113600_0.bw
+link_file = chr2-231091223_231109786_231113600_0.sashimi
+title = link_color = viridis; link_line_width = 2; link_min_max_values to 0 1
+height = 3
+bw_color = pink
+max_value = 110
+show_data_range = no
+link_line_width = 2
+link_color = viridis
+link_min_value = 0
+link_max_value = 1
+link_labels = false
+link_scale_height = 10
+file_type = sashimiBigWig
 """
 
 with open(os.path.join(ROOT, "sashimi_tracks.ini"), 'w') as fh:
@@ -134,6 +150,24 @@ def test_sashimi_main():
     ini_file = os.path.join(ROOT, "sashimi_tracks.ini")
     region = "chr2:231107879-231115507"
     expected_file = os.path.join(ROOT, 'master_sashimi.png')
+    args = f"--tracks {ini_file} --region {region} "\
+           "--trackLabelFraction 0.23 --width 38 --dpi 130 "\
+           f"--outFileName {outfile.name}".split()
+    pygenometracks.plotTracks.main(args)
+    res = compare_images(expected_file,
+                         outfile.name, tolerance)
+    assert res is None, res
+
+    os.remove(outfile.name)
+
+
+def test_sashimi_X():
+
+    outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
+                                 delete=False)
+    ini_file = os.path.join(ROOT, "sashimi_tracks.ini")
+    region = "X:3000000-3500000"
+    expected_file = os.path.join(ROOT, 'master_sashimi_X.png')
     args = f"--tracks {ini_file} --region {region} "\
            "--trackLabelFraction 0.23 --width 38 --dpi 130 "\
            f"--outFileName {outfile.name}".split()
