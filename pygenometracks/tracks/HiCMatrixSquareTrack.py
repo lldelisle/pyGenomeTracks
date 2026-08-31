@@ -95,6 +95,8 @@ file_type = {TRACK_TYPE}
         # Using todense will replace all nan values by 0.
         matrix = np.asarray(matrix.todense().astype(float))
 
+        matrix = self.adjust_nans(matrix, idx, idx_y)
+
         matrix = matrix * self.properties['scale_factor']
 
         if self.properties['transform'] == 'log1p':

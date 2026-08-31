@@ -282,6 +282,27 @@ show_masked_bins = false
 
         return True, chrom_region
 
+    def adjust_nans(self, matrix, idx, idx_y):
+        """Insert nan values on masked bins
+
+        Args:
+            matrix (np.array): float 2D matrix from self.hic_ma on idx, idx_y
+            idx (:obj:`list` of :obj:`int`): indices of self.hic_ma.cut_intervals which correspond to the x of matrix
+            idx_y (:obj:`list` of :obj:`int`): indices of self.hic_ma.cut_intervals which correspond to the y of matrix
+        """
+        if (self.properties['show_masked_bins']
+                and self.hic_ma.nan_bins is not None
+                and len(self.hic_ma.nan_bins) > 0):
+            idx_array = np.array(idx)
+            idx_y_array = np.array(idx_y)
+            nan_local = np.where(np.isin(idx_array, self.hic_ma.nan_bins))[0]
+            nan_local_y = np.where(np.isin(idx_y_array, self.hic_ma.nan_bins))[0]
+            if len(nan_local) > 0:
+                matrix[nan_local, :] = np.nan
+            if len(nan_local_y) > 0:
+                matrix[:, nan_local_y] = np.nan
+        return matrix
+
     def plot(self, ax, chrom_region, region_start, region_end):
         return
 

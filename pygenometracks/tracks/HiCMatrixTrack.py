@@ -72,15 +72,7 @@ file_type = {TRACK_TYPE}
         # Using todense will replace all nan values by 0.
         matrix = np.asarray(matrix.todense().astype(float))
         
-        if (self.properties['show_masked_bins']
-                and self.hic_ma.nan_bins is not None
-                and len(self.hic_ma.nan_bins) > 0):
-            idx_array = np.array(idx)
-            nan_local = np.where(np.isin(idx_array, self.hic_ma.nan_bins))[0]
-            if len(nan_local) > 0:
-                matrix[nan_local, :] = np.nan
-                matrix[:, nan_local] = np.nan
-
+        matrix = self.adjust_nans(matrix, idx, idx)
 
         matrix = matrix * self.properties['scale_factor']
 
