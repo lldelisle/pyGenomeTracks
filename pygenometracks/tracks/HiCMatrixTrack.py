@@ -98,6 +98,8 @@ file_type = {TRACK_TYPE}
             # try to use a 'aesthetically pleasant' max value
             try:
                 vmax = np.nanpercentile(matrix.diagonal(1), 80)
+                if np.isnan(vmax):
+                    vmax = None
             except Exception:
                 vmax = None
 
