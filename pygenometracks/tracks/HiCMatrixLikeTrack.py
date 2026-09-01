@@ -41,6 +41,10 @@ transform = log1p
 # obtain an aesthetically pleasant output
 show_masked_bins = false
 # Choose the color of those lines when show_masked_bins is true
+# (before release 3.10 the color used was the same as a value of 0,
+#  use 'zero' to keep this behavior (default),
+#  this possibility will be dropped in 4.0)
+#nan_color = zero
 nan_color = black
 # optional if the values in the matrix need to be scaled the
 # following parameter can be used. This is useful to plot multiple hic-matrices on the same scale
@@ -57,7 +61,7 @@ nan_color = black
                            'max_value': None,
                            'min_value': None,
                            'rasterize': True,
-                           'nan_color': 'black',
+                           'nan_color': 'zero',
                            'colormap': DEFAULT_MATRIX_COLORMAP}
     NECESSARY_PROPERTIES = ['file']
     SYNONYMOUS_PROPERTIES = {'max_value': {'auto': None},
@@ -207,6 +211,10 @@ nan_color = black
         except AttributeError:
             # Matplotlib >= 3.11.0
             self.cmap = copy.copy(matplotlib.pyplot.get_cmap(self.properties['colormap']))
+        # To keep previous behaviour
+        self.nans_to_zeros = self.properties['nan_color'] == 'zero'
+        if self.nans_to_zeros:
+            self.properties['nan_color'] = 'black'
         self.cmap.set_bad(self.properties['nan_color'])
 
     def reduce_matrix(self, max_depth_in_bins):
@@ -293,6 +301,7 @@ nan_color = black
             idx_y (:obj:`list` of :obj:`int`): indices of self.hic_ma.cut_intervals which correspond to the y of matrix
         """
         if (self.properties['show_masked_bins']
+                and not self.nans_to_zeros
                 and self.hic_ma.nan_bins is not None
                 and len(self.hic_ma.nan_bins) > 0):
             idx_array = np.array(idx)
