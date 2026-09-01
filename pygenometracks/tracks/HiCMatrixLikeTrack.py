@@ -57,7 +57,7 @@ nan_color = black
                            'max_value': None,
                            'min_value': None,
                            'rasterize': True,
-                           'nan_color': 'black', 
+                           'nan_color': 'black',
                            'colormap': DEFAULT_MATRIX_COLORMAP}
     NECESSARY_PROPERTIES = ['file']
     SYNONYMOUS_PROPERTIES = {'max_value': {'auto': None},

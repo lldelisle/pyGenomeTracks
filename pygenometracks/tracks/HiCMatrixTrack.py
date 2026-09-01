@@ -71,7 +71,7 @@ file_type = {TRACK_TYPE}
             matrix = matrix - scipy.sparse.triu(matrix, k=depth_in_bins, format='csr')
         # Using todense will replace all nan values by 0.
         matrix = np.asarray(matrix.todense().astype(float))
-        
+
         matrix = self.adjust_nans(matrix, idx, idx)
 
         matrix = matrix * self.properties['scale_factor']
