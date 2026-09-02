@@ -7,9 +7,11 @@ for each track class or vtype. This table is included in the readthedocs
 This file is a markdown list with possible values.
 This can also be used in the readthedocs
 """
-from pygenometracks.tracksClass import PlotTracks, DEFAULT_TRACK_HEIGHT
-import numpy as np
 import os.path
+
+import numpy as np
+
+from pygenometracks.tracksClass import DEFAULT_TRACK_HEIGHT, PlotTracks
 
 not_used_string = ''
 not_set_string = 'not set'

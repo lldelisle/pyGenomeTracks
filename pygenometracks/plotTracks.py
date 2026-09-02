@@ -141,16 +141,17 @@ type = vlines
 
 """
 
-import sys
-import os
 import argparse
+import os
+import sys
 import warnings
-
 from importlib.metadata import version
 
-from pygenometracks.tracksClass import PlotTracks
-from .utilities import InputError, get_region
 import matplotlib.pyplot as plt
+
+from pygenometracks.tracksClass import PlotTracks
+
+from .utilities import InputError, get_region
 
 DEFAULT_FIGURE_WIDTH = 40  # in centimeters
 

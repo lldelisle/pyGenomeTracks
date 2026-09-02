@@ -1,7 +1,9 @@
-from . GenomeTrack import GenomeTrack
 import numpy as np
-from .. utilities import plot_coverage, InputError, transform, change_chrom_names
 import pyBigWig
+
+from ..utilities import (InputError, change_chrom_names, plot_coverage,
+                         transform)
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_BIGWIG_COLOR = '#33a02c'
 

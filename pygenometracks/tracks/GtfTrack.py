@@ -1,9 +1,10 @@
-from . GenomeTrack import GenomeTrack
-from . BedTrack import BedTrack
-from .. readGtf import ReadGtf
-from matplotlib import font_manager
-from .. utilities import temp_file_from_intersect
 import numpy as np
+from matplotlib import font_manager
+
+from ..readGtf import ReadGtf
+from ..utilities import temp_file_from_intersect
+from .BedTrack import BedTrack
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_BED_COLOR = '#1f78b4'
 DISPLAY_BED_VALID = ['collapsed', 'triangles', 'interleaved', 'stacked', 'squares', 'deletions', 'inversions']

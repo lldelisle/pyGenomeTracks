@@ -9,5 +9,11 @@ pgt --tracks ./examples/epilogos_track2.ini --region X:3100000-3150000 -o ./exam
 pgt --tracks ./examples/bedgraph_matrix_lines.ini --region X:2000000-3500000 -o ./examples/bedgraph_matrix_lines.png
 
 # The following examples require a modification of pygenometracks (adding a new track class)
+# cp examples/helloWorldTrack.py pygenometracks/tracks/
+# python -m pip install .
 # pgt --tracks ./examples/new_track.ini --region X:3000000-3200000 -o ./examples/new_track.png
+# rm pygenometracks/tracks/helloWorldTrack.py
+# cp examples/BedMatrixExampleTrack.py pygenometracks/tracks/
+# python -m pip install .
 # pgt --tracks ./examples/bedgraph_matrix.ini --region X:2000000-3500000 -o ./examples/bedgraph_matrix.png
+# rm pygenometracks/tracks/BedMatrixExampleTrack.py

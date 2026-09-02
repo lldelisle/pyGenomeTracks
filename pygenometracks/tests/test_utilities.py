@@ -1,8 +1,9 @@
-import unittest
 import os
-from pygenometracks import utilities
+import unittest
+
 import matplotlib.pyplot as plt
 
+from pygenometracks import utilities
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                     "test_data")

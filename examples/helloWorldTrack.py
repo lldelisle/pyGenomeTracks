@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from . GenomeTrack import GenomeTrack
 import numpy as np
+
+from .GenomeTrack import GenomeTrack
 
 
 class TextTrack(GenomeTrack):

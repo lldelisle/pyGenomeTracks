@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 from importlib.metadata import version
+
 from pygenometracks.tracksClass import PlotTracks
 
 

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-import sys
 import collections
-from .utilities import to_string, InputError
+import sys
+
+from .utilities import InputError, to_string
 
 
 class ReadBed(object):

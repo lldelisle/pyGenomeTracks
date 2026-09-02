@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
-from . BedGraphTrack import BedGraphTrack
-from . GenomeTrack import GenomeTrack
+
 import json
-from matplotlib.patches import Rectangle
-from matplotlib.collections import PatchCollection
-from matplotlib import cm
+
+import matplotlib
 import numpy as np
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Rectangle
+
+from .BedGraphTrack import BedGraphTrack
+from .GenomeTrack import GenomeTrack
 
 
 class EpilogosTrack(BedGraphTrack):
@@ -70,7 +73,12 @@ file_type = {TRACK_TYPE}
         Plots a bedgraph matrix file, that instead of having
         a single value per bin, it has several values.
         """
-        cmap = cm.get_cmap('tab20b')
+        try:
+            # Matplotlib < 3.11.0
+            cmap = matplotlib.cm.get_cmap('tab20b')
+        except AttributeError:
+            # Matplotlib >= 3.11.0
+            cmap = matplotlib.pyplot.get_cmap('tab20b')
 
         values_list, pos_list = self.get_scores(chrom_region, start_region, end_region)
         if pos_list == []:

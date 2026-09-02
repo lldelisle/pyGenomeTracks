@@ -1,6 +1,7 @@
-from . BedTrack import BedTrack
-from . GenomeTrack import GenomeTrack
 import numpy as np
+
+from .BedTrack import BedTrack
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_BED_COLOR = '#1f78b4'
 

@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-import matplotlib as mpl
-from matplotlib.testing.compare import compare_images
-from tempfile import NamedTemporaryFile
 import os.path
+from tempfile import NamedTemporaryFile
+
+import matplotlib as mpl
+from get_matplotlib_CI_version import get_CI_mpl_version
+from matplotlib.testing.compare import compare_images
+
 import pygenometracks.plotTracks
 from pygenometracks.utilities import InputError
+
 mpl.use('agg')
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -357,9 +361,15 @@ with open(os.path.join(ROOT, "arcs_overlay.ini"), 'w') as fh:
     fh.write(browser_tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = get_CI_mpl_version()
 
 
 def test_short_long_arcs():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 16
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -372,7 +382,7 @@ def test_short_long_arcs():
                f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
@@ -384,6 +394,11 @@ def test_short_long_arcs():
 
 def test_use_middle_arcs():
 
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 20
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "arcs_use_middle.ini")
@@ -394,13 +409,18 @@ def test_use_middle_arcs():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_arcs_no_score():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 15
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -413,7 +433,7 @@ def test_arcs_no_score():
             f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
@@ -459,8 +479,9 @@ def test_arcs_invalid2():
 
 
 def test_squares_links():
-    if mpl.__version__ == "3.1.1":
-        my_tolerance = 18
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
     else:
         my_tolerance = tolerance
 
@@ -504,8 +525,9 @@ def test_squares_links_overlay():
 
 
 def test_arcs_overlay():
-    if mpl.__version__ == "3.1.1":
-        my_tolerance = 16
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 31
     else:
         my_tolerance = tolerance
 

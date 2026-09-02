@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-import matplotlib as mpl
-mpl.use('agg')
-from matplotlib.testing.compare import compare_images
-from tempfile import NamedTemporaryFile
 import os.path
+from tempfile import NamedTemporaryFile
+
+import matplotlib as mpl
+from get_matplotlib_CI_version import get_CI_mpl_version
+from matplotlib.testing.compare import compare_images
+
 import pygenometracks.plotTracks
+
+mpl.use('agg')
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                     "test_data")
@@ -171,9 +175,16 @@ with open(os.path.join(ROOT, "bedgraph_matrix_line_colors.ini"), 'w') as fh:
     fh.write(tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = get_CI_mpl_version()
 
 
 def test_bedgraphmatrix_track():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 18
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bedgraph_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "bedgraph.ini")
@@ -184,13 +195,19 @@ def test_bedgraphmatrix_track():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_bedgraphmatrix_track_chr1():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 17
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bedgraph_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "bedgraph.ini")
@@ -201,13 +218,19 @@ def test_bedgraphmatrix_track_chr1():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_bedgraph_matrix_line_colors():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 19
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bedgraph_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "bedgraph_matrix_line_colors.ini")
@@ -218,13 +241,19 @@ def test_bedgraph_matrix_line_colors():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_bedgraphmatrix_track_overlap_chr_end():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 18
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bedgraph_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "bedgraph.ini")
@@ -235,13 +264,19 @@ def test_bedgraphmatrix_track_overlap_chr_end():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_bedgraphmatrix_track_over_chr_end():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 17
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='bedgraph_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "bedgraph.ini")
@@ -252,7 +287,7 @@ def test_bedgraphmatrix_track_over_chr_end():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)

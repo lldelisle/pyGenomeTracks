@@ -1,8 +1,9 @@
-from . GenomeTrack import GenomeTrack
 import numpy as np
-from .. utilities import get_length_w
 from matplotlib import font_manager
 from matplotlib.lines import Line2D
+
+from ..utilities import get_length_w
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_SCALEBAR_COLOR = 'black'
 

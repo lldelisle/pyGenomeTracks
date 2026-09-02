@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-import matplotlib as mpl
-mpl.use('agg')
-from matplotlib.testing.compare import compare_images
-from tempfile import NamedTemporaryFile
 import os.path
+from tempfile import NamedTemporaryFile
+
+import matplotlib as mpl
+from get_matplotlib_CI_version import get_CI_mpl_version
+from matplotlib.testing.compare import compare_images
+
 import pygenometracks.plotTracks
+
+mpl.use('agg')
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                     "test_data")
@@ -301,9 +305,15 @@ with open(os.path.join(ROOT, "ylims.ini"), 'w') as fh:
     fh.write(browser_tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = get_CI_mpl_version()
 
 
 def test_plot_tracks():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 32
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -315,13 +325,18 @@ def test_plot_tracks():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_empty_files():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 30
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -333,7 +348,7 @@ def test_plot_tracks_empty_files():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -359,6 +374,11 @@ def test_first_track_overlay():
 
 def test_plot_tracks_existing_chr_empty_tracks():
 
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 28
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "browser_tracks.ini")
@@ -369,15 +389,16 @@ def test_plot_tracks_existing_chr_empty_tracks():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_missing_chr():
-    if mpl.__version__ == "3.1.1":
-        my_tolerance = 16
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 28
     else:
         my_tolerance = tolerance
 
@@ -399,6 +420,11 @@ def test_plot_tracks_missing_chr():
 
 def test_plot_tracks_dec():
 
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 32
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "browser_tracks.ini")
@@ -410,13 +436,18 @@ def test_plot_tracks_dec():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_ylims():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 26
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -428,7 +459,7 @@ def test_plot_ylims():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
