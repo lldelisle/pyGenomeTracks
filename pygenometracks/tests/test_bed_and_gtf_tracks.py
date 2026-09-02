@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-import matplotlib as mpl
-mpl.use('agg')
-from matplotlib.testing.compare import compare_images
-from tempfile import NamedTemporaryFile
 import os.path
+from tempfile import NamedTemporaryFile
+
+import matplotlib as mpl
+from get_matplotlib_CI_version import get_CI_mpl_version
+from matplotlib.testing.compare import compare_images
+
 import pygenometracks.plotTracks
 from pygenometracks.utilities import InputError
 
+mpl.use('agg')
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                     "test_data")
@@ -1170,9 +1173,15 @@ with open(os.path.join(ROOT, "bed_displays.ini"), 'w') as fh:
     fh.write(browser_tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = get_CI_mpl_version()
 
 
 def test_plot_tracks_bed_and_gtf():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 30
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1184,13 +1193,18 @@ def test_plot_tracks_bed_and_gtf():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_arrow():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 29
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1202,13 +1216,18 @@ def test_plot_tracks_bed_arrow():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_arrow_zoom():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 27
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1221,13 +1240,18 @@ def test_plot_tracks_bed_arrow_zoom():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_flybase():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 23
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1240,13 +1264,18 @@ def test_plot_tracks_flybase():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_tssarrow():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 21
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1258,13 +1287,18 @@ def test_plot_tracks_tssarrow():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_tssarrow_zoom():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 18
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1276,13 +1310,18 @@ def test_plot_tracks_tssarrow_zoom():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_tssarrow_zoom2():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 19
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1294,13 +1333,18 @@ def test_plot_tracks_tssarrow_zoom2():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_with_maxLab():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 32
+    else:
+        my_tolerance = tolerance
 
     for suf in ['', '_incorrect', '_incorrect2']:
         outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
@@ -1313,7 +1357,7 @@ def test_plot_tracks_bed_with_maxLab():
                f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
@@ -1323,6 +1367,11 @@ def test_plot_tracks_bed_with_maxLab():
 
 
 def test_plot_tracks_bed_with_maxLab_zoom():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 28
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1334,13 +1383,19 @@ def test_plot_tracks_bed_with_maxLab_zoom():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_with_maxLab_BED():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 32
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
@@ -1358,13 +1413,18 @@ def test_plot_tracks_bed_with_maxLab_BED():
         expected_file = os.path.join(ROOT, expected_basename_file
                                      + extension)
         res = compare_images(expected_file,
-                             output_file, tolerance)
+                             output_file, my_tolerance)
         assert res is None, res
 
         os.remove(output_file)
 
 
 def test_plot_tracks_genes_rgb():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 26
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1377,7 +1437,7 @@ def test_plot_tracks_genes_rgb():
                f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
@@ -1387,6 +1447,11 @@ def test_plot_tracks_genes_rgb():
 
 
 def test_plot_tracks_bed_all_label_inside():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 21
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1399,13 +1464,18 @@ def test_plot_tracks_bed_all_label_inside():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_all_label_inside_Xdec():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 20
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1418,7 +1488,7 @@ def test_plot_tracks_bed_all_label_inside_Xdec():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -1461,6 +1531,12 @@ def test_bed_as_gtf():
 
 
 def test_plot_tracks_bed_scores():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 21
+    else:
+        my_tolerance = tolerance
+
     for suf in ['', '_incorrect']:
         outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                      delete=False)
@@ -1472,7 +1548,7 @@ def test_plot_tracks_bed_scores():
                f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
@@ -1481,6 +1557,12 @@ def test_plot_tracks_bed_scores():
 
 
 def test_bed_shuffle():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 31
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
 
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
@@ -1497,13 +1579,19 @@ def test_bed_shuffle():
         expected_file = os.path.join(ROOT, 'master_bed_shuffle_'
                                      + region_str + extension)
         res = compare_images(expected_file,
-                             output_file, tolerance)
+                             output_file, my_tolerance)
         assert res is None, res
 
         os.remove(output_file)
 
 
 def test_plot_tracks_bed_vlines():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 23
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
     outfile = NamedTemporaryFile(suffix=extension, prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1521,7 +1609,7 @@ def test_plot_tracks_bed_vlines():
             expected_file = os.path.join(ROOT, 'master_bed_vlines_'
                                          + region_str + extension)
             res = compare_images(expected_file,
-                                 output_file, tolerance)
+                                 output_file, my_tolerance)
             assert res is None, res
 
             os.remove(output_file)
@@ -1530,6 +1618,11 @@ def test_plot_tracks_bed_vlines():
 
 
 def test_plot_tracks_genes_italic():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 34
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1541,13 +1634,18 @@ def test_plot_tracks_genes_italic():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_different_UTR():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 31
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1559,13 +1657,19 @@ def test_plot_tracks_bed_different_UTR():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_vhighlight():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 33
+    else:
+        my_tolerance = tolerance
+
     for suf in ['', '_incorrect']:
         ini_file = os.path.join(ROOT, f"vhighlight{suf}.ini")
         outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
@@ -1577,7 +1681,7 @@ def test_vhighlight():
             f"--outFileName {outfile.name}".split()
         pygenometracks.plotTracks.main(args)
         res = compare_images(expected_file,
-                             outfile.name, tolerance)
+                             outfile.name, my_tolerance)
         assert res is None, res
 
         os.remove(outfile.name)
@@ -1587,6 +1691,11 @@ def test_vhighlight():
 
 
 def test_vhighlight_chrX():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 23
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1598,13 +1707,18 @@ def test_vhighlight_chrX():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_gtf_merge_overlapping_exons():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 31
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1616,13 +1730,18 @@ def test_plot_gtf_merge_overlapping_exons():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_gtf_no_exon():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 27
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1634,13 +1753,18 @@ def test_plot_gtf_no_exon():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_bed_squares():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1652,7 +1776,7 @@ def test_plot_bed_squares():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -1679,6 +1803,11 @@ def test_rtf():
 
 def test_plot_gtf_long_intron():
 
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 45
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, 'gtf_long_intron.ini')
@@ -1689,7 +1818,7 @@ def test_plot_gtf_long_intron():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
@@ -1715,6 +1844,11 @@ def test_bed_inverted():
 
 def test_bed_exonarrows():
 
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 22
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, 'bed_exonarrows_tracks.ini')
@@ -1725,13 +1859,19 @@ def test_bed_exonarrows():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_plot_tracks_bed_deletions():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 26
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
     ini_file = os.path.join(ROOT, "bed_deletions.ini")
     for region, expected_basename_file in [("chr1:0-500000", "master_bed_deletions"),
@@ -1746,13 +1886,19 @@ def test_plot_tracks_bed_deletions():
         expected_file = os.path.join(ROOT, expected_basename_file
                                      + extension)
         res = compare_images(expected_file,
-                             output_file, tolerance)
+                             output_file, my_tolerance)
         assert res is None, res
 
         os.remove(output_file)
 
 
 def test_plot_tracks_bed_inversions():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 25
+    else:
+        my_tolerance = tolerance
+
     extension = '.png'
     ini_file = os.path.join(ROOT, "bed_inversions.ini")
     for region, expected_basename_file in [("chr1:0-500000", "master_bed_inversions"),
@@ -1767,13 +1913,18 @@ def test_plot_tracks_bed_inversions():
         expected_file = os.path.join(ROOT, expected_basename_file
                                      + extension)
         res = compare_images(expected_file,
-                             output_file, tolerance)
+                             output_file, my_tolerance)
         assert res is None, res
 
         os.remove(output_file)
 
 
 def test_plot_tracks_bed_displays():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 24
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -1785,7 +1936,7 @@ def test_plot_tracks_bed_displays():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
