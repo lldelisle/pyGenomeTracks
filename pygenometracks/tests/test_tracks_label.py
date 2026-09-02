@@ -212,6 +212,7 @@ def test_non_existing_dir():
 
     outdir.cleanup()
 
+
 def test_bed_with_multiple_regions_with_identical_names():
 
     ini_file = os.path.join(ROOT, "title.ini")
@@ -230,4 +231,3 @@ def test_bed_with_multiple_regions_with_identical_names():
     all_files = os.listdir(outdir.name)
     assert len(all_files) == 4
     assert set(all_files) == {'test.bed', 'test_name1.png', 'test_name2.png', 'test_X-0-20.png'}
-    
