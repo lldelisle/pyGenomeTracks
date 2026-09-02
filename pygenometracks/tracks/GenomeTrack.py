@@ -256,7 +256,6 @@ height = 2
             else:
                 # There is a transformation and we want to display original values
                 original_values = [untransform(t, transform, log_pseudocount) for t in ticks_values]
-            print(original_values)
             max_abs_value = np.max(np.abs(original_values))
             try:
                 ticks_labels = [value_to_str(t, max_signs=DEFAULT_MAX_SIGNS,
