@@ -183,7 +183,7 @@ def parse_arguments(args=None):
                        help='Instead of a region, a file containing the regions to plot, in BED format, '
                        'can be given. If this is the case, multiple files will be created. '
                        'It will use the value of --outFileName as a template'
-                       ' and put the coordinates between the file name and the extension.',
+                       ' and put either the name in 4th column or the coordinates between the file name and the extension.',
                        type=argparse.FileType('r')
                        )
 
@@ -252,31 +252,41 @@ def main(args=None):
 
     args = parse_arguments().parse_args(args)
 
-    # Identify the regions to plot:
+    # Identify the regions to plot and potential name for them:
+    named_regions = {}
     if args.BED:
-        regions = []
         for line in args.BED.readlines():
+            values = line.strip().split('\t')
             try:
-                chrom, start, end = line.strip().split('\t')[0:3]
+                chrom, start, end = values[0:3]
             except ValueError:
                 continue
             try:
                 start, end = map(int, [start, end])
             except ValueError as detail:
-                warnings.warn(f"Invalid value found at line\t{line}\t. {detail}\n")
+                warnings.warn(f"Invalid value found at line\n{line}\n{detail}\n")
                 continue
-            regions.append((chrom, start, end))
+            region_name = f"{chrom}-{start}-{end}"
+            if len(values) > 3:
+                potential_region_name = values[3]
+                if potential_region_name in named_regions:
+                    warnings.warn("Duplicated named region found at line\n"
+                                  f"{line}\nwill ignore region name")
+                else:
+                    region_name = potential_region_name
+            named_regions[region_name] = (chrom, start, end)
     else:
-        regions = [get_region(args.region)]
+        named_regions['main'] = get_region(args.region)
 
-    if len(regions) == 0:
+    if len(named_regions) == 0:
         raise InputError("There is no valid regions to plot.")
 
     # Create all the tracks
     trp = PlotTracks(args.tracks.name, args.width, fig_height=args.height,
                      fontsize=args.fontSize, dpi=args.dpi,
                      track_label_width=args.trackLabelFraction,
-                     plot_regions=regions, plot_width=args.plotWidth)
+                     plot_regions=list(named_regions.values()),
+                     plot_width=args.plotWidth)
 
     # Create dir if dir does not exists:
     # Modified from https://stackoverflow.com/questions/12517451/automatically-creating-directories-with-file-output
@@ -287,8 +297,8 @@ def main(args=None):
         name = args.outFileName.split(".")
         file_suffix = name[-1]
         file_prefix = ".".join(name[:-1])
-        for chrom, start, end in regions:
-            file_name = f"{file_prefix}_{chrom}-{start}-{end}.{file_suffix}"
+        for name, (chrom, start, end) in named_regions.items():
+            file_name = f"{file_prefix}_{name}.{file_suffix}"
             if end - start < 200000:
                 warnings.warn("A region shorter than 200kb has been "
                               "detected! This can be too small to return "
@@ -299,7 +309,7 @@ def main(args=None):
                                    decreasing_x_axis=args.decreasingXAxis)
             plt.close(current_fig)
     else:
-        current_fig = trp.plot(args.outFileName, *regions[0], title=args.title,
+        current_fig = trp.plot(args.outFileName, *named_regions['main'], title=args.title,
                                h_align_titles=args.trackLabelHAlign,
                                decreasing_x_axis=args.decreasingXAxis)
         plt.close(current_fig)

@@ -211,3 +211,23 @@ def test_non_existing_dir():
     assert res is None, res
 
     outdir.cleanup()
+
+def test_bed_with_multiple_regions_with_identical_names():
+
+    ini_file = os.path.join(ROOT, "title.ini")
+
+    outdir = TemporaryDirectory()
+    bed_file = os.path.join(outdir.name, 'test.bed')
+    with open(bed_file, 'w') as f:
+        f.write('X\t0\t10\tname1\n')
+        f.write('X\t0\t20\tname1\n')
+        f.write('X\t0\t50\tname2\n')
+    output_file = os.path.join(outdir.name, "test.png")
+    args = f"--tracks {ini_file} --BED {bed_file} "\
+           "--trackLabelFraction 0.2 --width 38 --dpi 130 "\
+           f"--outFileName {output_file}".split()
+    pygenometracks.plotTracks.main(args)
+    all_files = os.listdir(outdir.name)
+    assert len(all_files) == 4
+    assert set(all_files) == {'test.bed', 'test_name1.png', 'test_name2.png', 'test_X-0-20.png'}
+    
