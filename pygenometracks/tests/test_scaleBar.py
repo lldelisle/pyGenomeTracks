@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
-import matplotlib as mpl
-from matplotlib.testing.compare import compare_images
-from tempfile import NamedTemporaryFile
 import os.path
+from tempfile import NamedTemporaryFile
+
+import matplotlib as mpl
+from get_matplotlib_CI_version import get_CI_mpl_version
+from matplotlib.testing.compare import compare_images
+
 import pygenometracks.plotTracks
+
 mpl.use('agg')
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -208,9 +212,15 @@ with open(os.path.join(ROOT, "scalebar_wrong_param3.ini"), 'w') as fh:
     fh.write(browser_tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = get_CI_mpl_version()
 
 
 def test_scale_bar():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 27
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -222,13 +232,18 @@ def test_scale_bar():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_scale_bar_zoom():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 26
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -240,13 +255,18 @@ def test_scale_bar_zoom():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_scale_bar_startend():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 43
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -258,13 +278,18 @@ def test_scale_bar_startend():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_scale_bar_startend_dec():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 43
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -277,13 +302,18 @@ def test_scale_bar_startend_dec():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_scale_bar_startend_outside():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 42
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -295,13 +325,18 @@ def test_scale_bar_startend_outside():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_scale_bar_startend_superzoom():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 44
+    else:
+        my_tolerance = tolerance
 
     outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
                                  delete=False)
@@ -313,7 +348,7 @@ def test_scale_bar_startend_superzoom():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)

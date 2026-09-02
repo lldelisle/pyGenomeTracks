@@ -30,6 +30,8 @@ pgt --tracks ./pygenometracks/tests/test_data/bed_deletions.ini --region chr1:0-
 pgt --tracks ./pygenometracks/tests/test_data/bed_inversions.ini --region chr1:0-500000 --trackLabelFraction 0.2 --width 38 --dpi 130 -o ./pygenometracks/tests/test_data/master_bed_inversions.png
 pgt --tracks ./pygenometracks/tests/test_data/bed_inversions.ini --region chr1:0-210000 --trackLabelFraction 0.2 --width 38 --dpi 130 -o ./pygenometracks/tests/test_data/master_bed_inversions_zoom.png
 pgt --tracks ./pygenometracks/tests/test_data/bed_displays.ini --region chrX:960000-1170000 --trackLabelFraction 0.2 --width 38 --dpi 130 -o ./pygenometracks/tests/test_data/master_bed_displays.png
+pgt --tracks pygenometracks/tests/test_data/bed_different_UTR.ini --region chr1:0-500 --trackLabelFraction 0.2 --width 38 --dpi 130 -o pygenometracks/tests/test_data/master_different_UTR.png
+pgt --tracks pygenometracks/tests/test_data/bed_squares_overlay.ini --region X:3000000-3300000 --trackLabelFraction 0.2 --width 38 --dpi 130 -o pygenometracks/tests/test_data/master_bed_squares_overlay.png
 
 # non_classical_bed
 pgt --tracks pygenometracks/tests/test_data/bed_unusual_formats.ini --region X:20000-40000 --trackLabelFraction 0.2 --width 38 --dpi 130 -o pygenometracks/tests/test_data/master_bed_unusual_formats.png
@@ -39,7 +41,6 @@ pgt --tracks pygenometracks/tests/test_data/invalid_blockCount.ini --region chrX
 pgt --tracks pygenometracks/tests/test_data/invalid_CDScoo.ini --region chrX:15000-24000 --trackLabelFraction 0.2 --width 38 --dpi 130 -o pygenometracks/tests/test_data/master_invalid_CDScoo.png
 pgt --tracks pygenometracks/tests/test_data/invalid_blocks.ini --region chrX:15000-24000 --trackLabelFraction 0.2 --width 38 --dpi 130 -o pygenometracks/tests/test_data/master_invalid_blocks.png
 pgt --tracks pygenometracks/tests/test_data/invalid_score.ini --region chrX:15000-24000 --trackLabelFraction 0.2 --width 38 --dpi 130 -o pygenometracks/tests/test_data/master_invalid_score.png
-pgt --tracks pygenometracks/tests/test_data/bed_different_UTR.ini --region chr1:0-500 --trackLabelFraction 0.2 --width 38 --dpi 130 -o pygenometracks/tests/test_data/master_different_UTR.png
 
 # test_bedGraphMatrixTrack:
 pgt --tracks ./pygenometracks/tests/test_data/bedgraph.ini --region X:2850000-3150000 --trackLabelFraction 0.2 --dpi 130 -o ./pygenometracks/tests/test_data/master_bedgraph.png

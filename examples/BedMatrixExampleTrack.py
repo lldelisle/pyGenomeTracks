@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from . BedGraphTrack import BedGraphTrack
-from . GenomeTrack import GenomeTrack
+
+from .BedGraphTrack import BedGraphTrack
+from .GenomeTrack import GenomeTrack
 
 
 class BedGraphMatrixTrack(BedGraphTrack):
