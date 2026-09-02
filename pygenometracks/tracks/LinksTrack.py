@@ -51,7 +51,7 @@ color = red
 #min_value = 0
 #max_value = 1.2
 # To use transparency, you can use alpha
-# default is 0.8
+# default is 1
 # alpha = 0.5
 # if line_width is not given, the score is used to set the line width
 # using the following formula (0.5 * square root(score)
@@ -76,7 +76,7 @@ file_type = {TRACK_TYPE}
                            'line_style': 'solid',
                            'orientation': None,
                            'color': DEFAULT_LINKS_COLOR,
-                           'alpha': 0.8,
+                           'alpha': 1,
                            'max_value': None,
                            'min_value': None,
                            'region': None,  # Cannot be set manually but is set by tracksClass
