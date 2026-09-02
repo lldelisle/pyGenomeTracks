@@ -212,40 +212,16 @@ height = 2
 with open(os.path.join(ROOT, "arcs_no_score.ini"), 'w') as fh:
     fh.write(browser_tracks)
 
-
-browser_tracks = """
-[arcs]
-title = loop with scores
-file = test_high_score.arcs
-color = cividis
-height = 2
-links_type = loops
-
-[arcs]
-title = arcs with scores
-file = test_high_score.arcs
-color = cividis
-height = 2
-min_value = 0
-max_value = 80
-
-[arcs]
-title = arcs without scores
-file = test_noscore.arcs
-color = cividis
-height = 2
-
-"""
 with open(os.path.join(ROOT, "arcs_no_score_incorrect.ini"), 'w') as fh:
-    fh.write(browser_tracks)
+    fh.write(browser_tracks.replace('color = blue', 'color = cividis'))
 
 with open(os.path.join(ROOT, "arcs_no_score_invalid_score.ini"), 'w') as fh:
-    fh.write(browser_tracks.replace('test_noscore.arcs',
-                                    'arcs_invalid_score.arcs'))
+    fh.write(browser_tracks.replace('file = test_noscore.arcs\ncolor = blue',
+                                    'file = arcs_invalid_score.arcs\ncolor = cividis'))
 
 with open(os.path.join(ROOT, "arcs_no_score_invalid_score2.ini"), 'w') as fh:
-    fh.write(browser_tracks.replace('test_noscore.arcs',
-                                    'arcs_invalid_score2.arcs'))
+    fh.write(browser_tracks.replace('file = test_noscore.arcs\ncolor = blue',
+                                    'file = arcs_invalid_score2.arcs\ncolor = cividis'))
 
 for suf in ['', '2']:
     browser_tracks = f"""
