@@ -27,11 +27,19 @@ file_has_header = false
 #line_width = 0.5
 # Size
 #marker_size = 45
+# set show_data_range to false to hide the text on the upper-left showing the data range
+show_data_range = true
+# the default for min_value and max_value is 'auto' which means that the scale will go
+# roughly from the minimum value found in the region plotted to the maximum value found.
+min_value = 0
+#max_value = auto
 # Optional. If not given is guessed from the file ending.
 file_type = {TRACK_TYPE}
     """
 
-    DEFAULTS_PROPERTIES = {'orientation': None,
+    DEFAULTS_PROPERTIES = {'max_value': None,
+                           'min_value': None,
+                           'show_data_range': True,'orientation': None,
                            'color': DEFAULT_GWAS_COLOR,
                            'border_color': 'black',
                            'line_width': 0.5,
@@ -39,11 +47,14 @@ file_type = {TRACK_TYPE}
                            'file_has_header': False}
 
     NECESSARY_PROPERTIES = ['file']
-    SYNONYMOUS_PROPERTIES = {}
+    SYNONYMOUS_PROPERTIES = {'max_value': {'auto': None},
+                             'min_value': {'auto': None}}
     POSSIBLE_PROPERTIES = {}
-    BOOLEAN_PROPERTIES = ['file_has_header']
+    BOOLEAN_PROPERTIES = ['file_has_header', 'show_data_range']
     STRING_PROPERTIES = ['title', 'file_type', 'file', 'color', 'border_color']
-    FLOAT_PROPERTIES = {'height': [0, np.inf],
+    FLOAT_PROPERTIES = {'max_value': [- np.inf, np.inf],
+                        'min_value': [- np.inf, np.inf],
+                        'height': [0, np.inf],
                         'marker_size': [0, np.inf],
                         'line_width': [0, np.inf]}
     INTEGER_PROPERTIES = {}
@@ -134,3 +145,5 @@ file_type = {TRACK_TYPE}
                    color=self.properties['color'], marker='o',
                    edgecolors=self.properties['border_color'],
                    linewidths=self.properties['line_width'])
+
+        self.adjust_ylim(ax)
