@@ -296,9 +296,12 @@ nan_color = black
         """Insert nan values on masked bins
 
         Args:
-            matrix (np.array): float 2D matrix from self.hic_ma on idx, idx_y
-            idx (:obj:`list` of :obj:`int`): indices of self.hic_ma.cut_intervals which correspond to the x of matrix
-            idx_y (:obj:`list` of :obj:`int`): indices of self.hic_ma.cut_intervals which correspond to the y of matrix
+            :param matrix: float 2D matrix from self.hic_ma on idx, idx_y
+            :type matrix: np.array
+            :param idx: indices of self.hic_ma.cut_intervals which correspond to the x of matrix
+            :type idx: list of int
+            :param idx_y: indices of self.hic_ma.cut_intervals which correspond to the y of matrix
+            :type idx_y: list of int
         """
         if (self.properties['show_masked_bins']
                 and not self.nans_to_zeros
