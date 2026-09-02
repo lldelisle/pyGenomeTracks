@@ -581,4 +581,3 @@ def test_arcs_alpha_is_applied():
 
     assert isinstance(artist, Arc)
     assert artist.get_alpha() == 0.25
-
