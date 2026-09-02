@@ -1,7 +1,9 @@
+import os.path
+from tempfile import NamedTemporaryFile
+
 import matplotlib as mpl
 from matplotlib.testing.compare import compare_images
-from tempfile import NamedTemporaryFile
-import os.path
+
 import pygenometracks.plotTracks
 
 mpl.use('agg')
@@ -74,10 +76,11 @@ def test_gwas_track_chrX():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance + 14) # 14 corresponds to the 'chr' on the x axis
+                         outfile.name, tolerance + 14)  # 14 corresponds to the 'chr' on the x axis
     assert res is None, res
 
     os.remove(outfile.name)
+
 
 def test_gwas_track_chrY():
     outfile = NamedTemporaryFile(suffix='.png', prefix='gwas_test_',

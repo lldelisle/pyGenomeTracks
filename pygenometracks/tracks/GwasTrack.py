@@ -1,10 +1,10 @@
-from .GenomeTrack import GenomeTrack
-from ..utilities import opener, count_lines, change_chrom_names
 import numpy as np
-from intervaltree import IntervalTree, Interval
+from intervaltree import Interval, IntervalTree
 from tqdm import tqdm
 
-from .. readGwas import ReadGwas
+from ..readGwas import ReadGwas
+from ..utilities import change_chrom_names, count_lines, opener
+from .GenomeTrack import GenomeTrack
 
 DEFAULT_GWAS_COLOR = '#ff7f00'
 
@@ -39,7 +39,8 @@ file_type = {TRACK_TYPE}
 
     DEFAULTS_PROPERTIES = {'max_value': None,
                            'min_value': None,
-                           'show_data_range': True,'orientation': None,
+                           'show_data_range': True,
+                           'orientation': None,
                            'color': DEFAULT_GWAS_COLOR,
                            'border_color': 'black',
                            'line_width': 0.5,
@@ -87,7 +88,7 @@ file_type = {TRACK_TYPE}
 
             if plot_regions is not None and record.chromosome not in chroms_to_plot:
                 continue
-            
+
             if record.chromosome not in interval_tree:
                 interval_tree[record.chromosome] = IntervalTree()
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import sys
 import collections
-from .utilities import to_string, InputError
+
+from .utilities import InputError, to_string
 
 
 class ReadGwas(object):
@@ -28,7 +28,7 @@ class ReadGwas(object):
 
         # Skip the header line if present
         if has_header:
-            header = next(self.file_handle)
+            next(self.file_handle)
             self.line_number += 1
 
     def __iter__(self):
