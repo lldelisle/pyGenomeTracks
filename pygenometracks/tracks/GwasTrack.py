@@ -1,5 +1,9 @@
 from .GenomeTrack import GenomeTrack
+from ..utilities import opener, count_lines
 import numpy as np
+from intervaltree import IntervalTree, Interval
+from tqdm import tqdm
+
 from .. readGwas import ReadGwas
 
 DEFAULT_GWAS_COLOR = '#ff7f00'
@@ -44,29 +48,88 @@ file_type = {TRACK_TYPE}
                         'line_width': [0, np.inf]}
     INTEGER_PROPERTIES = {}
 
-    def plot(self, ax, chrom, region_start, region_end):
+    def __init__(self, *args, **kwarg):
+        super(GwasTrack, self).__init__(*args, **kwarg)
+        self.interval_tree = self.process_gwas(self.properties['region'])
+
+    def process_gwas(self, plot_regions=None):
+        """Read the gwas file and store values in a IntervalTree
+
+        :param list plot_regions: list of plotted regions (like [(chrom1, start1, end1), (chrom2, start2, end2)]), defaults to None
+        :return None
+        """
+
+        total_length = count_lines(opener(self.properties['file']),
+                                   asBed=True)
+        gwas_file_h = ReadGwas(opener(self.properties['file']),
+                               has_header=self.properties['file_has_header'])
+
+        valid_intervals = 0
+        interval_tree = {}
+
+        if plot_regions is not None:
+            chroms_to_plot = set([v[0] for v in plot_regions])
+        else:
+            chroms_to_plot = None
+
+        for record in tqdm(gwas_file_h, total=total_length):
+
+            if plot_regions is not None and record.chromosome not in chroms_to_plot:
+                continue
+            
+            if record.chromosome not in interval_tree:
+                interval_tree[record.chromosome] = IntervalTree()
+
+            interval_tree[record.chromosome].add(Interval(record.position,
+                                                          record.position + 1, record))
+            valid_intervals += 1
+
+        try:
+            gwas_file_h.file_handle.close()
+        except AttributeError:
+            pass
+
+        if valid_intervals == 0:
+            self.log.warning("No valid intervals were found in file "
+                             f"{self.properties['file']} for regions"
+                             f"{plot_regions}.\n")
+
+        return interval_tree
+
+    def plot(self, ax, chrom_region, start_region, end_region):
         """
         Plot a scatter plot for the GWAS data.
         The p-values are transformed as -log10(pvalue), so the y-axis will show the exponents of the p-values.
 
         :param ax: matplotlib axis
-        :param chrom: chromosome name
-        :param region_start: start position of the region
-        :param region_end: end position of the region
+        :param chrom_region: chromosome name
+        :param start_region: start position of the region
+        :param end_region: end position of the region
         :return: None
         """
-        gwas_reader = ReadGwas(open(self.properties['file'], 'r'), has_header=self.properties['file_has_header'])
+        if chrom_region not in self.interval_tree.keys():
+            chrom_region_before = chrom_region
+            chrom_region = change_chrom_names(chrom_region)
+            if chrom_region not in self.interval_tree.keys():
+                self.log.warning("*Warning*\nNo interval was found when "
+                                 "overlapping with both "
+                                 f"{chrom_region_before}:{start_region}-{end_region}"
+                                 f" and {chrom_region}:{start_region}-{end_region}"
+                                 " inside the gwas file. "
+                                 "This will generate an empty track!!\n")
+                return
+
+        gwas_overlap = \
+            self.interval_tree[chrom_region][start_region:end_region]
 
         # Fill in the position and pvalues lists with data from the GWAS file
-        position = []
-        pvalues = []
-        for record in gwas_reader:
-            if record.chromosome == chrom and region_start <= record.position <= region_end:
-                position.append(record.position)
-                pvalues.append(-np.log10(record.pvalue) if record.pvalue > 0 else 0)  # Notice the -log10 transformation
+        position = [region.begin for region in gwas_overlap]
+        # Notice the -log10 transformation
+        y_values = [-np.log10(region.data.pvalue) if region.data.pvalue > 0 else 0
+                    for region in gwas_overlap]
 
         # Plot the scatterplot
-        ax.scatter(position, pvalues,
+        ax.scatter(position, y_values,
                    s=self.properties['marker_size'],
                    color=self.properties['color'], marker='o',
                    edgecolors=self.properties['border_color'],
