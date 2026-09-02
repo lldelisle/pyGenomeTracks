@@ -216,6 +216,9 @@ def parse_arguments(args=None):
                         help='Font size for the labels of the plot (default is 0.3 * figure width)',
                         type=float)
 
+    parser.add_argument('--fontFamily',
+                        help='Font family for the whole plot')
+
     parser.add_argument('--dpi',
                         help='Resolution for the image in case the'
                              ' ouput is a raster graphics image (e.g png, jpg) (default is 72)',
@@ -276,7 +279,8 @@ def main(args=None):
     trp = PlotTracks(args.tracks.name, args.width, fig_height=args.height,
                      fontsize=args.fontSize, dpi=args.dpi,
                      track_label_width=args.trackLabelFraction,
-                     plot_regions=regions, plot_width=args.plotWidth)
+                     plot_regions=regions, plot_width=args.plotWidth,
+                     fontfamily=args.fontFamily)
 
     # Create dir if dir does not exists:
     # Modified from https://stackoverflow.com/questions/12517451/automatically-creating-directories-with-file-output

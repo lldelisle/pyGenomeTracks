@@ -10,6 +10,7 @@ from configparser import ConfigParser
 import matplotlib
 import matplotlib.cm
 import matplotlib.colors
+import matplotlib.font_manager
 import matplotlib.gridspec
 import matplotlib.pyplot as plt
 import matplotlib.textpath
@@ -308,7 +309,8 @@ class PlotTracks(object):
     def __init__(self, tracks_file, fig_width=DEFAULT_FIGURE_WIDTH,
                  fig_height=None, fontsize=None, dpi=None,
                  track_label_width=0.1,
-                 plot_regions=None, plot_width=None):
+                 plot_regions=None, plot_width=None,
+                 fontfamily=None):
         self.fig_width = fig_width
         self.fig_height = fig_height
         self.dpi = dpi
@@ -337,6 +339,12 @@ class PlotTracks(object):
                 / (self.width_ratios[1] / sum(self.width_ratios))
 
         font = {'size': fontsize}
+        if fontfamily:
+            if fontfamily not in matplotlib.font_manager.get_font_names():
+                raise InputError(f"{fontfamily} is not available."
+                                 "Available font families are:\n"
+                                 f"{matplotlib.font_manager.get_font_names()}")
+            font['family'] = fontfamily
         matplotlib.rc('font', **font)
         # initialize each track
         self.track_obj_list = []

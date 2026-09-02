@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os.path
+import platform
 from tempfile import NamedTemporaryFile
 
 import matplotlib as mpl
@@ -457,6 +458,38 @@ def test_plot_ylims():
     args = f"--tracks {ini_file} --region {region} "\
            "--trackLabelFraction 0.2 --width 38 --dpi 130 "\
            f"--outFileName {outfile.name}".split()
+    pygenometracks.plotTracks.main(args)
+    res = compare_images(expected_file,
+                         outfile.name, my_tolerance)
+    assert res is None, res
+
+    os.remove(outfile.name)
+
+
+def test_plot_tracks_fontfamily():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 33
+    else:
+        my_tolerance = tolerance
+
+    if platform.system() == 'Linux':
+        fontfamily = 'DejaVu Sans Mono'
+        shortname = 'dsm'
+    else:
+        fontfamily = 'Courier New'
+        shortname = 'cn'
+
+    outfile = NamedTemporaryFile(suffix='.png', prefix='pyGenomeTracks_test_',
+                                 delete=False)
+    ini_file = os.path.join(ROOT, "browser_tracks.ini")
+    region = "X:3000000-3500000"
+    expected_file = os.path.join(ROOT, f'master_plot_{shortname}.png')
+    args = f"--tracks {ini_file} --region {region} "\
+           "--trackLabelFraction 0.2 --width 38 --dpi 130 "\
+           f"--outFileName {outfile.name}".split()
+    args.append('--fontFamily')
+    args.append(fontfamily)
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
                          outfile.name, my_tolerance)
