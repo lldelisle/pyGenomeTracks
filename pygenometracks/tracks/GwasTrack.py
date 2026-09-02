@@ -1,5 +1,5 @@
 from .GenomeTrack import GenomeTrack
-from ..utilities import opener, count_lines
+from ..utilities import opener, count_lines, change_chrom_names
 import numpy as np
 from intervaltree import IntervalTree, Interval
 from tqdm import tqdm
@@ -128,6 +128,7 @@ file_type = {TRACK_TYPE}
                                  f" and {chrom_region}:{start_region}-{end_region}"
                                  " inside the gwas file. "
                                  "This will generate an empty track!!\n")
+                self.adjust_ylim(ax)
                 return
 
         gwas_overlap = \
