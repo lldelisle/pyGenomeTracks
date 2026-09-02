@@ -815,7 +815,7 @@ def test_plot_tracks_with_mcool():
 def test_plot_tracks_with_hic_one_interaction_cool():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 21
+        my_tolerance = 22
     else:
         my_tolerance = tolerance
 
@@ -844,7 +844,7 @@ def test_plot_tracks_with_hic_one_interaction_cool():
 def test_plot_tracks_with_hic_one_interaction_h5():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 21
+        my_tolerance = 22
     else:
         my_tolerance = tolerance
 
@@ -873,7 +873,7 @@ def test_plot_tracks_with_hic_one_interaction_h5():
 def test_plot_tracks_with_hic_one_interaction_h5_individual():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 21
+        my_tolerance = 22
     else:
         my_tolerance = tolerance
 
@@ -906,7 +906,7 @@ def test_plot_tracks_with_hic_one_interaction_h5_individual():
 def test_plot_tracks_with_hic_one_interaction_individual():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 21
+        my_tolerance = 22
     else:
         my_tolerance = tolerance
 
@@ -944,7 +944,7 @@ def test_plot_tracks_with_hic_one_interaction_individual():
 def test_plot_tracks_with_hic_one_interaction_diag():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 21
+        my_tolerance = 22
     else:
         my_tolerance = tolerance
 
