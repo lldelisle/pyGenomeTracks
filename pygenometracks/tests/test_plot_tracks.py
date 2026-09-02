@@ -4,6 +4,7 @@ import platform
 from tempfile import NamedTemporaryFile
 
 import matplotlib as mpl
+import matplotlib.pyplot
 from get_matplotlib_CI_version import get_CI_mpl_version
 from matplotlib.testing.compare import compare_images
 
@@ -468,6 +469,8 @@ def test_plot_ylims():
 
 def test_plot_tracks_fontfamily():
 
+    default_fontfamily = matplotlib.pyplot.rcParams['font.family']
+
     if mpl.__version__ != default_mpl_version:
         my_tolerance = 33
     else:
@@ -496,3 +499,6 @@ def test_plot_tracks_fontfamily():
     assert res is None, res
 
     os.remove(outfile.name)
+
+    # After the test I restore
+    matplotlib.pyplot.rcParams['font.family'] = default_fontfamily
