@@ -73,6 +73,8 @@ file_type = {TRACK_TYPE}
 
         total_length = count_lines(opener(self.properties['file']),
                                    asBed=True)
+        if self.properties['file_has_header']:
+            total_length -= 1
         gwas_file_h = ReadGwas(opener(self.properties['file']),
                                has_header=self.properties['file_has_header'])
 
