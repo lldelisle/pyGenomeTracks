@@ -29,6 +29,9 @@ pip-log.txt
 nosetests.xml
 htmlcov
 
+# Other local test files
+requirements_CI_low.txt
+
 # Translations
 *.mo
 

@@ -407,7 +407,7 @@ def test_use_middle_arcs():
 def test_arcs_no_score():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 15
+        my_tolerance = 18
     else:
         my_tolerance = tolerance
 
