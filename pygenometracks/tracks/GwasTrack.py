@@ -9,35 +9,28 @@ class GwasTrack(GenomeTrack):
     SUPPORTED_ENDINGS = ['.gwas', '.linear', '.logistic', '.assoc', '.qassoc']  # this is used by make_tracks_file to guess the type of track based on file name
     TRACK_TYPE = 'gwas'
     OPTIONS_TXT = GenomeTrack.OPTIONS_TXT + f"""
-# Title of the track. Usually displayed to the right as a label
-title =
-# Height of the track    
-height =
-# File containing the data. We expect an IGV .gwas format file with the columns: CHR, BP, SNP and P. Optionally, extra
-# annotation columns can be added.
+# File containing the data. We expect an IGV .gwas format file with the columns: CHR, BP, SNP and P.
+# Optionally, extra annotation columns can be added.
 file =
-# Y label text
-ylabel =
-# Fontsize of the labels
-fontsize =
-# Color
-color =
+# Indicate if your file has a header:
+file_has_header = false
+# Each SNP will be plotted as a 'o' and you can control color/size etc...
+# Inside color
+#color = red
+# Border color
+#border_color = black
+# Line width
+#line_width = 0.5
+# Size
+#marker_size = 45
 # Optional. If not given is guessed from the file ending.
 file_type = {TRACK_TYPE}
     """
 
-    DEFAULTS_PROPERTIES = {'fontsize': 12,
-                           'orientation': None,
+    DEFAULTS_PROPERTIES = {'orientation': None,
                            'color': DEFAULT_GWAS_COLOR,
                            'border_color': 'black',
-                           'labels': True,
                            'line_width': 0.5,
-                           'max_labels': 60,
-                           'max_value': 1,
-                           'min_value': 0,
-                           'fontstyle': 'normal',
-                           'y_axis_max_val': None,
-                           'id_fontsize': 12,
                            'marker_size': 45,
                            'file_has_header': False}
 
@@ -45,9 +38,10 @@ file_type = {TRACK_TYPE}
     SYNONYMOUS_PROPERTIES = {}
     POSSIBLE_PROPERTIES = {}
     BOOLEAN_PROPERTIES = ['file_has_header']
-    STRING_PROPERTIES = ['title', 'file_type', 'file', 'color']
-    FLOAT_PROPERTIES = {'height': [0, np.inf], 'fontsize': [0, np.inf], 'id_fontsize': [0, np.inf],
-                        'marker_size': [0, np.inf], 'y_axis_max_val': [0, np.inf]}
+    STRING_PROPERTIES = ['title', 'file_type', 'file', 'color', 'border_color']
+    FLOAT_PROPERTIES = {'height': [0, np.inf],
+                        'marker_size': [0, np.inf],
+                        'line_width': [0, np.inf]}
     INTEGER_PROPERTIES = {}
 
     def plot(self, ax, chrom, region_start, region_end):
@@ -72,5 +66,8 @@ file_type = {TRACK_TYPE}
                 pvalues.append(-np.log10(record.pvalue) if record.pvalue > 0 else 0)  # Notice the -log10 transformation
 
         # Plot the scatterplot
-        ax.scatter(position, pvalues, s=self.properties['marker_size'], color=self.properties['color'], marker='o',
-                   edgecolors='black', linewidths=.66)
+        ax.scatter(position, pvalues,
+                   s=self.properties['marker_size'],
+                   color=self.properties['color'], marker='o',
+                   edgecolors=self.properties['border_color'],
+                   linewidths=self.properties['line_width'])
