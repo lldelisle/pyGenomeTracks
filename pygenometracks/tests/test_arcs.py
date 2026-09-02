@@ -193,12 +193,21 @@ min_value = 0
 max_value = 80
 
 [arcs]
+title = arcs with scores alpha = 0.25 line_width = 2
+file = test_high_score.arcs
+color = cividis
+height = 2
+line_width = 2
+alpha = 0.25
+min_value = 0
+max_value = 80
+
+[arcs]
 title = arcs without scores
 file = test_noscore.arcs
 color = blue
 line_width = 0.5
 height = 2
-
 """
 with open(os.path.join(ROOT, "arcs_no_score.ini"), 'w') as fh:
     fh.write(browser_tracks)
