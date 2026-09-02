@@ -2,6 +2,7 @@ import os.path
 from tempfile import NamedTemporaryFile
 
 import matplotlib as mpl
+from get_matplotlib_CI_version import get_CI_mpl_version
 from matplotlib.testing.compare import compare_images
 
 import pygenometracks.plotTracks
@@ -46,9 +47,16 @@ with open(os.path.join(ROOT, "gwas.ini"), 'w') as fh:
     fh.write(tracks)
 
 tolerance = 13  # default matplotlib pixed difference tolerance
+default_mpl_version = get_CI_mpl_version()
 
 
 def test_gwas_track():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 26
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='gwas_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "gwas.ini")
@@ -59,13 +67,19 @@ def test_gwas_track():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_gwas_track_chrX():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 15
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='gwas_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "gwas.ini")
@@ -76,13 +90,19 @@ def test_gwas_track_chrX():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance + 14)  # 14 corresponds to the 'chr' on the x axis
+                         outfile.name, my_tolerance + 14)  # 14 corresponds to the 'chr' on the x axis
     assert res is None, res
 
     os.remove(outfile.name)
 
 
 def test_gwas_track_chrY():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = 26
+    else:
+        my_tolerance = tolerance
+
     outfile = NamedTemporaryFile(suffix='.png', prefix='gwas_test_',
                                  delete=False)
     ini_file = os.path.join(ROOT, "gwas.ini")
@@ -93,7 +113,7 @@ def test_gwas_track_chrY():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, tolerance)
+                         outfile.name, my_tolerance)
     assert res is None, res
 
     os.remove(outfile.name)
