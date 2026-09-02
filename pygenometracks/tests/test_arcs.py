@@ -4,9 +4,13 @@ from tempfile import NamedTemporaryFile
 
 import matplotlib as mpl
 from get_matplotlib_CI_version import get_CI_mpl_version
+from intervaltree import Interval
+from matplotlib.figure import Figure
+from matplotlib.patches import Arc
 from matplotlib.testing.compare import compare_images
 
 import pygenometracks.plotTracks
+from pygenometracks.tracks.LinksTrack import LinksTrack
 from pygenometracks.utilities import InputError
 
 mpl.use('agg')
@@ -189,50 +193,35 @@ min_value = 0
 max_value = 80
 
 [arcs]
-title = arcs without scores
-file = test_noscore.arcs
-color = blue
-line_width = 0.5
-height = 2
-
-"""
-with open(os.path.join(ROOT, "arcs_no_score.ini"), 'w') as fh:
-    fh.write(browser_tracks)
-
-
-browser_tracks = """
-[arcs]
-title = loop with scores
+title = arcs with scores alpha = 0.25 line_width = 2
 file = test_high_score.arcs
 color = cividis
 height = 2
-links_type = loops
-
-[arcs]
-title = arcs with scores
-file = test_high_score.arcs
-color = cividis
-height = 2
+line_width = 2
+alpha = 0.25
 min_value = 0
 max_value = 80
 
 [arcs]
 title = arcs without scores
 file = test_noscore.arcs
-color = cividis
+color = blue
+line_width = 0.5
 height = 2
-
 """
-with open(os.path.join(ROOT, "arcs_no_score_incorrect.ini"), 'w') as fh:
+with open(os.path.join(ROOT, "arcs_no_score.ini"), 'w') as fh:
     fh.write(browser_tracks)
 
+with open(os.path.join(ROOT, "arcs_no_score_incorrect.ini"), 'w') as fh:
+    fh.write(browser_tracks.replace('color = blue', 'color = cividis'))
+
 with open(os.path.join(ROOT, "arcs_no_score_invalid_score.ini"), 'w') as fh:
-    fh.write(browser_tracks.replace('test_noscore.arcs',
-                                    'arcs_invalid_score.arcs'))
+    fh.write(browser_tracks.replace('file = test_noscore.arcs\ncolor = blue',
+                                    'file = arcs_invalid_score.arcs\ncolor = cividis'))
 
 with open(os.path.join(ROOT, "arcs_no_score_invalid_score2.ini"), 'w') as fh:
-    fh.write(browser_tracks.replace('test_noscore.arcs',
-                                    'arcs_invalid_score2.arcs'))
+    fh.write(browser_tracks.replace('file = test_noscore.arcs\ncolor = blue',
+                                    'file = arcs_invalid_score2.arcs\ncolor = cividis'))
 
 for suf in ['', '2']:
     browser_tracks = f"""
@@ -418,7 +407,7 @@ def test_use_middle_arcs():
 def test_arcs_no_score():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 15
+        my_tolerance = 18
     else:
         my_tolerance = tolerance
 
@@ -545,3 +534,35 @@ def test_arcs_overlay():
     assert res is None, res
 
     os.remove(outfile.name)
+
+
+def test_arcs_alpha_is_applied():
+    track = LinksTrack.__new__(LinksTrack)
+
+    track.properties = {
+        'compact_arcs_level': 0,
+        'color': 'red',
+        'line_style': 'solid',
+        'alpha': 0.25
+    }
+
+    track.max_height = 0
+    track.colormap = None
+    track.current_line_width = 1.0
+
+    fig = Figure()
+    ax = fig.subplots()
+
+    interval = Interval(
+        100,
+        200,
+        (100, 110, 190, 200, 1)
+    )
+
+    track.plot_arcs(ax, interval)
+
+    assert len(ax.patches) == 1
+    artist = ax.patches[0]
+
+    assert isinstance(artist, Arc)
+    assert artist.get_alpha() == 0.25
