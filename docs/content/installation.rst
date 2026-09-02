@@ -42,35 +42,7 @@ To get a specific version, one can specify it. For example:
 
 .. code:: bash
 
-    $ conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks=3.5 python=3.7
-
-Command line installation using ``conda`` and ``mamba``
--------------------------------------------------------
-
-
-However, we noticed that conda installation can be quite slow so using mamba can help.
-You first need to create the environment and install mamba:
-
-.. code:: bash
-
-    $ conda create -n pygenometracks -c bioconda -c conda-forge mamba python=3.9
-
-Then activate the environment and install pygenometracks with mamba:
-
-.. code:: bash
-
-    $ conda activate pygenometracks
-    $ mamba install -c conda-forge -c bioconda pygenometracks
-
-
-or if you want a specific version:
-
-
-.. code:: bash
-
-    $ conda create -n pygenometracks -c bioconda -c conda-forge mamba python=3.7
-    $ conda activate pygenometracks
-    $ mamba install -c conda-forge -c bioconda pygenometracks=3.5
+    $ conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks=3.9 python=3.12
 
 Command line installation using ``pip``
 -----------------------------------------
@@ -82,7 +54,7 @@ Install pyGenomeTracks using the following command:
 
 All python requirements should be automatically installed.
 
-Since version 3.5, pyGenomeTracks require BEDTools, do not forget to install it or load it into your environment.
+Since version 3.5, pyGenomeTracks uses BEDTools, do not forget to install it or load it into your environment.
 
 If you need to specify a specific path for the installation of the tools, make use of `pip install`'s numerous options:
 
@@ -105,14 +77,14 @@ You are highly recommended to use `conda install` rather than the following comp
 or if you want a particular release, choose one from https://github.com/deeptools/pygenometracks/releases:
 ::
 
-	$ wget https://github.com/deeptools/pyGenomeTracks/archive/3.1.tar.gz
+	$ wget https://github.com/deeptools/pyGenomeTracks/archive/3.9.tar.gz
 	$ tar -xzvf
 
 3. install the source code (if you don't have root permission, you can set
 a specific folder using the ``--prefix`` option)
 ::
 
-	$ python setup.py install --prefix /User/Tools/pyGenomeTracks3.1
+	$ python setup.py install --prefix /User/Tools/pyGenomeTracks3.9
 
 Galaxy installation
 --------------------

@@ -56,29 +56,7 @@ conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks
 To get a specific version, one can specify it. For example:
 
 ```bash
-conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks=3.5 python=3.7
-```
-
-However, we noticed that conda installation can be quite slow so using mamba can help.
-You first need to create the environment and install mamba:
-
-```bash
-conda create -n pygenometracks -c bioconda -c conda-forge mamba python=3.9
-```
-
-Then activate the environment and install pygenometracks with mamba:
-
-```bash
-conda activate pygenometracks
-mamba install -c conda-forge -c bioconda pygenometracks
-```
-
-or if you want a specific version:
-
-```bash
-conda create -n pygenometracks -c bioconda -c conda-forge mamba python=3.7
-conda activate pygenometracks
-mamba install -c conda-forge -c bioconda pygenometracks=3.5
+conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks=3.9 python=3.12
 ```
 
 Also, pyGenomeTracks can be installed using pip
