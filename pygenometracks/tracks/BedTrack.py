@@ -1,7 +1,6 @@
 import matplotlib
 import numpy as np
 from intervaltree import Interval, IntervalTree
-from matplotlib import font_manager
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, Polygon, Rectangle
 from tqdm import tqdm

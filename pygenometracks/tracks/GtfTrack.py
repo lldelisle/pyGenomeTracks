@@ -1,5 +1,4 @@
 import numpy as np
-from matplotlib import font_manager
 
 from ..readGtf import ReadGtf
 from ..utilities import temp_file_from_intersect

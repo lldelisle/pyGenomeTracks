@@ -491,7 +491,7 @@ class PlotTracks(object):
                     (DEFAULT_MARGINS['top'] - DEFAULT_MARGINS['bottom'])
 
             log.debug(f"Figure size in cm is {self.fig_width} x {fig_height}."
-                    f" Dpi is set to {self.dpi}\n")
+                      f" Dpi is set to {self.dpi}\n")
             fig = plt.figure(figsize=self.cm2inch(self.fig_width, fig_height))
 
             fig.subplots_adjust(wspace=0, hspace=0.0,
@@ -504,9 +504,9 @@ class PlotTracks(object):
                 fig.suptitle(title)
 
             grids = matplotlib.gridspec.GridSpec(len(track_height), 3,
-                                                height_ratios=track_height,
-                                                width_ratios=self.width_ratios,
-                                                wspace=0.01)
+                                                 height_ratios=track_height,
+                                                 width_ratios=self.width_ratios,
+                                                 wspace=0.01)
             axis_list = []
             # skipped_tracks is the count of tracks that have the
             # 'overlay_previous' parameter and should be skipped
@@ -549,7 +549,7 @@ class PlotTracks(object):
                 track.plot(plot_axis, chrom, start, end)
                 track.plot_y_axis(y_axis, plot_axis)
                 track.plot_label(label_axis, width_dpi=width_dpi,
-                                h_align=h_align_titles)
+                                 h_align=h_align_titles)
 
                 if track.properties['overlay_previous'] == 'share-y':
                     plot_axis.set_ylim(ylim)

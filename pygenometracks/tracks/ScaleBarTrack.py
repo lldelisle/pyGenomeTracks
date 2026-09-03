@@ -1,5 +1,4 @@
 import numpy as np
-from matplotlib import font_manager
 from matplotlib.lines import Line2D
 
 from ..utilities import get_length_w
