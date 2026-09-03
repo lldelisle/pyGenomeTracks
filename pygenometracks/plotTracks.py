@@ -264,14 +264,16 @@ def main(args=None):
             try:
                 start, end = map(int, [start, end])
             except ValueError as detail:
-                warnings.warn(f"Invalid value found at line\n{line}\n{detail}\n")
+                warnings.warn(f"Invalid value found at line\n{line}{detail}\n")
                 continue
             region_name = f"{chrom}-{start}-{end}"
             if len(values) > 3:
                 potential_region_name = values[3]
                 if potential_region_name in named_regions:
-                    warnings.warn("Duplicated named region found at line\n"
-                                  f"{line}\nwill ignore region name")
+                    warnings.warn(f"Region name '{potential_region_name}' found at line\n"
+                                  f"{line}was already used for {named_regions[potential_region_name]}.\n"
+                                  "Plot for this line will be output"
+                                  f" to '{region_name}'")
                 else:
                     region_name = potential_region_name
             if region_name in named_regions:
@@ -279,8 +281,9 @@ def main(args=None):
                 if named_regions[region_name] == (chrom, start, end):
                     warnings.warn("Duplicated region found in the BED file.")
                 else:
-                    raise InputError(f"BED file contains a region with name {region_name}"
-                                     f"and the region {chrom}:{start}-{end}, there is a conflict."
+                    raise InputError(f"BED file contains a region with name '{region_name}'"
+                                     f" which is not {chrom}:{start}-{end} and"
+                                     f" the region {chrom}:{start}-{end}, there is a conflict."
                                      " Change your input BED file.")
             named_regions[region_name] = (chrom, start, end)
     else:
