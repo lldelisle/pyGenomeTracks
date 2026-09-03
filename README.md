@@ -53,32 +53,10 @@ The recommended way to install pyGenomeTracks is via conda
 conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks
 ```
 
-To get a specific version, one can specify it. For example:
+To get a specific version, one can specify it with:
 
 ```bash
-conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks=3.5 python=3.7
-```
-
-However, we noticed that conda installation can be quite slow so using mamba can help.
-You first need to create the environment and install mamba:
-
-```bash
-conda create -n pygenometracks -c bioconda -c conda-forge mamba python=3.9
-```
-
-Then activate the environment and install pygenometracks with mamba:
-
-```bash
-conda activate pygenometracks
-mamba install -c conda-forge -c bioconda pygenometracks
-```
-
-or if you want a specific version:
-
-```bash
-conda create -n pygenometracks -c bioconda -c conda-forge mamba python=3.7
-conda activate pygenometracks
-mamba install -c conda-forge -c bioconda pygenometracks=3.5
+conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks=<version>
 ```
 
 Also, pyGenomeTracks can be installed using pip
@@ -87,7 +65,7 @@ Also, pyGenomeTracks can be installed using pip
 pip install pyGenomeTracks
 ```
 
-Since version 3.5, pyGenomeTracks uses BEDTools, don't forget to install it or load it into your environment.
+Since version 3.5, pyGenomeTracks uses BEDTools, don't forget to install it or load it into your environment if you want to speed up the plot generation.
 
 Usage
 -----
