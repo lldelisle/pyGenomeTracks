@@ -254,3 +254,16 @@ def test_bed_with_name_that_matches_another_region():
         assert 'there is a conflict' in str(e)
     else:
         raise Exception("The silly BED should fail.")
+
+    # Do the contrary
+    with open(bed_file, 'w') as f:
+        f.write('X\t0\t20\n')
+        f.write('X\t0\t10\tX-0-20\n')
+    output_file = os.path.join(outdir.name, "test.png")
+    args = f"--tracks {ini_file} --BED {bed_file} "\
+           f"--outFileName {output_file}".split()
+    pygenometracks.plotTracks.main(args)
+    # This works:
+    all_files = os.listdir(outdir.name)
+    assert len(all_files) == 3
+    assert set(all_files) == {'test.bed', 'test_X-0-10.png', 'test_X-0-20.png'}
