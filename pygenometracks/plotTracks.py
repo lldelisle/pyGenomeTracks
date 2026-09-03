@@ -274,6 +274,14 @@ def main(args=None):
                                   f"{line}\nwill ignore region name")
                 else:
                     region_name = potential_region_name
+            if region_name in named_regions:
+                # region_name is f"{chrom}-{start}-{end}" but already present
+                if named_regions[region_name] == (chrom, start, end):
+                    warnings.warn("Duplicated region found in the BED file.")
+                else:
+                    raise InputError(f"BED file contains a region with name {region_name}"
+                                     f"and the region {chrom}:{start}-{end}, there is a conflict."
+                                     " Change your input BED file.")
             named_regions[region_name] = (chrom, start, end)
     else:
         named_regions['main'] = get_region(args.region)

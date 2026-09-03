@@ -7,6 +7,7 @@ from get_matplotlib_CI_version import get_CI_mpl_version
 from matplotlib.testing.compare import compare_images
 
 import pygenometracks.plotTracks
+from pygenometracks.utilities import InputError
 
 mpl.use('agg')
 
@@ -220,9 +221,11 @@ def test_bed_with_multiple_regions_with_identical_names():
     outdir = TemporaryDirectory()
     bed_file = os.path.join(outdir.name, 'test.bed')
     with open(bed_file, 'w') as f:
-        f.write('X\t0\t10\tname1\n')
-        f.write('X\t0\t20\tname1\n')
-        f.write('X\t0\t50\tname2\n')
+        f.write('X\t0\t10\tname1\n')  # First region will be output name1
+        f.write('X\t0\t20\tname1\n')  # name1 is already taken will output the region: X-0-20
+        f.write('X\t0\t50\tname2\n')  # will be output name2
+        f.write('X\t0\t20\tname2\n')  # name2 already taken X-0-20 also but the region matches
+        f.write('X\t0\t20\n')         # X-0-20 already taken but the region matches
     output_file = os.path.join(outdir.name, "test.png")
     args = f"--tracks {ini_file} --BED {bed_file} "\
            "--trackLabelFraction 0.2 --width 38 --dpi 130 "\
@@ -231,3 +234,23 @@ def test_bed_with_multiple_regions_with_identical_names():
     all_files = os.listdir(outdir.name)
     assert len(all_files) == 4
     assert set(all_files) == {'test.bed', 'test_name1.png', 'test_name2.png', 'test_X-0-20.png'}
+
+
+def test_bed_with_name_that_matches_another_region():
+
+    ini_file = os.path.join(ROOT, "title.ini")
+
+    outdir = TemporaryDirectory()
+    bed_file = os.path.join(outdir.name, 'test.bed')
+    with open(bed_file, 'w') as f:
+        f.write('X\t0\t10\tX-0-20\n')
+        f.write('X\t0\t20\n')
+    output_file = os.path.join(outdir.name, "test.png")
+    args = f"--tracks {ini_file} --BED {bed_file} "\
+           f"--outFileName {output_file}".split()
+    try:
+        pygenometracks.plotTracks.main(args)
+    except InputError as e:
+        assert 'there is a conflict' in str(e)
+    else:
+        raise Exception("The silly BED should fail.")
