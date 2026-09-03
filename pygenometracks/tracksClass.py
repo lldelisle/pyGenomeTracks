@@ -342,8 +342,8 @@ class PlotTracks(object):
         if fontfamily:
             if fontfamily not in matplotlib.font_manager.get_font_names():
                 raise InputError(f"{fontfamily} is not available."
-                                 "Available font families are:\n"
-                                 f"{matplotlib.font_manager.get_font_names()}")
+                                 "Available font families can be listed with:\n"
+                                 "`python -c 'import matplotlib.font_manager;print(matplotlib.font_manager.get_font_names())'`")
             font['family'] = fontfamily
         matplotlib.rc('font', **font)
         # initialize each track
