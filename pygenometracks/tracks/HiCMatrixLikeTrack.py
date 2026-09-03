@@ -297,7 +297,7 @@ nan_color = black
 
         Args:
             :param matrix: float 2D matrix from self.hic_ma on idx, idx_y
-            :type matrix: np.array
+            :type matrix: numpy.ndarray
             :param idx: indices of self.hic_ma.cut_intervals which correspond to the x of matrix
             :type idx: list of int
             :param idx_y: indices of self.hic_ma.cut_intervals which correspond to the y of matrix
