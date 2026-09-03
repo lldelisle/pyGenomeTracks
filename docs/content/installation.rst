@@ -38,11 +38,11 @@ We encourage users to use ``conda`` installation to install pygenometracks. All 
 
     $ conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks
 
-To get a specific version, one can specify it. For example:
+To get a specific version, one can specify it with:
 
 .. code:: bash
 
-    $ conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks=3.9 python=3.12
+    $ conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks=<version>
 
 Command line installation using ``pip``
 -----------------------------------------
@@ -54,37 +54,13 @@ Install pyGenomeTracks using the following command:
 
 All python requirements should be automatically installed.
 
-Since version 3.5, pyGenomeTracks uses BEDTools, do not forget to install it or load it into your environment.
+Since version 3.5, pyGenomeTracks uses BEDTools, do not forget to install it or load it into your environment to speed up the plot generation.
 
 If you need to specify a specific path for the installation of the tools, make use of `pip install`'s numerous options:
 
 .. code:: bash
 
     $ pip install --install-option="--prefix=/MyPath/Tools/pyGenomeTracks" git+https://github.com/deeptools/pyGenomeTracks.git
-
-Command line installation without ``pip``
--------------------------------------------
-
-You are highly recommended to use `conda install` rather than the following complicated steps.
-
-1. Install the requirements listed above in the "requirements" section. This is done automatically by `pip` (except BEDTools).
-
-2. Download source code
-::
-
-	$ git clone https://github.com/deeptools/pyGenomeTracks.git
-
-or if you want a particular release, choose one from https://github.com/deeptools/pygenometracks/releases:
-::
-
-	$ wget https://github.com/deeptools/pyGenomeTracks/archive/3.9.tar.gz
-	$ tar -xzvf
-
-3. install the source code (if you don't have root permission, you can set
-a specific folder using the ``--prefix`` option)
-::
-
-	$ python setup.py install --prefix /User/Tools/pyGenomeTracks3.9
 
 Galaxy installation
 --------------------
