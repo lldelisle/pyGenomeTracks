@@ -196,8 +196,6 @@ file_type = {TRACK_TYPE}
                         linewidth=self.properties['line_width'],
                         alpha=self.properties['alpha']))
 
-        # Process the font size:
-        fp = font_manager.FontProperties(size=self.properties['fontsize'])
         # We now write the size_label:
         where = self.properties['where']
         if where in ['top', 'bottom']:
@@ -207,12 +205,12 @@ file_type = {TRACK_TYPE}
             if where == 'top':
                 ax.text(x=x_center, y=1, s=size_label,
                         horizontalalignment='center',
-                        verticalalignment='bottom', fontproperties=fp)
+                        verticalalignment='bottom', fontsize=self.properties['fontsize'])
                 ax.set_ylim(0, 1 / (1 - relative_height))
             else:
                 ax.text(x=x_center, y=0, s=size_label,
                         horizontalalignment='center',
-                        verticalalignment='top', fontproperties=fp)
+                        verticalalignment='top', fontsize=self.properties['fontsize'])
                 ax.set_ylim(1 - 1 / (1 - relative_height), 1)
         else:
             small_space = get_length_w(ax.get_figure().get_figwidth(),
@@ -222,19 +220,19 @@ file_type = {TRACK_TYPE}
             if where == 'left' and xlim[0] < xlim[1]:
                 ax.text(x=scalebar_start_position - 2 * small_space, y=0.5, s=size_label,
                         horizontalalignment='right',
-                        verticalalignment='center', fontproperties=fp)
+                        verticalalignment='center', fontsize=self.properties['fontsize'])
             elif where == 'left' and xlim[0] >= xlim[1]:
                 ax.text(x=scalebar_end_position + 2 * small_space, y=0.5, s=size_label,
                         horizontalalignment='right',
-                        verticalalignment='center', fontproperties=fp)
+                        verticalalignment='center', fontsize=self.properties['fontsize'])
             elif where == 'right' and xlim[0] >= xlim[1]:
                 ax.text(x=scalebar_start_position - 2 * small_space, y=0.5, s=size_label,
                         horizontalalignment='left',
-                        verticalalignment='center', fontproperties=fp)
+                        verticalalignment='center', fontsize=self.properties['fontsize'])
             else:  # where == 'left' and xlim[0] < xlim[1]
                 ax.text(x=scalebar_end_position + 2 * small_space, y=0.5, s=size_label,
                         horizontalalignment='left',
-                        verticalalignment='center', fontproperties=fp)
+                        verticalalignment='center', fontsize=self.properties['fontsize'])
 
         return ax
 
