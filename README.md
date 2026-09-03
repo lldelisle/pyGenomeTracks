@@ -138,7 +138,9 @@ options:
   --fontSize FONTSIZE   Font size for the labels of the plot (default is 0.3 *
                         figure width)
   --fontFamily FONTFAMILY
-                        Font family for the whole plot
+                        Font family for the whole plot. Available font
+                        families can be listed with:
+                        `matplotlib.font_manager.get_font_names()` in python.
   --dpi DPI             Resolution for the image in case the ouput is a raster
                         graphics image (e.g png, jpg) (default is 72)
   --trackLabelFraction TRACKLABELFRACTION

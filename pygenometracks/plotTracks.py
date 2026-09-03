@@ -217,7 +217,9 @@ def parse_arguments(args=None):
                         type=float)
 
     parser.add_argument('--fontFamily',
-                        help='Font family for the whole plot')
+                        help=("Font family for the whole plot. "
+                              "Available font families can be listed with: "
+                              "`matplotlib.font_manager.get_font_names()` in python."))
 
     parser.add_argument('--dpi',
                         help='Resolution for the image in case the'
