@@ -35,11 +35,17 @@ class HiCMatrixLikeTrack(GenomeTrack):
 #max_value = 3.0
 # the matrix can be transformed using the log1p (or log or -log, but zeros could be problematic)
 transform = log1p
-# show masked bins plots as white lines
+# show masked bins plots as lines with fixed color
 # those bins that were not used during the correction
 # the default is to extend neighboring bins to
 # obtain an aesthetically pleasant output
 show_masked_bins = false
+# Choose the color of those lines when show_masked_bins is true
+# (before release 3.10 the color used was the same as a value of 0,
+#  use 'zero' to keep this behavior (default),
+#  this possibility will be dropped in 4.0)
+#nan_color = zero
+nan_color = black
 # optional if the values in the matrix need to be scaled the
 # following parameter can be used. This is useful to plot multiple hic-matrices on the same scale
 # scale_factor = 1
@@ -55,6 +61,7 @@ show_masked_bins = false
                            'max_value': None,
                            'min_value': None,
                            'rasterize': True,
+                           'nan_color': 'zero',
                            'colormap': DEFAULT_MATRIX_COLORMAP}
     NECESSARY_PROPERTIES = ['file']
     SYNONYMOUS_PROPERTIES = {'max_value': {'auto': None},
@@ -64,7 +71,7 @@ show_masked_bins = false
     BOOLEAN_PROPERTIES = ['show_masked_bins', 'rasterize']
     STRING_PROPERTIES = ['file', 'file_type', 'overlay_previous',
                          'orientation', 'transform',
-                         'title', 'colormap']
+                         'title', 'colormap', 'nan_color']
     FLOAT_PROPERTIES = {'max_value': [- np.inf, np.inf],
                         'min_value': [- np.inf, np.inf],
                         'scale_factor': [- np.inf, np.inf],
@@ -204,7 +211,11 @@ show_masked_bins = false
         except AttributeError:
             # Matplotlib >= 3.11.0
             self.cmap = copy.copy(matplotlib.pyplot.get_cmap(self.properties['colormap']))
-        self.cmap.set_bad('black')
+        # To keep previous behaviour
+        self.nans_to_zeros = self.properties['nan_color'] == 'zero'
+        if self.nans_to_zeros:
+            self.properties['nan_color'] = 'black'
+        self.cmap.set_bad(self.properties['nan_color'])
 
     def reduce_matrix(self, max_depth_in_bins):
         # work only with the lower matrix
@@ -280,6 +291,31 @@ show_masked_bins = false
             return False, chrom_region
 
         return True, chrom_region
+
+    def adjust_nans(self, matrix, idx, idx_y):
+        """Insert nan values on masked bins
+
+        Args:
+            :param matrix: float 2D matrix from self.hic_ma on idx, idx_y
+            :type matrix: numpy.ndarray
+            :param idx: indices of self.hic_ma.cut_intervals which correspond to the x of matrix
+            :type idx: list of int
+            :param idx_y: indices of self.hic_ma.cut_intervals which correspond to the y of matrix
+            :type idx_y: list of int
+        """
+        if (self.properties['show_masked_bins']
+                and not self.nans_to_zeros
+                and self.hic_ma.nan_bins is not None
+                and len(self.hic_ma.nan_bins) > 0):
+            idx_array = np.array(idx)
+            idx_y_array = np.array(idx_y)
+            nan_local = np.where(np.isin(idx_array, self.hic_ma.nan_bins))[0]
+            nan_local_y = np.where(np.isin(idx_y_array, self.hic_ma.nan_bins))[0]
+            if len(nan_local) > 0:
+                matrix[nan_local, :] = np.nan
+            if len(nan_local_y) > 0:
+                matrix[:, nan_local_y] = np.nan
+        return matrix
 
     def plot(self, ax, chrom_region, region_start, region_end):
         return
