@@ -1,7 +1,6 @@
 import matplotlib
 import numpy as np
 from intervaltree import Interval, IntervalTree
-from matplotlib import font_manager
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, Polygon, Rectangle
 from tqdm import tqdm
@@ -223,7 +222,6 @@ file_type = {TRACK_TYPE}
 
     def set_properties_defaults(self):
         super(BedTrack, self).set_properties_defaults()
-        self.fp = font_manager.FontProperties(size=self.properties['fontsize'])
         self.colormap = None
         self.parametersUsingColormap = []
         # check if the color given is a color map
@@ -613,7 +611,7 @@ file_type = {TRACK_TYPE}
                     ax.text(add_to_left(bed_left, self.current_small_relative),
                             ypos + (1 / 2),
                             bed.name, horizontalalignment='right',
-                            verticalalignment='center', fontproperties=self.fp,
+                            verticalalignment='center', fontsize=self.properties['fontsize'],
                             fontstyle=self.properties['fontstyle'])
                     # To uniformize the label position and max_row calc should be:
                     # ax.text(add_to_left(bed_left, self.current_small_relative + self.current_len_w),
@@ -621,7 +619,7 @@ file_type = {TRACK_TYPE}
                     ax.text(add_to_right(bed_right, self.current_small_relative),
                             ypos + 0.5,
                             bed.name, horizontalalignment='left',
-                            verticalalignment='center', fontproperties=self.fp,
+                            verticalalignment='center', fontsize=self.properties['fontsize'],
                             fontstyle=self.properties['fontstyle'])
                     # To uniformize the label position and max_row calc should be:
                     # ax.text(add_to_right(bed_right, self.current_small_relative + self.current_len_w),
@@ -630,7 +628,7 @@ file_type = {TRACK_TYPE}
                     ax.text(add_to_right(ax.get_xlim()[1], self.current_small_relative),
                             ypos + (1 / 2),
                             bed.name, horizontalalignment='left',
-                            verticalalignment='center', fontproperties=self.fp,
+                            verticalalignment='center', fontsize=self.properties['fontsize'],
                             fontstyle=self.properties['fontstyle'])
                     # To uniformize the label position and max_row calc should be:
                     # ax.text(add_to_right(ax.get_xlim()[1], self.current_small_relative + self.current_len_w),
@@ -1247,7 +1245,7 @@ file_type = {TRACK_TYPE}
                 txt = ax.text(x2, y3, region.data.name,
                               horizontalalignment='center',
                               verticalalignment='top',
-                              fontproperties=self.fp,
+                              fontsize=self.properties['fontsize'],
                               fontstyle=self.properties['fontstyle'],
                               wrap=True)
                 r = ax.get_figure().canvas.get_renderer()
@@ -1317,7 +1315,7 @@ file_type = {TRACK_TYPE}
                 txt = ax.text(x3, y3, region.data.name,
                               horizontalalignment='center',
                               verticalalignment='top',
-                              fontproperties=self.fp,
+                              fontsize=self.properties['fontsize'],
                               fontstyle=self.properties['fontstyle'],
                               wrap=True)
                 r = ax.get_figure().canvas.get_renderer()
