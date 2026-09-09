@@ -129,6 +129,17 @@ file_type = hic_matrix
 height = 5
 show_masked_bins = true
 
+[spacer]
+
+[hic matrix]
+file = small_test2.cool
+title = cool with few interactions show_masked_bins = true nan_color = black
+depth = 200000
+file_type = hic_matrix
+height = 5
+show_masked_bins = true
+nan_color = black
+
 [x-axis]
 """
 with open(os.path.join(ROOT, "browser_tracks_hic_small_test_boundaries_file.ini"), 'w') as fh:

@@ -177,6 +177,17 @@ file_type = hic_matrix
 height = 5
 show_masked_bins = true
 
+[spacer]
+
+[hic matrix]
+file = small_test2.cool
+title = cool with few interactions show_masked_bins = true nan_color = black
+depth = 200000
+file_type = hic_matrix
+height = 5
+show_masked_bins = true
+nan_color = black
+
 [x-axis]
 """
 with open(os.path.join(ROOT, "browser_tracks_hic_small_test.ini"), 'w') as fh:
@@ -288,12 +299,35 @@ show_masked_bins = true
 
 [hic matrix]
 file = one_interaction_4chr.cool
+title = cool with one interaction show_masked_bins = true nan_color = blue
+depth = 200000
+file_type = hic_matrix
+height = 5
+show_masked_bins = true
+nan_color = blue
+
+[spacer]
+
+[hic matrix]
+file = one_interaction_4chr.cool
 title = cool with one interaction show_masked_bins = true transform = log
 depth = 200000
 file_type = hic_matrix
 height = 5
 show_masked_bins = true
 transform = log
+
+[spacer]
+
+[hic matrix]
+file = one_interaction_4chr.cool
+title = cool with one interaction show_masked_bins = true transform = log nan_color = black
+depth = 200000
+file_type = hic_matrix
+height = 5
+show_masked_bins = true
+transform = log
+nan_color = black
 
 [newtrack]
 file_type = x_axis
@@ -781,7 +815,7 @@ def test_plot_tracks_with_mcool():
 def test_plot_tracks_with_hic_one_interaction_cool():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 21
+        my_tolerance = 22
     else:
         my_tolerance = tolerance
 
@@ -810,7 +844,7 @@ def test_plot_tracks_with_hic_one_interaction_cool():
 def test_plot_tracks_with_hic_one_interaction_h5():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 21
+        my_tolerance = 22
     else:
         my_tolerance = tolerance
 
@@ -839,7 +873,7 @@ def test_plot_tracks_with_hic_one_interaction_h5():
 def test_plot_tracks_with_hic_one_interaction_h5_individual():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 21
+        my_tolerance = 22
     else:
         my_tolerance = tolerance
 
@@ -872,7 +906,7 @@ def test_plot_tracks_with_hic_one_interaction_h5_individual():
 def test_plot_tracks_with_hic_one_interaction_individual():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 21
+        my_tolerance = 22
     else:
         my_tolerance = tolerance
 
@@ -910,7 +944,7 @@ def test_plot_tracks_with_hic_one_interaction_individual():
 def test_plot_tracks_with_hic_one_interaction_diag():
 
     if mpl.__version__ != default_mpl_version:
-        my_tolerance = 21
+        my_tolerance = 22
     else:
         my_tolerance = tolerance
 

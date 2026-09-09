@@ -1,5 +1,4 @@
 import numpy as np
-from matplotlib import font_manager
 
 from .BedTrack import BedTrack
 from .GenomeTrack import DEFAULT_BED_COLOR, GenomeTrack
@@ -169,7 +168,6 @@ file_type = {TRACK_TYPE}
 
     def set_properties_defaults(self):
         super(BedTrack, self).set_properties_defaults()
-        self.fp = font_manager.FontProperties(size=self.properties['fontsize'])
         self.colormap = None
         # check if the color given is a color map
         # Contrary to bed it cannot be a colormap

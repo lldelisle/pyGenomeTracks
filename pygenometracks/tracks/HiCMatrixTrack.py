@@ -72,6 +72,8 @@ file_type = {TRACK_TYPE}
         # Using todense will replace all nan values by 0.
         matrix = np.asarray(matrix.todense().astype(float))
 
+        matrix = self.adjust_nans(matrix, idx, idx)
+
         matrix = matrix * self.properties['scale_factor']
 
         if self.properties['transform'] == 'log1p':
@@ -81,7 +83,7 @@ file_type = {TRACK_TYPE}
             # We first replace 0 values by minimum values after 0
             mask = matrix == 0
             try:
-                matrix[mask] = matrix[np.logical_not(mask)].min()
+                matrix[mask] = np.nanmin(matrix[np.logical_not(mask)])
                 matrix = np.log(matrix)
             except ValueError:
                 self.log.info('All values are 0, no log applied.')
@@ -95,7 +97,9 @@ file_type = {TRACK_TYPE}
         else:
             # try to use a 'aesthetically pleasant' max value
             try:
-                vmax = np.percentile(matrix.diagonal(1), 80)
+                vmax = np.nanpercentile(matrix.diagonal(1), 80)
+                if np.isnan(vmax):
+                    vmax = None
             except Exception:
                 vmax = None
 
@@ -115,7 +119,7 @@ file_type = {TRACK_TYPE}
                 if len(distant_diagonal_values) > 5:
                     break
 
-            vmin = np.median(distant_diagonal_values)
+            vmin = np.nanmedian(distant_diagonal_values)
 
         self.log.info("setting min, max values for track "
                       f"{self.properties['section_name']} to: "
