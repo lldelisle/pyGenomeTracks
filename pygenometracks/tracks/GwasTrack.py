@@ -90,6 +90,11 @@ file_type = {TRACK_TYPE}
         super(GwasTrack, self).__init__(*args, **kwarg)
         self.interval_tree = self.process_gwas(self.properties['region'])
 
+    def set_properties_defaults(self):
+        super(GwasTrack, self).set_properties_defaults()
+        self.process_color('color')
+        self.process_color('border_color')
+
     def process_gwas(self, plot_regions=None):
         """Read the gwas file and store values in a IntervalTree
 
