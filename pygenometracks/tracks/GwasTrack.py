@@ -3,7 +3,7 @@ from intervaltree import Interval, IntervalTree
 from tqdm import tqdm
 
 from ..readGwas import ReadGwas
-from ..utilities import change_chrom_names, count_lines, opener
+from ..utilities import change_chrom_names
 from .GenomeTrack import GenomeTrack
 
 DEFAULT_GWAS_COLOR = '#ff7f00'
@@ -16,7 +16,7 @@ class GwasTrack(GenomeTrack):
 # File containing the data. We expect an IGV .gwas format file with the columns: CHR, BP, SNP and P.
 # Optionally, extra annotation columns can be added.
 file =
-# Indicate if your file has a header:
+# Indicate if your file has a header that do not start with '#':
 file_has_header = false
 # Each SNP will be plotted as a 'o' and you can control color/size etc...
 # Inside color
@@ -71,11 +71,7 @@ file_type = {TRACK_TYPE}
         :return None
         """
 
-        total_length = count_lines(opener(self.properties['file']),
-                                   asBed=True)
-        if self.properties['file_has_header']:
-            total_length -= 1
-        gwas_file_h = ReadGwas(opener(self.properties['file']),
+        gwas_file_h = ReadGwas(self.properties['file'],
                                has_header=self.properties['file_has_header'])
 
         valid_intervals = 0
@@ -86,7 +82,7 @@ file_type = {TRACK_TYPE}
         else:
             chroms_to_plot = None
 
-        for record in tqdm(gwas_file_h, total=total_length):
+        for record in tqdm(gwas_file_h, total=gwas_file_h.length):
 
             if plot_regions is not None and record.chromosome not in chroms_to_plot:
                 continue
