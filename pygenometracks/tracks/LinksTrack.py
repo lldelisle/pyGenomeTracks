@@ -8,10 +8,9 @@ from pygenometracks.utilities import InputError
 
 from ..utilities import (change_chrom_names, get_region, opener,
                          temp_file_from_intersect, to_string)
-from .GenomeTrack import GenomeTrack
+from .GenomeTrack import HUGE_NUMBER, GenomeTrack
 
 DEFAULT_LINKS_COLOR = 'blue'
-HUGE_NUMBER = int(1e9)  # Which should be above any chromosome size
 
 
 class LinksTrack(GenomeTrack):
