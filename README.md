@@ -53,32 +53,10 @@ The recommended way to install pyGenomeTracks is via conda
 conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks
 ```
 
-To get a specific version, one can specify it. For example:
+To get a specific version, one can specify it with:
 
 ```bash
-conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks=3.5 python=3.7
-```
-
-However, we noticed that conda installation can be quite slow so using mamba can help.
-You first need to create the environment and install mamba:
-
-```bash
-conda create -n pygenometracks -c bioconda -c conda-forge mamba python=3.9
-```
-
-Then activate the environment and install pygenometracks with mamba:
-
-```bash
-conda activate pygenometracks
-mamba install -c conda-forge -c bioconda pygenometracks
-```
-
-or if you want a specific version:
-
-```bash
-conda create -n pygenometracks -c bioconda -c conda-forge mamba python=3.7
-conda activate pygenometracks
-mamba install -c conda-forge -c bioconda pygenometracks=3.5
+conda create -n pygenometracks -c bioconda -c conda-forge pygenometracks=<version>
 ```
 
 Also, pyGenomeTracks can be installed using pip
@@ -87,7 +65,7 @@ Also, pyGenomeTracks can be installed using pip
 pip install pyGenomeTracks
 ```
 
-Since version 3.5, pyGenomeTracks uses BEDTools, don't forget to install it or load it into your environment.
+Since version 3.5, pyGenomeTracks uses BEDTools, don't forget to install it or load it into your environment if you want to speed up the plot generation.
 
 Usage
 -----
@@ -121,8 +99,9 @@ options:
   --BED BED             Instead of a region, a file containing the regions to
                         plot, in BED format, can be given. If this is the
                         case, multiple files will be created. It will use the
-                        value of --outFileName as a template and put the
-                        coordinates between the file name and the extension.
+                        value of --outFileName as a template and put either
+                        the name in 4th column or the coordinates between the
+                        file name and the extension.
   --width WIDTH         figure width in centimeters (default is 40)
   --plotWidth PLOTWIDTH
                         width in centimeters of the plotting (central) part
@@ -137,6 +116,10 @@ options:
                         multiple images are stored
   --fontSize FONTSIZE   Font size for the labels of the plot (default is 0.3 *
                         figure width)
+  --fontFamily FONTFAMILY
+                        Font family for the whole plot. Available font
+                        families can be listed with:
+                        `matplotlib.font_manager.get_font_names()` in python.
   --dpi DPI             Resolution for the image in case the ouput is a raster
                         graphics image (e.g png, jpg) (default is 72)
   --trackLabelFraction TRACKLABELFRACTION

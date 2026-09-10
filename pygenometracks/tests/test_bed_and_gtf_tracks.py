@@ -1406,11 +1406,9 @@ def test_plot_tracks_bed_with_maxLab_BED():
            "--trackLabelFraction 0.2 --width 38 --dpi 130 "\
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
-    for region, expected_basename_file in [("X:2000000-3500000", "master_maxLab"),
-                                           ("X:3000000-3500000", "master_maxLab_zoom")]:
-        region_str = region.replace(':', '-')
-        output_file = outfile.name[:-4] + '_' + region_str + extension
-        expected_file = os.path.join(ROOT, expected_basename_file
+    for expected_middlename_file in ["maxLab", "maxLab_zoom"]:
+        output_file = outfile.name[:-4] + '_' + expected_middlename_file + extension
+        expected_file = os.path.join(ROOT, 'master_' + expected_middlename_file
                                      + extension)
         res = compare_images(expected_file,
                              output_file, my_tolerance)
