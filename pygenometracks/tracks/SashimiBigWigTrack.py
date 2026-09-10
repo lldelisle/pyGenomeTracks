@@ -1,14 +1,13 @@
 # Authors: Zepeng Mu (zmu@broadinstitute.org) and Yang I. Li (yangili1@uchicago.edu)
 # Edits: Lucille Lopez-Delisle (lucille.delisle@unige.ch)
 
-import matplotlib
 import matplotlib.patches as mpatches
 import matplotlib.path as mpath
 import numpy as np
-import pyBigWig
 from intervaltree import IntervalTree
 
 from ..utilities import change_chrom_names, plot_coverage, transform
+from .BedTrack import BedTrack
 from .BigWigTrack import BigWigTrack
 from .GenomeTrack import GenomeTrack
 
@@ -18,7 +17,7 @@ DEFAULT_LINKS_COLOR = 'blue'
 DEFAULT_BIGWIG_COLOR = '#33a02c'
 
 
-class SashimiBigWigTrack(BigWigTrack):
+class SashimiBigWigTrack(BigWigTrack, BedTrack):
     SUPPORTED_ENDINGS = []
     TRACK_TYPE = 'sashimiBigWig'
     OPTIONS_TXT = GenomeTrack.OPTIONS_TXT + f"""
@@ -137,6 +136,8 @@ file_type = {TRACK_TYPE}
         'link_fontsize': None,
         # General
         'region': None,  # Cannot be set manually but is set by tracksClass
+        # For BigWig compatibility:
+        'operation': 'file'
     }
     NECESSARY_PROPERTIES = ['file', 'link_file']
     SYNONYMOUS_PROPERTIES = {
@@ -188,47 +189,22 @@ file_type = {TRACK_TYPE}
         'link_scale_line_width': [0, np.inf]
     }
     INTEGER_PROPERTIES = {'number_of_bins': [1, np.inf]}
+    BED_FILE_KEY = 'link_file'
+    BED_COLOR_KEY = 'link_color'
+    BED_DEFAULT_COLOR = DEFAULT_LINKS_COLOR
+    BED_MIN_VALUE = 'link_min_value'
+    BED_MAX_VALUE = 'link_max_value'
+    BIGWIG_COLOR_KEY = 'bw_color'
 
     # The bw_color can only be a color
     # negative_color can only be a color or None
 
     def __init__(self, *args, **kwargs):
-        super(BigWigTrack, self).__init__(*args, **kwargs)
-        self.bw = pyBigWig.open(self.properties['file'])
+        super(SashimiBigWigTrack, self).__init__(*args, **kwargs)
         self.show_number = self.properties['link_labels']
 
     def set_properties_defaults(self):
-        super(BigWigTrack, self).set_properties_defaults()
-        super(BigWigTrack, self).process_type_for_coverage_track()
-        self.process_color('bw_color')
-        if self.properties['negative_color'] is None:
-            self.properties['negative_color'] = self.properties['bw_color']
-        else:
-            self.process_color('negative_color')
-        # FOR LINK
-        is_colormap = self.process_color('link_color', colormap_possible=True, bed_rgb_possible=True, default_value_is_colormap=False)
-        self.interval_tree, min_score, max_score = self.process_bed(DEFAULT_LINKS_COLOR, file_key='link_file', color_key='link_color',
-                                                                    plot_regions=self.properties['region'])
-        # Initiate the colormap if needed
-        self.colormap = None
-        self.parametersUsingColormap = []
-        if is_colormap:
-            if self.properties['link_min_value'] is not None:
-                min_score = self.properties['link_min_value']
-            if self.properties['link_max_value'] is not None:
-                max_score = self.properties['link_max_value']
-
-            norm = matplotlib.colors.Normalize(vmin=min_score,
-                                               vmax=max_score)
-
-            try:
-                # Matplotlib < 3.11.0
-                cmap = matplotlib.cm.get_cmap(self.colormap)
-            except AttributeError:
-                # Matplotlib >= 3.11.0
-                cmap = matplotlib.pyplot.get_cmap(self.colormap)
-            self.colormap = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
-            self.parametersUsingColormap.append('link_color')
+        super(SashimiBigWigTrack, self).set_properties_defaults()
 
     def plot(self, ax, chrom_region, start_region, end_region):
         x_values, transformed_scores = self.get_transformed_values(chrom_region, start_region, end_region)
@@ -420,8 +396,6 @@ file_type = {TRACK_TYPE}
             forced_ymax=ymax
         )
 
-    def __del__(self):
-        try:
-            self.bw.close()
-        except AttributeError:
-            pass
+    def plot_label(self, label_ax, width_dpi, h_align='left'):
+        # Force to use BigwigLike not BedLike
+        BigWigTrack.plot_label(self, label_ax, width_dpi, h_align='left')

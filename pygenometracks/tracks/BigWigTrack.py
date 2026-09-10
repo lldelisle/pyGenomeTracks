@@ -112,9 +112,10 @@ file_type = {TRACK_TYPE}
     INTEGER_PROPERTIES = {'number_of_bins': [1, np.inf]}
     # The color can only be a color
     # negative_color can only be a color or None
+    BIGWIG_COLOR_KEY = 'color'
 
     def __init__(self, *args, **kwargs):
-        super(self.__class__, self).__init__(*args, **kwargs)
+        super(BigWigTrack, self).__init__(*args, **kwargs)
         self.bw = pyBigWig.open(self.properties['file'])
         self.bw2 = None
         if 'second_file' in self.properties['operation']:
@@ -128,9 +129,9 @@ file_type = {TRACK_TYPE}
     def set_properties_defaults(self):
         super(BigWigTrack, self).set_properties_defaults()
         super(BigWigTrack, self).process_type_for_coverage_track()
-        self.process_color('color')
+        self.process_color(self.BIGWIG_COLOR_KEY)
         if self.properties['negative_color'] is None:
-            self.properties['negative_color'] = self.properties['color']
+            self.properties['negative_color'] = self.properties[self.BIGWIG_COLOR_KEY]
         else:
             self.process_color('negative_color')
         if self.properties['operation'] != 'file':
