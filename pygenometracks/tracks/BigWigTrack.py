@@ -159,7 +159,7 @@ file_type = {TRACK_TYPE}
 
         x_values = np.linspace(start_region, temp_end_region, temp_nbins)
         # compute the operation
-        operation = self.properties.get('operation', 'file')
+        operation = self.properties['operation']
         # Substitute log by np.log to make it evaluable:
         operation = operation.replace('log', 'np.log')
         if operation == 'file':
