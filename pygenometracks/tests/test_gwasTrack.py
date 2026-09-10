@@ -36,9 +36,9 @@ show_data_range = false
 [gwas_2]
 file = gwas_1.gwas
 height = 4
-title = test_1 default values min_value = 0 max_value = 15
-min_value = 0
-max_value = 15
+title = test_1 default values min_value = 1 max_value = 1e-15
+min_value = 1
+max_value = 1e-15
 
 [x-axis]
 """

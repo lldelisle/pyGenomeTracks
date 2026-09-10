@@ -3,7 +3,7 @@ from intervaltree import Interval, IntervalTree
 from tqdm import tqdm
 
 from ..readGwas import ReadGwas
-from ..utilities import change_chrom_names
+from ..utilities import change_chrom_names, transform
 from .GenomeTrack import GenomeTrack
 
 DEFAULT_GWAS_COLOR = '#ff7f00'
@@ -27,12 +27,32 @@ file_has_header = false
 #line_width = 0.5
 # Size
 #marker_size = 45
-# set show_data_range to false to hide the text on the upper-left showing the data range
+# To log transform your PVALUE you can use transform and log_pseudocount:
+# For the transform values:
+# 'no': do not transform the values
+# 'log1p': transformed_values = log(1 + initial_values)
+# 'log': transformed_values = log(log_pseudocount + initial_values)
+# 'log2': transformed_values = log2(log_pseudocount + initial_values)
+# 'log10': transformed_values = log10(log_pseudocount + initial_values)
+# '-log': transformed_values = - log(log_pseudocount + initial_values)
+# '-log10': transformed_values = - log10(log_pseudocount + initial_values)
+# The default is:
+# transform = -log10
+# log_pseudocount = 0
+# When a transformation is applied, by default the y axis
+# gives the transformed values, if you prefer to see
+# the original values:
+#y_axis_values = original
+# If you want to have a grid on the y-axis
+#grid = true
+# set show_data_range to false to hide the text on the left showing the data range
 show_data_range = true
 # the default for min_value and max_value is 'auto' which means that the scale will go
 # roughly from the minimum value found in the region plotted to the maximum value found.
-min_value = 0
-#max_value = auto
+# To change set min_value and max_value before transformation.
+# Use for example:
+min_value = 1
+max_value = 1e-15
 # Optional. If not given is guessed from the file ending.
 file_type = {TRACK_TYPE}
     """
@@ -45,16 +65,22 @@ file_type = {TRACK_TYPE}
                            'border_color': 'black',
                            'line_width': 0.5,
                            'marker_size': 45,
+                           'transform': '-log10',
+                           'log_pseudocount': 0,
+                           'y_axis_values': 'transformed',
                            'file_has_header': False}
 
     NECESSARY_PROPERTIES = ['file']
     SYNONYMOUS_PROPERTIES = {'max_value': {'auto': None},
                              'min_value': {'auto': None}}
-    POSSIBLE_PROPERTIES = {}
+    POSSIBLE_PROPERTIES = {'transform': ['no', 'log', 'log1p', '-log', 'log2',
+                                         'log10', '-log10'],
+                           'y_axis_values': ['original', 'transformed']}
     BOOLEAN_PROPERTIES = ['file_has_header', 'show_data_range']
     STRING_PROPERTIES = ['title', 'file_type', 'file', 'color', 'border_color']
     FLOAT_PROPERTIES = {'max_value': [- np.inf, np.inf],
                         'min_value': [- np.inf, np.inf],
+                        'log_pseudocount': [- np.inf, np.inf],
                         'height': [0, np.inf],
                         'marker_size': [0, np.inf],
                         'line_width': [0, np.inf]}
@@ -135,12 +161,15 @@ file_type = {TRACK_TYPE}
 
         # Fill in the position and pvalues lists with data from the GWAS file
         position = [region.begin for region in gwas_overlap]
-        # Notice the -log10 transformation
-        y_values = [-np.log10(region.data.pvalue) if region.data.pvalue > 0 else 0
-                    for region in gwas_overlap]
+        score_list = [region.data.pvalue
+                      for region in gwas_overlap]
+        transformed_scores = transform(np.array(score_list),
+                                       self.properties['transform'],
+                                       self.properties['log_pseudocount'],
+                                       self.properties['file'])
 
         # Plot the scatterplot
-        ax.scatter(position, y_values,
+        ax.scatter(position, transformed_scores,
                    s=self.properties['marker_size'],
                    color=self.properties['color'], marker='o',
                    edgecolors=self.properties['border_color'],

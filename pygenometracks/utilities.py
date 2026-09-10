@@ -285,6 +285,15 @@ def transform(score_list, transform, log_pseudocount, file):
             raise Exception(msg)
         else:
             return - np.log(log_pseudocount + score_list)
+    elif transform == '-log10':
+        if np.nanmin(score_list) <= - log_pseudocount:
+            msg = ("\n*ERROR*\ncoverage contains values smaller or equal to"
+                   f" - {log_pseudocount}.\n"
+                   f"- log10( {log_pseudocount} + <values>) transformation can "
+                   f"not be applied to values in file: {file}")
+            raise Exception(msg)
+        else:
+            return - np.log10(log_pseudocount + score_list)
     else:
         warnings.warn(f"The transform: {transform} for file {file} is not "
                       "valid. Will not use any transformation.\n")
