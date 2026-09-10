@@ -1,7 +1,6 @@
 import matplotlib
 import numpy as np
 from intervaltree import Interval, IntervalTree
-from matplotlib import font_manager
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, Polygon, Rectangle
 from tqdm import tqdm
@@ -196,6 +195,11 @@ file_type = {TRACK_TYPE}
                           'max_labels': [0, np.inf],
                           'arrow_interval': [1, np.inf],
                           'arrow_length': [0, np.inf]}
+    BED_FILE_KEY = 'file'
+    BED_COLOR_KEY = 'color'
+    BED_DEFAULT_COLOR = DEFAULT_BED_COLOR
+    BED_MIN_VALUE = 'min_value'
+    BED_MAX_VALUE = 'max_value'
 
     def __init__(self, *args, **kwarg):
         super(BedTrack, self).__init__(*args, **kwarg)
@@ -203,12 +207,12 @@ file_type = {TRACK_TYPE}
         # this is bed3, bed4, bed5, bed6, bed8, bed9 or bed12
         self.current_len_w = None  # this is the length of the letter 'w' given the font size
         self.interval_tree = {}  # interval tree of the bed regions
-        self.interval_tree, min_score, max_score = self.process_bed(self.properties['region'])
+        self.interval_tree, min_score, max_score = self.process_bed(self.BED_DEFAULT_COLOR, self.BED_FILE_KEY, self.BED_COLOR_KEY, self.properties['region'])
         if self.colormap is not None:
-            if self.properties['min_value'] is not None:
-                min_score = self.properties['min_value']
-            if self.properties['max_value'] is not None:
-                max_score = self.properties['max_value']
+            if self.properties[self.BED_MIN_VALUE] is not None:
+                min_score = self.properties[self.BED_MIN_VALUE]
+            if self.properties[self.BED_MAX_VALUE] is not None:
+                max_score = self.properties[self.BED_MAX_VALUE]
 
             norm = matplotlib.colors.Normalize(vmin=min_score,
                                                vmax=max_score)
@@ -223,16 +227,15 @@ file_type = {TRACK_TYPE}
 
     def set_properties_defaults(self):
         super(BedTrack, self).set_properties_defaults()
-        self.fp = font_manager.FontProperties(size=self.properties['fontsize'])
         self.colormap = None
         self.parametersUsingColormap = []
         # check if the color given is a color map
-        is_colormap = self.process_color('color', colormap_possible=True,
+        is_colormap = self.process_color(self.BED_COLOR_KEY, colormap_possible=True,
                                          bed_rgb_possible=True,
                                          default_value_is_colormap=False)
         if is_colormap:
-            self.colormap = self.properties['color']
-            self.parametersUsingColormap.append('color')
+            self.colormap = self.properties[self.BED_COLOR_KEY]
+            self.parametersUsingColormap.append(self.BED_COLOR_KEY)
 
         # check if border_color and color_utr and color_backbone are colors
         # if they are part of self.properties
@@ -267,22 +270,23 @@ file_type = {TRACK_TYPE}
         # to set the distance between rows
         self.row_scale = 2.3
 
-    def get_bed_handler(self, plot_regions=None):
-        if not self.properties['global_max_row']:
+    def get_bed_handler(self, file_key='file', plot_regions=None):
+        if not self.properties.get('global_max_row', False):
             # I do the intersection:
-            file_to_open = temp_file_from_intersect(self.properties['file'],
+            file_to_open = temp_file_from_intersect(self.properties[file_key],
                                                     plot_regions, AROUND_REGION)
         else:
-            file_to_open = self.properties['file']
-        # To remove in next 1.0
-        if self.properties['file'].endswith('gtf') or \
-           self.properties['file'].endswith('gtf.gz'):
-            self.log.warning("Deprecation Warning: "
-                             f"In section {self.properties['section_name']},"
-                             f" file_type was set to {self.TRACK_TYPE}"
-                             " whereas it is a gtf file. In the future"
-                             " only bed files will be accepted, please"
-                             " use file_type = gtf.\n")
+            file_to_open = self.properties[file_key]
+        is_gtf = self.TRACK_TYPE == "gtf" or self.properties[file_key].endswith('gtf') or self.properties[file_key].endswith('gtf.gz')
+        if is_gtf:
+            if self.TRACK_TYPE != "gtf":
+                # To remove in next 1.0
+                self.log.warning("Deprecation Warning: "
+                                 f"In section {self.properties['section_name']},"
+                                 f" file_type was set to {self.TRACK_TYPE}"
+                                 " whereas it is a gtf file. In the future"
+                                 " only bed files will be accepted, please"
+                                 " use file_type = gtf.\n")
             bed_file_h = ReadGtf(file_to_open,
                                  self.properties['prefered_name'],
                                  self.properties['merge_transcripts'],
@@ -293,17 +297,17 @@ file_type = {TRACK_TYPE}
 
         return bed_file_h
 
-    def process_bed(self, plot_regions=None):
+    def process_bed(self, default_color, file_key='file', color_key='color', plot_regions=None):
 
-        bed_file_h = self.get_bed_handler(plot_regions)
+        bed_file_h = self.get_bed_handler(file_key, plot_regions)
         self.bed_type = bed_file_h.file_type
 
-        if self.properties['color'] == 'bed_rgb' and \
+        if self.properties[color_key] == 'bed_rgb' and \
            self.bed_type not in ['bed12', 'bed9']:
             self.log.warning("*WARNING* Color set to 'bed_rgb', "
                              "but bed file does not have the rgb field. "
-                             f"The color has been set to {DEFAULT_BED_COLOR}.\n")
-            self.properties['color'] = DEFAULT_BED_COLOR
+                             f"The color has been set to {default_color}.\n")
+            self.properties[color_key] = default_color
 
         valid_intervals = 0
         interval_tree = {}
@@ -330,7 +334,7 @@ file_type = {TRACK_TYPE}
 
         if valid_intervals == 0:
             self.log.warning("No valid intervals were found in file "
-                             f"{self.properties['file']}.\n")
+                             f"{self.properties[file_key]}.\n")
 
         return interval_tree, min_score, max_score
 
@@ -610,7 +614,7 @@ file_type = {TRACK_TYPE}
                     ax.text(add_to_left(bed_left, self.current_small_relative),
                             ypos + (1 / 2),
                             bed.name, horizontalalignment='right',
-                            verticalalignment='center', fontproperties=self.fp,
+                            verticalalignment='center', fontsize=self.properties['fontsize'],
                             fontstyle=self.properties['fontstyle'])
                     # To uniformize the label position and max_row calc should be:
                     # ax.text(add_to_left(bed_left, self.current_small_relative + self.current_len_w),
@@ -618,7 +622,7 @@ file_type = {TRACK_TYPE}
                     ax.text(add_to_right(bed_right, self.current_small_relative),
                             ypos + 0.5,
                             bed.name, horizontalalignment='left',
-                            verticalalignment='center', fontproperties=self.fp,
+                            verticalalignment='center', fontsize=self.properties['fontsize'],
                             fontstyle=self.properties['fontstyle'])
                     # To uniformize the label position and max_row calc should be:
                     # ax.text(add_to_right(bed_right, self.current_small_relative + self.current_len_w),
@@ -627,7 +631,7 @@ file_type = {TRACK_TYPE}
                     ax.text(add_to_right(ax.get_xlim()[1], self.current_small_relative),
                             ypos + (1 / 2),
                             bed.name, horizontalalignment='left',
-                            verticalalignment='center', fontproperties=self.fp,
+                            verticalalignment='center', fontsize=self.properties['fontsize'],
                             fontstyle=self.properties['fontstyle'])
                     # To uniformize the label position and max_row calc should be:
                     # ax.text(add_to_right(ax.get_xlim()[1], self.current_small_relative + self.current_len_w),
@@ -1244,7 +1248,7 @@ file_type = {TRACK_TYPE}
                 txt = ax.text(x2, y3, region.data.name,
                               horizontalalignment='center',
                               verticalalignment='top',
-                              fontproperties=self.fp,
+                              fontsize=self.properties['fontsize'],
                               fontstyle=self.properties['fontstyle'],
                               wrap=True)
                 r = ax.get_figure().canvas.get_renderer()
@@ -1314,7 +1318,7 @@ file_type = {TRACK_TYPE}
                 txt = ax.text(x3, y3, region.data.name,
                               horizontalalignment='center',
                               verticalalignment='top',
-                              fontproperties=self.fp,
+                              fontsize=self.properties['fontsize'],
                               fontstyle=self.properties['fontstyle'],
                               wrap=True)
                 r = ax.get_figure().canvas.get_renderer()

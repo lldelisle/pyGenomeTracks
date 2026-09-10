@@ -113,9 +113,10 @@ file_type = {TRACK_TYPE}
     INTEGER_PROPERTIES = {'number_of_bins': [1, np.inf]}
     # The color can only be a color
     # negative_color can only be a color or None
+    BIGWIG_COLOR_KEY = 'color'
 
     def __init__(self, *args, **kwargs):
-        super(self.__class__, self).__init__(*args, **kwargs)
+        super(BigWigTrack, self).__init__(*args, **kwargs)
         self.bw = pyBigWig.open(self.properties['file'])
         self.bw2 = None
         if 'second_file' in self.properties['operation']:
@@ -129,9 +130,9 @@ file_type = {TRACK_TYPE}
     def set_properties_defaults(self):
         super(BigWigTrack, self).set_properties_defaults()
         super(BigWigTrack, self).process_type_for_coverage_track()
-        self.process_color('color')
+        self.process_color(self.BIGWIG_COLOR_KEY)
         if self.properties['negative_color'] is None:
-            self.properties['negative_color'] = self.properties['color']
+            self.properties['negative_color'] = self.properties[self.BIGWIG_COLOR_KEY]
         else:
             self.process_color('negative_color')
         if self.properties['operation'] != 'file':
@@ -147,13 +148,12 @@ file_type = {TRACK_TYPE}
                                  " It will be set as 'transformed'.\n")
                 self.properties['y_axis_values'] = 'transformed'
 
-    def plot(self, ax, chrom_region, start_region, end_region):
+    def get_transformed_values(self, chrom_region, start_region, end_region):
 
         temp_end_region, temp_nbins, scores_per_bin = self.get_scores('self.bw', self.properties['file'],
                                                                       chrom_region, start_region, end_region)
         if scores_per_bin is None:
-            self.log.warning("Scores could not be computed. This will generate an empty track\n")
-            return
+            return [None, None]
 
         if self.properties['nans_to_zeros'] and np.any(np.isnan(scores_per_bin)):
             scores_per_bin[np.isnan(scores_per_bin)] = 0
@@ -207,6 +207,13 @@ file_type = {TRACK_TYPE}
                                        self.properties['transform'],
                                        self.properties['log_pseudocount'],
                                        self.properties['file'])
+        return x_values, transformed_scores
+
+    def plot(self, ax, chrom_region, start_region, end_region):
+        x_values, transformed_scores = self.get_transformed_values(chrom_region, start_region, end_region)
+        if x_values is None:
+            self.log.warning("Scores could not be computed. This will generate an empty track\n")
+            return
 
         plot_coverage(ax, x_values, transformed_scores, self.plot_type,
                       self.size,

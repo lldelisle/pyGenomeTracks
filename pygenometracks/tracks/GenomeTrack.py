@@ -21,6 +21,8 @@ block_no_comma_outside_parenthesis = re.compile(r'(?:[^,(]|\([^)]*\))+')
 
 DEFAULT_MAX_SIGNS = 4
 
+HUGE_NUMBER = int(1e9)  # Which should be above any chromosome size
+
 
 class GenomeTrack(object):
     """
@@ -84,7 +86,8 @@ height = 2
                 self.properties[prop] = default_value
 
     def plot_y_axis(self, ax, plot_axis, transform='no', log_pseudocount=0,
-                    y_axis='transformed', only_at_ticks=False):
+                    y_axis='transformed', only_at_ticks=False,
+                    forced_ymin=None, forced_ymax=None):
         """
         Plot the scale of the y axis with respect to the plot_axis
         Args:
@@ -214,6 +217,10 @@ height = 2
                 return np.exp(- value) - log_pseudocount
 
         ymin, ymax = plot_axis.get_ylim()
+        if forced_ymin is not None:
+            ymin = forced_ymin
+        if forced_ymax is not None:
+            ymax = forced_ymax
         # If the ticks are closer than epsilon from the top or bottom
         # The vertical alignment of label is adjusted
         epsilon = (ymax - ymin) / 100

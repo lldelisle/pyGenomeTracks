@@ -121,6 +121,8 @@ pgt --tracks ./pygenometracks/tests/test_data/empty.ini --region X:3000000-35000
 pgt --tracks ./pygenometracks/tests/test_data/browser_tracks.ini --region X:3000000-3500000 --trackLabelFraction 0.2 --width 38 --dpi 130  --decreasingXAxis -o ./pygenometracks/tests/test_data/master_plot_dec.png
 pgt --tracks ./pygenometracks/tests/test_data/firstTrackOverlay.ini --region X:3000000-3500000 --trackLabelFraction 0.2 --width 38 --dpi 130  -o ./pygenometracks/tests/test_data/master_empty2.png
 pgt --tracks ./pygenometracks/tests/test_data/ylims.ini --region X:0-221 --trackLabelFraction 0.2 --width 38 --dpi 130  -o ./pygenometracks/tests/test_data/master_ylims.png
+pgt --tracks ./pygenometracks/tests/test_data/browser_tracks.ini --region X:3000000-3500000 --trackLabelFraction 0.2 --width 38 --dpi 130 --fontFamily 'Courier New' -o ./pygenometracks/tests/test_data/master_plot_cn.png
+pgt --tracks ./pygenometracks/tests/test_data/browser_tracks.ini --region X:3000000-3500000 --trackLabelFraction 0.2 --width 38 --dpi 130 --fontFamily 'DejaVu Sans Mono' -o ./pygenometracks/tests/test_data/master_plot_dsm.png
 
 
 # test_tracks_label:
@@ -188,3 +190,7 @@ pgt --tracks ./pygenometracks/tests/test_data/gwas.ini --region chrY:3000000-320
 # demo
 pgt --tracks ./pygenometracks/tests/test_data/demo2.ini --region chrX:3320000-3370000 -o ./pygenometracks/tests/test_data/demo2.png
 pgt --tracks ./pygenometracks/tests/test_data/demo.ini --region chrX:3000000-3500000 -o ./pygenometracks/tests/test_data/demo.png
+
+# sashimi
+pgt --tracks ./pygenometracks/tests/test_data/sashimi_tracks.ini --region chr2:231107879-231115507  --trackLabelFraction 0.23 --width 38 --dpi 130 -o ./pygenometracks/tests/test_data/master_sashimi.png
+pgt --tracks ./pygenometracks/tests/test_data/sashimi_tracks.ini --region X:3000000-3500000  --trackLabelFraction 0.23 --width 38 --dpi 130 -o ./pygenometracks/tests/test_data/master_sashimi_X.png
