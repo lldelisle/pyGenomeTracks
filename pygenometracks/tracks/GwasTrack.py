@@ -128,7 +128,7 @@ file_type = {TRACK_TYPE}
         interval_tree = {}
 
         if plot_regions is not None:
-            chroms_to_plot = set([v[0] for v in plot_regions])
+            chroms_to_plot = set([v[0] for v in plot_regions] + [change_chrom_names(v[0]) for v in plot_regions])
         else:
             chroms_to_plot = None
 
@@ -186,7 +186,14 @@ file_type = {TRACK_TYPE}
         position = [region.begin for region in gwas_overlap]
         score_list = [region.data.pvalue
                       for region in gwas_overlap]
-
+        if len(score_list) == 0:
+            self.log.warning("*Warning*\nNo interval was found when "
+                             "overlapping with "
+                             f" {chrom_region}:{start_region}-{end_region}"
+                             " inside the gwas file. "
+                             "This will generate an empty track!!\n")
+            self.adjust_ylim(ax)
+            return
         transformed_scores = transform(np.array(score_list),
                                        self.properties['transform'],
                                        self.properties['log_pseudocount'],

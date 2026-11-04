@@ -187,6 +187,7 @@ pgt --tracks ./pygenometracks/tests/test_data/mcool_hic_matrix_square.ini --regi
 pgt --tracks ./pygenometracks/tests/test_data/gwas.ini --region X:3000000-3200000 --trackLabelFraction 0.3 --plotWidth 30 --dpi 130 -o ./pygenometracks/tests/test_data/master_gwas.png
 pgt --tracks ./pygenometracks/tests/test_data/gwas.ini --region chrY:3000000-3200000 --trackLabelFraction 0.2 --dpi 130 -o ./pygenometracks/tests/test_data/master_gwas_chrY.png
 pgt --tracks ./pygenometracks/tests/test_data/gwas2.ini --region 1:0-1300000 --trackLabelFraction 0.2 --dpi 10 -o ./pygenometracks/tests/test_data/master_gwas2.pdf
+pgt --tracks ./pygenometracks/tests/test_data/gwas.ini --region X:13000000-13200000 --trackLabelFraction 0.3 --plotWidth 30 --dpi 130 -o ./pygenometracks/tests/test_data/master_gwas_far_X.png
 
 # demo
 pgt --tracks ./pygenometracks/tests/test_data/demo2.ini --region chrX:3320000-3370000 -o ./pygenometracks/tests/test_data/demo2.png

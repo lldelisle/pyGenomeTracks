@@ -141,7 +141,7 @@ def test_gwas_track_chrX():
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
-                         outfile.name, my_tolerance + 14)  # 14 corresponds to the 'chr' on the x axis
+                         outfile.name, my_tolerance + 3) # 3 is the change between X and chrX
     assert res is None, res
 
     os.remove(outfile.name)
@@ -192,6 +192,29 @@ def test_gwas_track_raster():
     expected_file = new_expected_file.name
     args = f"--tracks {ini_file} --region {region} " \
            "--trackLabelFraction 0.2 --dpi 10 " \
+           f"--outFileName {outfile.name}".split()
+    pygenometracks.plotTracks.main(args)
+    res = compare_images(expected_file,
+                         outfile.name, my_tolerance)
+    assert res is None, res
+
+    os.remove(outfile.name)
+
+
+def test_gwas_track_farX():
+
+    if mpl.__version__ != default_mpl_version:
+        my_tolerance = tolerance
+    else:
+        my_tolerance = tolerance
+
+    outfile = NamedTemporaryFile(suffix='.png', prefix='gwas_test_',
+                                 delete=False)
+    ini_file = os.path.join(ROOT, "gwas.ini")
+    region = "X:13000000-13200000"
+    expected_file = os.path.join(ROOT, 'master_gwas_far_X.png')
+    args = f"--tracks {ini_file} --region {region} " \
+           "--trackLabelFraction 0.3 --plotWidth 30 --dpi 130 " \
            f"--outFileName {outfile.name}".split()
     pygenometracks.plotTracks.main(args)
     res = compare_images(expected_file,
