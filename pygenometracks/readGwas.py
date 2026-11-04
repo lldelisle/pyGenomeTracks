@@ -19,7 +19,8 @@ class ReadGwas(ReadTabular):
     alias = {
         'chromosome': ['chr', 'chrom'],
         'position': ['bp', 'pos', 'base_pair_location'],
-        'variant_id': ['variant', 'id', 'rsid', 'rs_id', 'snp', 'rs', 'rsnum', 'marker', 'markername'],
+        'variant_id': ['variant', 'id', 'rs_id', 'snp', 'marker', 'markername'],
+        'rs_id': ['rsid', 'rs', 'rsnum'],
         'pvalue': ['p', 'pval', 'p-value', 'p_value', 'p.value']
     }
     required_fields = ['chromosome', 'position', 'pvalue']
