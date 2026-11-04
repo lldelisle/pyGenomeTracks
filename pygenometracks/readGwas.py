@@ -17,11 +17,11 @@ class ReadGwas(ReadTabular):
     """
     # Define alias column names for GWAS
     alias = {
-        'chromosome': ['chr', 'chrom'],
-        'position': ['bp', 'pos', 'base_pair_location'],
-        'variant_id': ['variant', 'id', 'rs_id', 'snp', 'marker', 'markername'],
-        'rs_id': ['rsid', 'rs', 'rsnum'],
-        'pvalue': ['p', 'pval', 'p-value', 'p_value', 'p.value']
+        'chromosome': ['chr', 'chrom', 'chromosome'],
+        'position': ['bp', 'pos', 'base_pair_location', 'position'],
+        'variant_id': ['variant', 'id', 'rs_id', 'snp', 'marker', 'markername', 'variant_id'],
+        'rs_id': ['rsid', 'rs', 'rsnum', 'rs_id'],
+        'pvalue': ['p', 'pval', 'p-value', 'p_value', 'p.value', 'pvalue']
     }
     required_fields = ['chromosome', 'position', 'pvalue']
     required_fields_constr = [str, int, float]
@@ -52,8 +52,10 @@ class ReadGwas(ReadTabular):
                 header_fields[0] = header_fields[0][1:]
             fields = []
             for hf in header_fields:
+                # Only lower if it is in the synonymous
+                # To keep field names like 'OR'
                 hfl = hf.lower()
-                fields.append(synonymous.get(hfl, clean(hfl)))
+                fields.append(synonymous.get(hfl, clean(hf)))
         else:
             fields = self.fields
         # Check all needed fields are present

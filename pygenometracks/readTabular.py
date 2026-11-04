@@ -23,7 +23,9 @@ class ReadTabular():
         self.line_number = 0
         self.length = self.get_nb_records()
         self.adjust_fields()
-        self.Record = collections.namedtuple('Record', self.used_fields)
+        self.Record = collections.namedtuple('Record', self.used_fields, rename=True)
+        # Update the fields
+        self.used_fields = list(self.Record._fields)
 
     def adjust_fields(self):
         self.used_fields = self.fields
